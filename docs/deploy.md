@@ -65,9 +65,15 @@ In the Supabase dashboard:
      that option is shown.
 2. **Authentication → Emails → Templates → Magic Link**. Replace the body with:
    ```html
-   <h2>Sign in to Nutrition Tracker</h2>
-   <p>Your code: <strong>{{ .Token }}</strong></p>
-   <p>Or <a href="{{ .ConfirmationURL }}">tap here to sign in</a>.</p>
+   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color:#000000;">
+     <tr>
+       <td style="padding:24px; color:#ffffff; font-family:Arial, sans-serif;">
+         <h2 style="color:#ffffff; margin-top:0;">Sign in to Nutrition Tracker</h2>
+         <p style="color:#ffffff;">Your code: <strong style="color:#ffffff;">{{ .Token }}</strong></p>
+         <p style="color:#ffffff;">Or <a href="{{ .ConfirmationURL }}" style="color:#ffffff; text-decoration:underline;">tap here to sign in</a>.</p>
+       </td>
+     </tr>
+   </table>
    ```
    The code (`{{ .Token }}`) is what you'll use in the installed phone app, because a
    home-screen app on iPhone doesn't share sign-ins with Safari.
