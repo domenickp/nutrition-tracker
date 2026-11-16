@@ -1,0 +1,167 @@
+{
+ "foods": [
+  {
+   "fdcId": 2012128,
+   "description": "BANANA",
+   "dataType": "Branded",
+   "brandOwner": "Wonder Natural Foods Corp",
+   "brandName": "BETTER'N PEANUT BUTTER",
+   "servingSize": 32,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "nutrientName": "Protein",
+     "unitName": "G",
+     "value": 12.5
+    },
+    {
+     "nutrientNumber": "204",
+     "nutrientName": "Total lipid (fat)",
+     "unitName": "G",
+     "value": 6.25
+    },
+    {
+     "nutrientNumber": "205",
+     "nutrientName": "Carbohydrate, by difference",
+     "unitName": "G",
+     "value": 40.6
+    },
+    {
+     "nutrientNumber": "208",
+     "nutrientName": "Energy",
+     "unitName": "KCAL",
+     "value": 312
+    }
+   ]
+  },
+  {
+   "fdcId": 2011468,
+   "description": "BANANA",
+   "dataType": "Branded",
+   "brandOwner": "Kid Vids Educational Entertainment",
+   "brandName": "NUTTY & FRUITY",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "nutrientName": "Protein",
+     "unitName": "G",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "204",
+     "nutrientName": "Total lipid (fat)",
+     "unitName": "G",
+     "value": 1.07
+    },
+    {
+     "nutrientNumber": "205",
+     "nutrientName": "Carbohydrate, by difference",
+     "unitName": "G",
+     "value": 78.6
+    },
+    {
+     "nutrientNumber": "208",
+     "nutrientName": "Energy",
+     "unitName": "KCAL",
+     "value": 336
+    }
+   ]
+  },
+  {
+   "fdcId": 173945,
+   "description": "Bananas, dehydrated, or banana powder",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "nutrientName": "Protein",
+     "unitName": "G",
+     "value": 3.89
+    },
+    {
+     "nutrientNumber": "204",
+     "nutrientName": "Total lipid (fat)",
+     "unitName": "G",
+     "value": 1.81
+    },
+    {
+     "nutrientNumber": "205",
+     "nutrientName": "Carbohydrate, by difference",
+     "unitName": "G",
+     "value": 88.3
+    },
+    {
+     "nutrientNumber": "208",
+     "nutrientName": "Energy",
+     "unitName": "KCAL",
+     "value": 346
+    }
+   ]
+  },
+  {
+   "fdcId": 173944,
+   "description": "Bananas, raw",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "205",
+     "nutrientName": "Carbohydrate, by difference",
+     "unitName": "G",
+     "value": 22.8
+    },
+    {
+     "nutrientNumber": "208",
+     "nutrientName": "Energy",
+     "unitName": "KCAL",
+     "value": 89
+    },
+    {
+     "nutrientNumber": "203",
+     "nutrientName": "Protein",
+     "unitName": "G",
+     "value": 1.09
+    },
+    {
+     "nutrientNumber": "204",
+     "nutrientName": "Total lipid (fat)",
+     "unitName": "G",
+     "value": 0.33
+    }
+   ]
+  },
+  {
+   "fdcId": 1105073,
+   "description": "Bananas, overripe, raw",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "nutrientName": "Total lipid (fat)",
+     "unitName": "G",
+     "value": 0.22
+    },
+    {
+     "nutrientNumber": "203",
+     "nutrientName": "Protein",
+     "unitName": "G",
+     "value": 0.73
+    },
+    {
+     "nutrientNumber": "205",
+     "nutrientName": "Carbohydrate, by difference",
+     "unitName": "G",
+     "value": 20.1
+    },
+    {
+     "nutrientNumber": "208",
+     "nutrientName": "Energy",
+     "unitName": "KCAL",
+     "value": 85
+    }
+   ]
+  }
+ ]
+}
