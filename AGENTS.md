@@ -5,12 +5,25 @@ This is the single source of truth for agents working in this repo (Claude and o
 
 ## Project
 
-_Describe what this project is, its layout, how to build, test and deploy it, and anything
-an agent can't safely do (binary assets, production deploys, credentials)._
+A nutrition tracker PWA: React + TypeScript + Vite frontend on Cloudflare Pages, Supabase
+(Postgres + RLS, Auth, one Edge Function proxying USDA FoodData Central).
+
+- Design: `docs/superpowers/specs/2026-11-16-nutrition-tracker-design.md`
+- Interface contracts builders code against: `docs/contracts.md`
+- Sample workout export: `docs/samples/workout-2026-11-16-d3.json`
+- Layout: `src/lib/` pure tested logic, `src/data/` Supabase access, `src/screens/<name>/`
+  one folder per screen, `src/components/` shared UI, `supabase/migrations/`,
+  `supabase/functions/usda/`.
+- Commands: `npm test`, `npm run typecheck`, `npm run build`.
+- Agents must never: commit `.env` or any key, run migrations against or deploy to the
+  production Supabase project, or change Cloudflare/Supabase settings. Those are `[human]`
+  issues.
 
 ## Who this is for
 
-_Describe the human: their experience level and what they want from agents (learning vs. shipping)._
+The owner is building this for personal use, with other users possibly later. They have no
+prior hosting setup, so deployment steps must be spelled out click by click. They want a
+working app (shipping), and they make product decisions; agents make technical ones and state them.
 
 ---
 
@@ -73,7 +86,7 @@ id). Where the same id appears twice, keep the newer `updated_at`. Then `bd impo
 with a self-contained brief. The coordinator does not edit source or test code itself.
 Exceptions: docs-only edits, one-line config fixes, and anything the user says to do directly.
 This is a standing instruction: it counts as the user asking for subagents, every session.
-_(Adjust the exceptions, or name the source directories, to fit this project.)_
+Source directories: `src/`, `supabase/`, and build config (`package.json`, `vite.config.ts`, `tsconfig*.json`).
 
 The workflow uses the `coordinate` skill and the `builder` agent from the agentic-kit plugin:
 - The coordinator (Opus) breaks work into bd issues, commits interface contracts, dispatches
