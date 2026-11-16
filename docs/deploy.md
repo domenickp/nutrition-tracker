@@ -46,7 +46,7 @@ On your computer, in a terminal opened in the `nutrition-tracker` folder:
 ```bash
 npx supabase login                                  # opens a browser to authorize
 npx supabase link --project-ref <project-ref>       # asks for the database password
-npx supabase db push                                # creates all tables and security rules
+npx supabase db push --remote                       # creates all tables and security rules
 npx supabase secrets set USDA_API_KEY=<your USDA key>
 npx supabase functions deploy usda --use-api        # --use-api means Docker isn't needed
 ```
