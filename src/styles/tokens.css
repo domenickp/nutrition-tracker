@@ -1,0 +1,57 @@
+/* Design tokens. Light by default, dark via prefers-color-scheme.
+   Palette: deep forest ink on a pale mineral ground, with saffron as the single accent. */
+:root {
+  --bg: #f2f4ef;
+  --surface: #ffffff;
+  --surface-2: #e6eae2;
+  --ink: #14211c;
+  --ink-soft: #4a5a52;
+  --line: #d3d9ce;
+  --brand: #1b4d3e;
+  --brand-ink: #f2f4ef;
+  --accent: #e8b43c;
+  --good: #2f7d4f;
+  --warn: #b4410f;
+  --warn-bg: #fbe9df;
+  --focus: #1b6fd1;
+  --shadow: 0 1px 2px rgb(20 33 28 / 0.08), 0 4px 14px rgb(20 33 28 / 0.06);
+
+  --font: ui-rounded, 'SF Pro Rounded', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --font-num: 'Segoe UI Variable Display', 'SF Pro Display', system-ui, sans-serif;
+
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.75rem;
+  --fs-num: 2.25rem;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --tap: 48px;
+  --nav-h: 64px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1613;
+    --surface: #17211c;
+    --surface-2: #213029;
+    --ink: #eaf0ea;
+    --ink-soft: #9fb0a5;
+    --line: #2b3b33;
+    --brand: #6fcfa6;
+    --brand-ink: #0f1613;
+    --accent: #f0c04f;
+    --good: #6fcfa6;
+    --warn: #ff9a6b;
+    --warn-bg: #3a2218;
+    --focus: #7db4ff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  }
+}

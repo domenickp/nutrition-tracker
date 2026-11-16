@@ -21,3 +21,14 @@
 .beads/*.db-wal
 .dolt/
 # --- END PORTABLE BEADS (agentic-kit) ---
+
+# env
+.env
+.env.*
+!.env.example
+
+# build
+node_modules/
+dist/
+dev-dist/
+*.tsbuildinfo
