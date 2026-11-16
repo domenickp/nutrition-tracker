@@ -1,0 +1,45 @@
+{
+  "entries": [
+    {"name": "Warm Up: Stationary Bike", "exerciseId": "d3-warm-up-stationary-bike", "sets": [{"reps": null, "weightLb": null, "done": true, "timeMin": 40, "timeSec": null}], "notes": null},
+    {"name": "Warm Up: Dumbell Row", "exerciseId": "d3-warm-up-dumbell-row", "sets": [{"reps": 15, "timeSec": null, "done": true, "timeMin": null, "weightLb": 30}], "notes": null},
+    {"name": "Pullups", "exerciseId": "d3-pullups", "sets": [
+      {"done": true, "timeSec": null, "timeMin": null, "reps": 15, "weightLb": 20},
+      {"timeSec": null, "timeMin": null, "done": true, "reps": 14, "weightLb": 20},
+      {"weightLb": 20, "done": true, "reps": 8, "timeMin": null, "timeSec": null}], "notes": null},
+    {"name": "Dumbbell Row", "exerciseId": "d3-dumbbell-row", "sets": [
+      {"reps": 12, "done": true, "timeMin": null, "weightLb": 52.5, "timeSec": null},
+      {"timeSec": null, "reps": 12, "done": true, "timeMin": null, "weightLb": 52.5},
+      {"weightLb": 52.5, "timeSec": null, "reps": 12, "done": true, "timeMin": null}], "notes": null},
+    {"name": "Chest-Supported Incline Row", "exerciseId": "d3-chest-supported-incline-row", "sets": [
+      {"done": true, "timeSec": null, "timeMin": null, "reps": 12, "weightLb": 35},
+      {"timeSec": null, "timeMin": null, "weightLb": 35, "reps": 12, "done": true},
+      {"timeMin": null, "timeSec": null, "done": true, "weightLb": 35, "reps": 12}], "notes": null},
+    {"name": "Dumbbell Shrugs", "exerciseId": "d3-dumbbell-shrugs", "sets": [
+      {"timeSec": null, "done": true, "weightLb": 52.5, "reps": 15, "timeMin": null},
+      {"timeMin": null, "timeSec": null, "done": true, "weightLb": 52.5, "reps": 15},
+      {"timeSec": null, "reps": 15, "done": true, "weightLb": 52.5, "timeMin": null}], "notes": null},
+    {"name": "Dumbbell Curl", "exerciseId": "d3-dumbbell-curl", "sets": [
+      {"timeMin": null, "timeSec": null, "done": true, "weightLb": 30, "reps": 12},
+      {"weightLb": 30, "done": true, "reps": 12, "timeMin": null, "timeSec": null},
+      {"weightLb": 30, "done": true, "reps": 12, "timeMin": null, "timeSec": null}], "notes": null},
+    {"name": "Incline Dumbbell Curl", "exerciseId": "d3-incline-dumbbell-curl", "sets": [
+      {"done": true, "reps": 12, "timeMin": null, "weightLb": 20, "timeSec": null},
+      {"weightLb": 20, "done": true, "reps": 12, "timeSec": null, "timeMin": null},
+      {"timeSec": null, "timeMin": null, "done": true, "reps": 12, "weightLb": 25}], "notes": null},
+    {"name": "Seated Hammer Curl", "exerciseId": "d3-seated-hammer-curl", "sets": [
+      {"timeMin": null, "weightLb": 30, "timeSec": null, "done": true, "reps": 12},
+      {"weightLb": 30, "reps": 12, "timeMin": null, "done": true, "timeSec": null},
+      {"reps": 12, "done": true, "timeMin": null, "timeSec": null, "weightLb": 30}], "notes": null},
+    {"name": "Dead Hangs", "exerciseId": "d3-dead-hangs", "sets": [
+      {"weightLb": null, "done": true, "timeSec": 60, "reps": null, "timeMin": null},
+      {"reps": null, "done": true, "weightLb": null, "timeSec": 60, "timeMin": null},
+      {"weightLb": null, "timeMin": null, "reps": null, "timeSec": 45, "done": true}], "notes": null}
+  ],
+  "startedAt": "2026-11-16T01:59:24.630Z",
+  "completedAt": "2026-11-16T03:16:43.740Z",
+  "day": 3,
+  "schemaVersion": 1,
+  "notes": null,
+  "id": "7ed1fa5b-a368-4fde-b503-5d2513e9de4a",
+  "savedAt": "2026-11-16T03:16:44.642Z"
+}
