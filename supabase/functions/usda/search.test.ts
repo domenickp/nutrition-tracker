@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { normalizeSearchFood, type UsdaFood } from './normalize.ts';
-import { filterAndRank, queryWords, wildcardQuery } from './search.ts';
+import { filterAndRank, mergeFoods, queryWords, wildcardQuery } from './search.ts';
 
 const fx = (n: string) => JSON.parse(readFileSync(new URL(`./fixtures/${n}.json`, import.meta.url), 'utf8'));
 const real = (n: string): UsdaFood[] => fx(n).foods.map(normalizeSearchFood);
@@ -27,6 +27,16 @@ describe('wildcardQuery', () => {
   it('appends * to plain words only', () => {
     expect(wildcardQuery('chick brea')).toBe('chick* brea*');
     expect(wildcardQuery('2% milk')).toBe('2% milk*');
+  });
+});
+
+describe('mergeFoods', () => {
+  it('keeps order across lists and dedupes by fdcId', () => {
+    const a = food('A');
+    const b = food('B');
+    const c = food('C');
+    expect(names(mergeFoods([a, b], [{ ...b }, c], []))).toEqual(['A', 'B', 'C']);
+    expect(mergeFoods()).toEqual([]);
   });
 });
 

@@ -45,6 +45,20 @@ export function filterAndRank(foods: UsdaFood[], q: string, limit = 25): UsdaFoo
   return scored.slice(0, limit).map((s) => s.f);
 }
 
+/** Concatenate result lists in order, dropping repeats of the same fdcId. */
+export function mergeFoods(...lists: UsdaFood[][]): UsdaFood[] {
+  const seen = new Set<number>();
+  const out: UsdaFood[] = [];
+  for (const list of lists) {
+    for (const f of list) {
+      if (seen.has(f.fdcId)) continue;
+      seen.add(f.fdcId);
+      out.push(f);
+    }
+  }
+  return out;
+}
+
 /** USDA query form: each plain word gets a trailing `*` so partial words match as prefixes. */
 export function wildcardQuery(q: string): string {
   return queryWords(q)
