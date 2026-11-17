@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, Field, Layout, Spinner } from '../../components';
-import { addFoodLog, getProfile, getUsdaFood, listFoods, saveFood, searchUsda } from '../../data/api';
-import { amountOptions, computeEntry } from '../../lib/portions';
+import { addFoodLog, getProfile, getUsdaFood, listFoods, saveFood, searchUsda, updateFood } from '../../data/api';
+import { amountOptions, computeEntry, unitDisplayLabel } from '../../lib/portions';
 import type { AmountUnit } from '../../lib/portions';
 import type { Food, NewFood, Portion, Units } from '../../lib/types';
 import { flOzToMl } from '../../lib/units';
+import { baseVolumeMl, parseVolumeLabel } from '../../lib/volume';
+import type { VolumeUnit } from '../../lib/volume';
 import type { UsdaFood } from '../../../supabase/functions/usda/normalize';
 
 const msg = (e: unknown): string => (e instanceof Error ? e.message : 'Something went wrong');
@@ -253,15 +255,28 @@ function ManualForm({ units, initialName, onBack, onSaved }: { units: Units; ini
   );
 }
 
-const unitKey = (u: AmountUnit): string => (u.kind === 'portion' ? `portion:${u.label}` : u.kind);
+const unitKey = (u: AmountUnit): string =>
+  u.kind === 'portion' ? `portion:${u.label}` : u.kind === 'volume' ? `volume:${u.unit}` : u.kind;
 
-function AmountStep({ food, date, onBack, onLogged }: { food: Food; date: string; onBack: () => void; onLogged: () => void }) {
+const MEASURE_UNITS: VolumeUnit[] = ['cup', 'tbsp', 'tsp', 'fl oz'];
+const round3 = (n: number): number => Math.round(n * 1000) / 1000;
+
+function AmountStep({ food: initialFood, date, onBack, onLogged }: { food: Food; date: string; onBack: () => void; onLogged: () => void }) {
+  const [food, setFood] = useState<Food>(initialFood);
   const options = amountOptions(food);
-  const label = (u: AmountUnit): string => (u.kind === 'base' ? `× ${food.baseLabel}` : u.kind === 'portion' ? u.label : 'grams');
+  const label = (u: AmountUnit): string => (u.kind === 'base' ? `× ${food.baseLabel}` : u.kind === 'grams' ? 'grams' : unitDisplayLabel(food, u));
   const [qty, setQty] = useState('1');
-  const [unit, setUnit] = useState<AmountUnit>(options[0]);
+  const [unitK, setUnitK] = useState<string>(unitKey(options[0]));
+  const unit = options.find((o) => unitKey(o) === unitK) ?? options[0];
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const [measureOpen, setMeasureOpen] = useState(false);
+  const [mAmount, setMAmount] = useState('1');
+  const [mUnit, setMUnit] = useState<VolumeUnit>('cup');
+  const [mGrams, setMGrams] = useState('');
+  const [mError, setMError] = useState<string | null>(null);
+  const [mSaving, setMSaving] = useState(false);
 
   const q = qty.trim() === '' ? NaN : Number(qty);
   let entry: ReturnType<typeof computeEntry> | null = null;
@@ -271,11 +286,44 @@ function AmountStep({ food, date, onBack, onLogged }: { food: Food; date: string
     try { entry = computeEntry(food, q, unit); } catch (e) { qtyError = msg(e); }
   }
 
+  // Keep the same physical amount: via grams, else via ml, else reset to 1.
   const changeUnit = (key: string) => {
     const next = options.find((o) => unitKey(o) === key);
     if (!next) return;
-    if (next.kind === 'grams' && entry?.grams != null) setQty(fmt(entry.grams));
-    setUnit(next);
+    let nextQty = 1;
+    if (entry) {
+      try {
+        const one = computeEntry(food, 1, next);
+        if (entry.grams != null && one.grams != null && one.grams > 0) nextQty = round3(entry.grams / one.grams);
+        else if (entry.ml != null && one.ml != null && one.ml > 0) nextQty = round3(entry.ml / one.ml);
+      } catch { /* keep 1 */ }
+    }
+    setQty(String(nextQty));
+    setUnitK(key);
+  };
+
+  const saveMeasure = async (e: FormEvent) => {
+    e.preventDefault();
+    const parsed = parseVolumeLabel(`${mAmount.trim()} ${mUnit}`);
+    const amount = parsed ? round3(parsed.amount) : NaN;
+    const g = mGrams.trim() === '' ? NaN : Number(mGrams);
+    if (!parsed || !Number.isFinite(amount) || amount <= 0) { setMError('Enter an amount more than 0, like 1 or 1/2'); return; }
+    if (!Number.isFinite(g) || g <= 0) { setMError('Grams must be more than 0'); return; }
+    const { id, lastUsedAt, ...rest } = food;
+    void lastUsedAt;
+    setMSaving(true);
+    setMError(null);
+    try {
+      const updated = await updateFood(id, { ...rest, portions: [{ label: `${amount} ${mUnit}`, grams: g }, ...food.portions] });
+      setFood(updated);
+      if (amountOptions(updated).some((o) => unitKey(o) === `volume:${mUnit}`)) { setUnitK(`volume:${mUnit}`); setQty('1'); }
+      setMeasureOpen(false);
+      setMGrams('');
+    } catch (err) {
+      setMError(msg(err));
+    } finally {
+      setMSaving(false);
+    }
   };
 
   const log = async () => {
@@ -291,7 +339,15 @@ function AmountStep({ food, date, onBack, onLogged }: { food: Food; date: string
     }
   };
 
+  const hasGrams = typeof food.baseGrams === 'number' && food.baseGrams > 0;
+  const canMeasure = hasGrams || baseVolumeMl(food) !== null;
+  const group = (kind: AmountUnit['kind']) => options.filter((o) => o.kind === kind);
+  const opt = (o: AmountUnit) => <option key={unitKey(o)} value={unitKey(o)}>{label(o)}</option>;
+  const portions = group('portion');
+  const measures = group('volume');
+
   const t = entry?.totals;
+  const total = entry?.grams != null ? `${fmt(entry.grams)} g` : entry?.ml != null ? `${fmt(entry.ml)} ml` : null;
   return (
     <div className="stack">
       <Card title={food.name}>
@@ -301,9 +357,34 @@ function AmountStep({ food, date, onBack, onLogged }: { food: Food; date: string
           <div className="field">
             <label className="field__label" htmlFor="amount-unit">Unit</label>
             <select id="amount-unit" className="field__input" value={unitKey(unit)} onChange={(e) => changeUnit(e.target.value)}>
-              {options.map((o) => <option key={unitKey(o)} value={unitKey(o)}>{label(o)}</option>)}
+              {group('base').map(opt)}
+              {portions.length > 0 && <optgroup label="Portions">{portions.map(opt)}</optgroup>}
+              {measures.length > 0 && <optgroup label="Measures">{measures.map(opt)}</optgroup>}
+              {group('grams').map(opt)}
             </select>
+            {unit.kind === 'volume' && <p className="field__hint">{unit.basis}</p>}
           </div>
+          {!measureOpen && (
+            canMeasure
+              ? <Button variant="ghost" onClick={() => { setMError(null); setMeasureOpen(true); }}>Add a measure</Button>
+              : <p className="muted">Add grams per serving to this food to use cups and spoons</p>
+          )}
+          {measureOpen && (
+            <form className="stack" onSubmit={saveMeasure} noValidate aria-label="Add a measure">
+              {!hasGrams && <p className="muted">This adds a gram weight for this measure.</p>}
+              <Field label="Measure amount" inputMode="decimal" value={mAmount} onChange={(e) => setMAmount(e.target.value)} />
+              <div className="field">
+                <label className="field__label" htmlFor="measure-unit">Measure unit</label>
+                <select id="measure-unit" className="field__input" value={mUnit} onChange={(e) => setMUnit(e.target.value as VolumeUnit)}>
+                  {MEASURE_UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+                </select>
+              </div>
+              <Field label="Measure grams" type="number" inputMode="decimal" min="0" step="any" value={mGrams} onChange={(e) => setMGrams(e.target.value)} />
+              {mError && <p className="field__error" role="alert">{mError}</p>}
+              <Button type="submit" disabled={mSaving}>{mSaving ? 'Saving…' : 'Save measure'}</Button>
+              <Button variant="ghost" onClick={() => setMeasureOpen(false)}>Cancel</Button>
+            </form>
+          )}
         </div>
       </Card>
       <Card title="Preview">
@@ -311,6 +392,7 @@ function AmountStep({ food, date, onBack, onLogged }: { food: Food; date: string
           <p className="num" data-testid="preview">
             <strong>{fmt(t.kcal)} kcal</strong> · P {fmt(t.proteinG)} g · C {fmt(t.carbsG)} g · F {fmt(t.fatG)} g
             {t.waterMl > 0 && <> · Water {fmt(t.waterMl)} ml</>}
+            {total && <> · = {total}</>}
           </p>
         ) : <p className="muted">Enter a valid amount.</p>}
       </Card>
