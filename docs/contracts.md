@@ -150,19 +150,31 @@ export function mlToFlOz(ml: number): number; export function flOzToMl(oz: numbe
 export function formatWeight(kg: number, units: Units): string;   // "180.4 lb" | "81.8 kg"
 export function formatVolume(ml: number, units: Units): string;   // "64 fl oz" | "1.9 L"/"500 ml"
 
+// volume.ts  (added 2026-11-17, see specs/2026-11-17-volume-search-design.md)
+export type VolumeUnit = 'cup' | 'tbsp' | 'tsp' | 'fl oz' | 'ml';
+export const ML_PER_UNIT: Record<VolumeUnit, number>; // cup 236.588, tbsp 14.7868, tsp 4.92892, fl oz 29.5735, ml 1
+export function parseVolumeLabel(label: string):
+  { amount: number; unit: VolumeUnit; ml: number; note: string } | null;
+export function gramsPerMl(food: Food): { gPerMl: number; basis: string } | null; // first volume portion
+export function baseVolumeMl(food: Food): number | null;  // food.baseLabel parsed as volume, else null
+
 // portions.ts
 export type AmountUnit =
   | { kind: 'base' }                                  // label shown: food.baseLabel
   | { kind: 'portion'; label: string; grams: number }
+  | { kind: 'volume'; unit: VolumeUnit; gramsPerUnit: number | null; servingsPerUnit: number; basis: string }
   | { kind: 'grams' };
-export function amountOptions(food: Food): AmountUnit[];  // base first; portions and grams only if food.baseGrams
+export function amountOptions(food: Food): AmountUnit[];
+  // base; portions (only if baseGrams); volume units (if gramsPerMl && baseGrams, or baseVolumeMl); grams (only if baseGrams)
 export function computeEntry(food: Food, quantity: number, unit: AmountUnit):
-  { totals: Nutrients; unitLabel: string; grams: number | null };
+  { totals: Nutrients; unitLabel: string; grams: number | null; ml: number | null };
+export function unitDisplayLabel(food: Food, unit: AmountUnit): string; // for pickers
 export function scaleTotals(totals: Nutrients, ratio: number): Nutrients;
 export function sumNutrients(list: Nutrients[]): Nutrients;
 ```
-`unitLabel`: base → `"servings"`, portion → its label, grams → `"g"`. Totals are rounded to
-1 decimal place.
+`unitLabel`: base → `"servings"`, portion → its label, volume → the unit (`"cup"`), grams →
+`"g"`. Totals are rounded to 1 decimal place. `ml` is known for volume units and for the
+base serving when `baseVolumeMl` is known; `grams`/`ml` are rounded to 1 decimal.
 
 ### dates.ts and workoutImport.ts (task "workout-import")
 ```ts
