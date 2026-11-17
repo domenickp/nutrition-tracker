@@ -1,0 +1,1598 @@
+{
+ "foods": [
+  {
+   "fdcId": 173944,
+   "description": "Bananas, raw",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "205",
+     "value": 22.8
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 89
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 1.09
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 0.33
+    }
+   ]
+  },
+  {
+   "fdcId": 1105073,
+   "description": "Bananas, overripe, raw",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 0.22
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 0.73
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 20.1
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 85
+    }
+   ]
+  },
+  {
+   "fdcId": 169394,
+   "description": "Pepper, banana, raw",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 1.66
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 0.45
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 5.35
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 27
+    }
+   ]
+  },
+  {
+   "fdcId": 1105314,
+   "description": "Bananas, ripe and slightly ripe, raw",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "205",
+     "value": 23
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 97
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 0.74
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 0.29
+    }
+   ]
+  },
+  {
+   "fdcId": 2747660,
+   "description": "Peppers, banana or Hungarian wax, seeded, raw",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 0.131
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 0.723
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 4.97
+    }
+   ]
+  },
+  {
+   "fdcId": 2397684,
+   "description": "BANANA NUT RAW ENERGY BARS, BANANA NUT",
+   "dataType": "Branded",
+   "brandOwner": "MOD_E, LLC",
+   "brandName": "ATAQ",
+   "servingSize": 45,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 8.89
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 15.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 60
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 400
+    }
+   ]
+  },
+  {
+   "fdcId": 1866777,
+   "description": "STIRS THE SOUL, BANANAS + CURRANTS COVERED IN RAW CHOCOLATE, BANANA, CURRANT, BANANA, CURRANT",
+   "dataType": "Branded",
+   "brandOwner": "Boodge Company",
+   "brandName": "STIRS THE SOUL",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 28.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 39.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 429
+    }
+   ]
+  },
+  {
+   "fdcId": 1897021,
+   "description": "ORGANIC GEMINI, TIGERNUT RAW GRANOLA, BANANA CACAO, BANANA CACAO",
+   "dataType": "Branded",
+   "brandOwner": "Organic Gemini LLC",
+   "brandName": "ORGANIC GEMINI",
+   "servingSize": 60,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 8.33
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 23.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 93.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 550
+    }
+   ]
+  },
+  {
+   "fdcId": 2569202,
+   "description": "BANANA FRUIT BARS, BANANA",
+   "dataType": "Branded",
+   "brandOwner": "Calip Holdings Inc.",
+   "brandName": "WHOLE FRUIT",
+   "servingSize": 98,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 1.02
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 9.18
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 30.6
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 204
+    }
+   ]
+  },
+  {
+   "fdcId": 2137726,
+   "description": "EASY SNACKING, FRUIT AND NUT BLEND DRIED SWEETENED CRANBERRIES, BANANA CHIPS, RAW CALIFORNIA ALMONDS AND RAW CASHEWS",
+   "dataType": "Branded",
+   "brandOwner": "Schnuck Markets, Inc.",
+   "brandName": "SCHNUCKS",
+   "servingSize": 32,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 9.38
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 28.1
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 50
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 469
+    }
+   ]
+  },
+  {
+   "fdcId": 2170401,
+   "description": "BANANA WALNUT GRANOLA, BANANA WALNUT",
+   "dataType": "Branded",
+   "brandOwner": "Rafael Padilla & Cia S. En C.",
+   "brandName": "HEINEN'S",
+   "servingSize": 30,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 6.67
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 56.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 467
+    }
+   ]
+  },
+  {
+   "fdcId": 2544454,
+   "description": "BANANA CHIP OVERNIGHT OATS, BANANA CHIP",
+   "dataType": "Branded",
+   "brandOwner": "Overnite Organics LLC",
+   "brandName": "OVERNITE ORGANICS",
+   "servingSize": 57,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 21
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 56.1
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 439
+    }
+   ]
+  },
+  {
+   "fdcId": 2593930,
+   "description": "PROTEIN 15 G POWDER, BANANA, BANANA",
+   "dataType": "Branded",
+   "brandOwner": "NA-Genceutics, LLC",
+   "brandName": "GENCEUTIC NATURALS",
+   "servingSize": 26,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 57.7
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 7.69
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 23.1
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 385
+    }
+   ]
+  },
+  {
+   "fdcId": 2474136,
+   "description": "BANANA PUMPKIN SEED BARS, BANANA PUMPKIN SEED",
+   "dataType": "Branded",
+   "brandOwner": "The BOSS Food Company",
+   "brandName": "B.O.S.S. FOOD CO.",
+   "servingSize": 48,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 20.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 25
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 41.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 396
+    }
+   ]
+  },
+  {
+   "fdcId": 1938861,
+   "description": "COOKIE, BANANA WALNUT",
+   "dataType": "Branded",
+   "brandOwner": "Boulder Cookie, LLC",
+   "brandName": "BOULDER",
+   "servingSize": 57,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 12.3
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 43.9
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 40.4
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 561
+    }
+   ]
+  },
+  {
+   "fdcId": 2485179,
+   "description": "PEANUT BUTTER BANANA GOURMET BAR, PEANUT BUTTER BANANA",
+   "dataType": "Branded",
+   "brandOwner": "Vukoo, LLC",
+   "brandName": "VUKOO",
+   "servingSize": 85,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 23.5
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 8.24
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 47.1
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 353
+    }
+   ]
+  },
+  {
+   "fdcId": 1871789,
+   "description": "CORE, MEAL, HEARTY OATMEAL TO GO, WALNUT BANANA, WALNUT BANANA",
+   "dataType": "Branded",
+   "brandOwner": "Muse Nutrition LLC",
+   "brandName": "CORE",
+   "servingSize": 85,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 12.9
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 25.9
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 43.5
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 424
+    }
+   ]
+  },
+  {
+   "fdcId": 1868213,
+   "description": "BANANA NUT BUTTER GRAIN-FREE GRANOLA, BANANA NUT BUTTER",
+   "dataType": "Branded",
+   "brandOwner": "Purely Elizabeth ",
+   "brandName": "PURELY ELIZABETH.",
+   "servingSize": 30,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 36.7
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 30
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 500
+    }
+   ]
+  },
+  {
+   "fdcId": 2400475,
+   "description": "BANANA BERRY COLD PRESSED PROBIOTIC DAIRY-FREE SMOOTHIE, BANANA BERRY",
+   "dataType": "Branded",
+   "brandOwner": "Once Upon a Farm, LLC ",
+   "brandName": "ONCE UPON A FARM",
+   "servingSize": 177,
+   "servingSizeUnit": "ml",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 3.39
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 4.52
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 10.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 90
+    }
+   ]
+  },
+  {
+   "fdcId": 2437890,
+   "description": "BANANA OAT CHOCO CHIP",
+   "dataType": "Branded",
+   "brandOwner": "Topo-Logic Systems, Inc.",
+   "brandName": "PAPA STEVE'S",
+   "servingSize": 62,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 21
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 17.7
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 48.4
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 427
+    }
+   ]
+  },
+  {
+   "fdcId": 2399958,
+   "description": "BANANA NUT BUTTER GRAIN-FREE SUPERFOOD BAR, BANANA NUT BUTTER",
+   "dataType": "Branded",
+   "brandOwner": "Purely Elizabeth ",
+   "brandName": "PURELY ELIZABETH.",
+   "servingSize": 40,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 15
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 40
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 35
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 550
+    }
+   ]
+  },
+  {
+   "fdcId": 2138063,
+   "description": "BANANA NUT BUTTER GRAIN-FREE SUPERFOOD BARS, BANANA NUT BUTTER",
+   "dataType": "Branded",
+   "brandOwner": "Purely Elizabeth ",
+   "brandName": "PURELY ELIZABETH.",
+   "servingSize": 40,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 15
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 40
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 35
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 550
+    }
+   ]
+  },
+  {
+   "fdcId": 2607556,
+   "description": "ALMOND BUTTER BANANA CHOCOLATE MIGHTY BITE, ALMOND; BUTTER; BANANA; CHOCOLATE",
+   "dataType": "Branded",
+   "brandOwner": "Berg Bites ",
+   "brandName": "BERG",
+   "servingSize": 85,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 18.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 20
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 50.6
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 365
+    }
+   ]
+  },
+  {
+   "fdcId": 2664023,
+   "description": "STRAWBERRY BANANA SWIRL COLD-PRESSED ORGANIC DAIRY-FREE SUPER SMOOTHIE, STRAWBERRY BANANA SWIRL",
+   "dataType": "Branded",
+   "brandOwner": "Once Upon a Farm, LLC ",
+   "brandName": "ONCE UPON A FARM",
+   "servingSize": 113,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 2.65
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 3.1
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 88
+    }
+   ]
+  },
+  {
+   "fdcId": 2101316,
+   "description": "FRUIT & NUT RAISINS, PAPAYA CHUNKS, PINEAPPLE, BANANA CHIPS, GOLDEN RAISINS, RAW ALMONDS & ROASTED CASHEWS TRAIL MIX, FRUIT & NUT",
+   "dataType": "Branded",
+   "brandOwner": "Big Y Foods, Inc.",
+   "brandName": "BIG Y",
+   "servingSize": 30,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 3.33
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 8.33
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 73.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 367
+    }
+   ]
+  },
+  {
+   "fdcId": 2651644,
+   "description": "DARK CHOCOLATE BANANA BITES, DARK CHOCOLATE",
+   "dataType": "Branded",
+   "brandOwner": "SALENTO ORGANICS LLC",
+   "brandName": "SALENTO ORGANICS",
+   "servingSize": 28,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 10.7
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 28.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 50
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 464
+    }
+   ]
+  },
+  {
+   "fdcId": 2542066,
+   "description": "BANANA, PEANUT BUTTER, VANILLA, AGAVE, & SEA SALT EATPOPS, BANANA, PEANUT BUTTER, VANILLA, AGAVE, & SEA SALT",
+   "dataType": "Branded",
+   "brandOwner": "Grotech Industries LLC",
+   "brandName": "NOURISH",
+   "servingSize": 90,
+   "servingSizeUnit": "MLT",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 3.33
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 1.67
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 17.8
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 111
+    }
+   ]
+  },
+  {
+   "fdcId": 1897129,
+   "description": "HANDCRAFTED ALL-NATURAL POPS, COCONUT BANANA ORANGE",
+   "dataType": "Branded",
+   "brandOwner": "King of Pops, Inc.",
+   "brandName": "KING OF POPS",
+   "servingSize": 85,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 2.35
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 21.2
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 17.6
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 259
+    }
+   ]
+  },
+  {
+   "fdcId": 2116652,
+   "description": "VERONICA'S HEALTH CRUNCH, BANANA CHOCOLATE WALNUT MIX",
+   "dataType": "Branded",
+   "brandOwner": "Tufftek",
+   "brandName": "VERONICA'S HEALTH CRUNCH",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 10.7
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 53.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 35.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 679
+    }
+   ]
+  },
+  {
+   "fdcId": 2130204,
+   "description": "FAST BURNING REAL FOOD NUTRITION, PASSION FRUIT PINEAPPLE BANANA",
+   "dataType": "Branded",
+   "brandOwner": "Muir Energy",
+   "brandName": "MUIR ENERGY",
+   "servingSize": 30,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 80
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 350
+    }
+   ]
+  },
+  {
+   "fdcId": 2316920,
+   "description": "Radix Nutrition Ultimate Post-Workout Smoothie Cacao & Banana 68g",
+   "dataType": "Branded",
+   "brandOwner": "RADIX NUTRITION LIMITED",
+   "brandName": "Radix",
+   "servingSize": 368,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 8.15
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 1.63
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 5.19
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 71
+    }
+   ]
+  },
+  {
+   "fdcId": 2316918,
+   "description": "Radix Nutrition Ultimate Post-Workout Smoothie Plant-Based Cacao & Banana 66g",
+   "dataType": "Branded",
+   "brandOwner": "RADIX NUTRITION LIMITED",
+   "brandName": "Radix Nutrition ",
+   "servingSize": 366,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.02
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 2.16
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 5.49
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 73
+    }
+   ]
+  },
+  {
+   "fdcId": 2088500,
+   "description": "TANGLED TREE, ALOHA MIX",
+   "dataType": "Branded",
+   "brandOwner": "Nash Finch Company",
+   "brandName": "TANGLED TREE",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 3.57
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 17.9
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 64.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 429
+    }
+   ]
+  },
+  {
+   "fdcId": 2475810,
+   "description": "JUNGLE BREEZE GREEN SMOOTHIE, JUNGLE BREEZE",
+   "dataType": "Branded",
+   "brandOwner": "Frozen Garden LLC",
+   "brandName": "FROZEN GARDEN",
+   "servingSize": 207,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 1.45
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 2.42
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 15
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 82
+    }
+   ]
+  },
+  {
+   "fdcId": 1903981,
+   "description": "ORGANIC LEAFY KALE",
+   "dataType": "Branded",
+   "brandOwner": "Brad's Raw Chips, LLC",
+   "brandName": "BRAD'S RAW FOODS",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 10.7
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 67.9
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 389
+    }
+   ]
+  },
+  {
+   "fdcId": 2196250,
+   "description": "TROPICAL MIX",
+   "dataType": "Branded",
+   "brandOwner": "Bergin Nut Company, Inc.",
+   "brandName": "CUB",
+   "servingSize": 35,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 5.71
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 20
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 62.9
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 429
+    }
+   ]
+  },
+  {
+   "fdcId": 2617540,
+   "description": "ALOHA MIX",
+   "dataType": "Branded",
+   "brandOwner": "Bergin Nut Company, Inc.",
+   "brandName": "KOWALSKI'S MARKETS",
+   "servingSize": 28,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 32.1
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 57.1
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 500
+    }
+   ]
+  },
+  {
+   "fdcId": 2626627,
+   "description": "ORGANIC PLANT-BASED MEAL TIME SABABA",
+   "dataType": "Branded",
+   "brandOwner": "Bombay Industries Inc.",
+   "brandName": "SMOODIES",
+   "servingSize": 109,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.34
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 10.1
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 41.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 257
+    }
+   ]
+  },
+  {
+   "fdcId": 2041766,
+   "description": "MARRA BROS., TROPICAL TRAIL MIX",
+   "dataType": "Branded",
+   "brandOwner": "Marra Bros.",
+   "brandName": "MARRA BROS.",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 21.4
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 60.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 429
+    }
+   ]
+  },
+  {
+   "fdcId": 1935895,
+   "description": "MEAL WITH WHEY",
+   "dataType": "Branded",
+   "brandOwner": "Muse Nutrition LLC",
+   "brandName": "CORE",
+   "servingSize": 85,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 18.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 20
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 40
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 400
+    }
+   ]
+  },
+  {
+   "fdcId": 2475808,
+   "description": "BERRY CHOCO-LATTE GREEN SMOOTHIE, BERRY CHOCO-LATTE",
+   "dataType": "Branded",
+   "brandOwner": "Frozen Garden LLC",
+   "brandName": "FROZEN GARDEN",
+   "servingSize": 209,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 1.91
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 1.67
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 19.1
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 86
+    }
+   ]
+  },
+  {
+   "fdcId": 2043345,
+   "description": "WEIS, NO SALT TRAIL MIX",
+   "dataType": "Branded",
+   "brandOwner": "Weis Markets, Inc.",
+   "brandName": "WEIS",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 7.14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 21.4
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 53.6
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 429
+    }
+   ]
+  },
+  {
+   "fdcId": 825634,
+   "description": "CAP COD, FALVE! CRUNCH",
+   "dataType": "Branded",
+   "brandOwner": "LIBERTY PROCUREMENT CO, INC.",
+   "servingSize": 40,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 10
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 30
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 52.5
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 450
+    }
+   ]
+  },
+  {
+   "fdcId": 2400474,
+   "description": "PERFECTLY PINEAPPLE COLD PRESSED PROBIOTIC DAIRY-FREE SMOOTHIE, PERFECTLY PINEAPPLE",
+   "dataType": "Branded",
+   "brandOwner": "Once Upon a Farm, LLC ",
+   "brandName": "ONCE UPON A FARM",
+   "servingSize": 177,
+   "servingSizeUnit": "ml",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 3.39
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 4.52
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 10.2
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 85
+    }
+   ]
+  },
+  {
+   "fdcId": 2616594,
+   "description": "GEORGE J. HOWE COMPANY TROPICAL FRUIT & NUT MIX, 9 OZ",
+   "dataType": "Branded",
+   "brandOwner": "George J. Howe Company",
+   "brandName": "GEORGE J. HOWE COMPANY",
+   "servingSize": 30,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 26.7
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 43.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 433
+    }
+   ]
+  },
+  {
+   "fdcId": 910412,
+   "description": "MUESLI FRUIT & NUTS, MUESLI",
+   "dataType": "Branded",
+   "brandOwner": "HW WELLNESS SOLUTIONS PVT. LTD.",
+   "servingSize": 30,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 39
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 11.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 199
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 1140
+    }
+   ]
+  },
+  {
+   "fdcId": 1793183,
+   "description": "ORGANIC ENERGY MIX",
+   "dataType": "Branded",
+   "brandOwner": "Sagsveen & Sagsveen Food Brokers Ltd.",
+   "brandName": "BEST MARKET",
+   "servingSize": 32,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 12.5
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 28.1
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 50
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 484
+    }
+   ]
+  },
+  {
+   "fdcId": 1785912,
+   "description": "ORGANIC ENERGY MIX",
+   "dataType": "Branded",
+   "brandOwner": "Sagsveen & Sagsveen Food Brokers Ltd.",
+   "brandName": "RITA'S PURE EARTH ORGANICS",
+   "servingSize": 32,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 12.5
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 28.1
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 50
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 484
+    }
+   ]
+  },
+  {
+   "fdcId": 2409362,
+   "description": "PURPLE MINT CHIP PLANT-BASED FROZEN DESSERT, PURPLE MINT CHIP",
+   "dataType": "Branded",
+   "brandOwner": "Thompson's Ciders",
+   "brandName": "REVERI",
+   "servingSize": 84,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 1.19
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 2.38
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 23.8
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 95
+    }
+   ]
+  },
+  {
+   "fdcId": 2616563,
+   "description": "LOW FAT MESLI",
+   "dataType": "Branded",
+   "brandOwner": "Specialty Food Services Ltd.",
+   "brandName": "FAMILIA",
+   "servingSize": 55,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 10.9
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 5.45
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 65.4
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 367
+    }
+   ]
+  },
+  {
+   "fdcId": 1885987,
+   "description": "WEGMANS, ORGANIC HEMP & GREENS SUPERFOOD CEREAL",
+   "dataType": "Branded",
+   "brandOwner": "Wegmans Food Markets, Inc. ",
+   "brandName": "WEGMANS",
+   "servingSize": 51,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 9.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 17.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 58.8
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 373
+    }
+   ]
+  },
+  {
+   "fdcId": 1855415,
+   "description": "SUPERFOOD CEREAL, ACAI BLUEBERRY, ACAI BLUEBERRY",
+   "dataType": "Branded",
+   "brandOwner": "Quisling Media",
+   "brandName": "LIVING INTENTIONS",
+   "servingSize": 51,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 9.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 17.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 58.8
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 396
+    }
+   ]
+  },
+  {
+   "fdcId": 1911924,
+   "description": "FERRIS, CALIFORNIA MIX, 7, 7",
+   "dataType": "Branded",
+   "brandOwner": "Ferris Coffee & Nut Co.",
+   "brandName": "FERRIS",
+   "servingSize": 28,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 3.57
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 17.9
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 60.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 464
+    }
+   ]
+  },
+  {
+   "fdcId": 1958415,
+   "description": "ORGANIC JAVA SHAKE",
+   "dataType": "Branded",
+   "brandOwner": "Urban Remedy",
+   "brandName": "URBAN REMEDY",
+   "servingSize": 473,
+   "servingSizeUnit": "ml",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 2.33
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 2.33
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 8.46
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 61
+    }
+   ]
+  },
+  {
+   "fdcId": 1950793,
+   "description": "COCONUT TURMERIC VIBRANT OATS",
+   "dataType": "Branded",
+   "brandOwner": "Purely Elizabeth ",
+   "brandName": "PURELY ELIZABETH.",
+   "servingSize": 57,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 14
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 19.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 57.9
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 456
+    }
+   ]
+  },
+  {
+   "fdcId": 2581682,
+   "description": "TROPICAL TRAIL MIX",
+   "dataType": "Branded",
+   "brandOwner": "International Foodsource",
+   "brandName": "VALUED NATURALS",
+   "servingSize": 30,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 33.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 76.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 667
+    }
+   ]
+  },
+  {
+   "fdcId": 2581607,
+   "description": "TROPICAL TRAIL MIX",
+   "dataType": "Branded",
+   "brandOwner": "International Foodsource",
+   "brandName": "VALUED NATURALS",
+   "servingSize": 30,
+   "servingSizeUnit": "GRM",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 33.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 76.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 667
+    }
+   ]
+  },
+  {
+   "fdcId": 2449942,
+   "description": "TROPICAL TRAIL MIX, TROPICAL",
+   "dataType": "Branded",
+   "brandOwner": "International Foodsource",
+   "brandName": "VALUED NATURALS",
+   "servingSize": 30,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 13.3
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 33.3
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 76.7
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 667
+    }
+   ]
+  },
+  {
+   "fdcId": 2091953,
+   "description": "CLASSIC ITALIAN GOURMET SUB SANDWICH",
+   "dataType": "Branded",
+   "brandOwner": "Eastside Deli Supply Inc.",
+   "brandName": "PREMO SIGNATURE BRAND",
+   "servingSize": 170,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 13.5
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 7.65
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 15.3
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 188
+    }
+   ]
+  },
+  {
+   "fdcId": 1925832,
+   "description": "ANTIOXIDANT PROTEIN BOOSTER",
+   "dataType": "Branded",
+   "brandOwner": "Global Juices and Fruits, LLC",
+   "brandName": "NATURE'S EARTHLY CHOICE",
+   "servingSize": 18,
+   "servingSizeUnit": "g",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 61.1
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 5.56
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 22.2
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 389
+    }
+   ]
+  }
+ ]
+}

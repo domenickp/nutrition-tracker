@@ -1,0 +1,456 @@
+{
+ "foods": [
+  {
+   "fdcId": 171514,
+   "description": "Chicken breast tenders, breaded, cooked, microwaved",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 12.9
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 16.4
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 17.6
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 252
+    }
+   ]
+  },
+  {
+   "fdcId": 171515,
+   "description": "Chicken breast tenders, breaded, uncooked",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 14.7
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 15.8
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 15
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 263
+    }
+   ]
+  },
+  {
+   "fdcId": 173874,
+   "description": "Chicken breast, deli, rotisserie seasoned, sliced, prepackaged",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 1.86
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 2.92
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 98
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 17.4
+    }
+   ]
+  },
+  {
+   "fdcId": 172962,
+   "description": "Chicken breast, fat-free, mesquite flavor, sliced",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 16.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 0.39
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 2.25
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 80
+    }
+   ]
+  },
+  {
+   "fdcId": 172963,
+   "description": "Chicken breast, oven-roasted, fat-free, sliced",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 0.39
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 2.17
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 79
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 16.8
+    }
+   ]
+  },
+  {
+   "fdcId": 174608,
+   "description": "Chicken breast, roll, oven-roasted",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 7.65
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 1.79
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 14.6
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 134
+    }
+   ]
+  },
+  {
+   "fdcId": 173346,
+   "description": "Chicken tenders, breaded, frozen, prepared",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 14.6
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 13.6
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 14.9
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 240
+    }
+   ]
+  },
+  {
+   "fdcId": 2646170,
+   "description": "Chicken, breast, boneless, skinless, raw",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 1.93
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 22.5
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "fdcId": 2727569,
+   "description": "Chicken, breast, meat and skin, raw",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 4.78
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 21.4
+    },
+    {
+     "nutrientNumber": "205",
+     "value": -0.428
+    }
+   ]
+  },
+  {
+   "fdcId": 171140,
+   "description": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, cooked, braised",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 3.24
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 157
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 32.1
+    }
+   ]
+  },
+  {
+   "fdcId": 331960,
+   "description": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, cooked, braised",
+   "dataType": "Foundation",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 3.24
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 166
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 32.1
+    }
+   ]
+  },
+  {
+   "fdcId": 171534,
+   "description": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, cooked, grilled",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 30.5
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 3.17
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 151
+    }
+   ]
+  },
+  {
+   "fdcId": 171077,
+   "description": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 2.62
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 120
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 22.5
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "fdcId": 171535,
+   "description": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, with added solution, cooked, braised",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 3.61
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 145
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 28.2
+    }
+   ]
+  },
+  {
+   "fdcId": 171536,
+   "description": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, with added solution, cooked, grilled",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 29.5
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 3.39
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 148
+    }
+   ]
+  },
+  {
+   "fdcId": 171125,
+   "description": "Chicken, broiler, rotisserie, BBQ, breast, meat and skin",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 26.4
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 7.67
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 175
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0.09
+    }
+   ]
+  },
+  {
+   "fdcId": 171445,
+   "description": "Chicken, broiler, rotisserie, BBQ, breast, meat only",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 28
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 3.57
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 144
+    }
+   ]
+  },
+  {
+   "fdcId": 171475,
+   "description": "Chicken, broilers or fryers, breast, meat and skin, cooked, fried, batter",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "204",
+     "value": 13.2
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 8.99
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 260
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 24.8
+    }
+   ]
+  },
+  {
+   "fdcId": 171476,
+   "description": "Chicken, broilers or fryers, breast, meat and skin, cooked, fried, flour",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "203",
+     "value": 31.8
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 8.87
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 1.64
+    },
+    {
+     "nutrientNumber": "208",
+     "value": 222
+    }
+   ]
+  },
+  {
+   "fdcId": 171075,
+   "description": "Chicken, broilers or fryers, breast, meat and skin, cooked, roasted",
+   "dataType": "SR Legacy",
+   "foodNutrients": [
+    {
+     "nutrientNumber": "208",
+     "value": 197
+    },
+    {
+     "nutrientNumber": "204",
+     "value": 7.78
+    },
+    {
+     "nutrientNumber": "205",
+     "value": 0
+    },
+    {
+     "nutrientNumber": "203",
+     "value": 29.8
+    }
+   ]
+  }
+ ]
+}

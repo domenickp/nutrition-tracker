@@ -167,6 +167,24 @@ describe('listFoods', () => {
   it('omits ilike with no search', async () => {
     await listFoods();
     expect(op(callsOn('foods')[0], 'ilike')).toBeUndefined();
+    await listFoods('  , ');
+    expect(op(callsOn('foods')[1], 'ilike')).toBeUndefined();
+  });
+  it('chains one ilike per word', async () => {
+    await listFoods('chick brea');
+    const c = callsOn('foods')[0];
+    expect(c.ops.filter((o) => o[0] === 'ilike').map((o) => o[1])).toEqual([
+      ['name', '%chick%'],
+      ['name', '%brea%'],
+    ]);
+  });
+  it('escapes each word separately', async () => {
+    await listFoods('50%, a_b');
+    const c = callsOn('foods')[0];
+    expect(c.ops.filter((o) => o[0] === 'ilike').map((o) => o[1])).toEqual([
+      ['name', '%50\\%%'],
+      ['name', '%a\\_b%'],
+    ]);
   });
 });
 

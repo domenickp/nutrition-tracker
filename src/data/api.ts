@@ -14,6 +14,7 @@ import type {
   WorkoutSummary,
 } from '../lib/types';
 import type { UsdaFood } from '../../supabase/functions/usda/normalize';
+import { queryWords } from '../../supabase/functions/usda/search';
 import {
   fromActivity,
   fromExerciseRule,
@@ -116,9 +117,8 @@ export async function loadDay(date: string): Promise<DayData> {
 
 export async function listFoods(search?: string): Promise<Food[]> {
   let q = supabase.from('foods').select('*');
-  const term = search?.trim();
-  if (term) {
-    const escaped = term.replace(/[\\%_]/g, (c) => '\\' + c);
+  for (const word of queryWords(search ?? '')) {
+    const escaped = word.replace(/[\\%_]/g, (c) => '\\' + c);
     q = q.ilike('name', `%${escaped}%`);
   }
   const { data, error } = await q
