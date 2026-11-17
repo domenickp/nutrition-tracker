@@ -103,7 +103,7 @@ Use the code for local testing.
 ## Step 6 — Publish on Cloudflare Pages (10 minutes)
 
 1. Go to <https://dash.cloudflare.com> and sign up.
-2. **Workers & Pages → Create → Pages → Connect to Git**. Authorize GitHub and pick the
+2. **Compute → Workers & Pages → Create → Pages → Connect to Git**. Authorize GitHub and pick the
    `nutrition-tracker` repository. If Cloudflare offers a Workers setup instead, look for
    the "Pages" tab or the "Looking to deploy Pages?" link.
 3. Build settings:
