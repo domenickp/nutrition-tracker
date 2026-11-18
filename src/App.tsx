@@ -8,6 +8,10 @@ import AddFoodScreen from './screens/addfood';
 import SettingsScreen from './screens/settings';
 import SignInScreen from './screens/signin';
 import TodayScreen from './screens/today';
+import WorkoutScreen from './screens/workout';
+import WorkoutHistoryScreen from './screens/workouthistory';
+import WorkoutImportScreen from './screens/workouthistory/import';
+import WorkoutSessionScreen from './screens/workouthistory/session';
 
 /** Today's date in the browser's zone; only used to resolve the /activity nav link. */
 function RedirectToActivityToday() {
@@ -57,7 +61,11 @@ export default function App() {
       <Route path="/day/:date" element={<TodayScreen />} />
       <Route path="/day/:date/add" element={<AddFoodScreen />} />
       <Route path="/day/:date/activity" element={<ActivityScreen />} />
-      <Route path="/activity" element={<RedirectToActivityToday />} />
+      <Route path="/workout" element={<WorkoutScreen />} />
+      <Route path="/workout/history" element={<WorkoutHistoryScreen />} />
+      <Route path="/workout/history/:id" element={<WorkoutSessionScreen />} />
+      <Route path="/workout/import" element={<WorkoutImportScreen />} />
+      <Route path="/activity"element={<RedirectToActivityToday />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

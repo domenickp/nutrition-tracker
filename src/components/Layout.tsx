@@ -17,6 +17,7 @@ const icon = (d: string) => (
 
 const NAV = [
   { to: '/', label: 'Today', end: true, d: 'M4 12l8-8 8 8M6 10v10h12V10' },
+  { to: '/workout', label: 'Workout', end: false, d: 'M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12' },
   { to: '/activity', label: 'Activity', end: false, d: 'M3 12h4l3-8 4 16 3-8h4' },
   { to: '/settings', label: 'Settings', end: false, d: 'M4 6h16M4 12h16M4 18h16' },
 ];
