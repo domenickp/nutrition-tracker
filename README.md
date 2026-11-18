@@ -18,7 +18,8 @@ cardio / weight lifting, or by importing workout JSON from your workout app.
 
 ## Getting it running
 
-Follow **[docs/deploy.md](docs/deploy.md)**. It walks through every account and setting.
+Follow **[docs/deploy.md](docs/deploy.md)**. It walks through every account and setting,
+including CI/CD (GitHub Actions checks every PR and deploys the USDA function after merge).
 
 ## Development
 

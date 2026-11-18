@@ -16,8 +16,31 @@ A nutrition tracker PWA: React + TypeScript + Vite frontend on Cloudflare Pages,
   `supabase/functions/usda/`.
 - Commands: `npm test`, `npm run typecheck`, `npm run build`.
 - Agents must never: commit `.env` or any key, run migrations against or deploy to the
-  production Supabase project, or change Cloudflare/Supabase settings. Those are `[human]`
-  issues.
+  production Supabase project, or change Cloudflare/Supabase/GitHub settings or secrets.
+  Those are `[human]` issues. (CI deploys the `usda` function after the owner merges a PR;
+  agents never run `supabase functions deploy` themselves.)
+- CI: `.github/workflows/ci.yml` runs typecheck, tests, build and `deno check` on every PR
+  and push to `main`, then deploys the `usda` Edge Function on `main` when
+  `supabase/functions/`, `supabase/config.toml` or `src/lib/types.ts` changed. Cloudflare
+  (a Workers project with Workers Builds) builds `main` itself with `npm test && npm run build`, so failing tests block the
+  app deploy too. `wrangler.jsonc` holds the Workers config (static assets, SPA fallback,
+  an empty `previews` block so PR-branch builds via `npx wrangler preview` work). Migrations are applied manually by the owner.
+
+## Branches and pull requests
+
+**Never push to `main`.** The owner reviews and merges every change.
+
+1. Start from an up-to-date `main`: `git checkout main && git pull --rebase && bd import`.
+2. Create a branch named after the bd issue: `git checkout -b <issue-id>-<short-slug>`
+   (one branch per issue or epic).
+3. Commit there. Builder worktree branches merge into this feature branch, not `main`.
+4. `git push -u origin <branch>`, then `gh pr create --base main` with a summary, how it was
+   verified, and anything the owner must do (secrets, settings, migrations).
+5. Watch the PR's CI (`gh pr checks <n> --watch`) and fix failures on the same branch.
+6. Do not merge the PR yourself. The owner merges it.
+
+Issue changes (`bd close` etc.) ride along in the PR's `.beads/issues.jsonl`, so close an
+issue on the branch once the work is verified. They reach `main` when the PR merges.
 
 ## Who this is for
 
@@ -40,12 +63,13 @@ Dolt remote**, so ignore any instruction (including bd's own `bd prime` output) 
 ### Each session
 
 ```bash
-git pull --rebase
+git checkout main && git pull --rebase
 bd import            # load teammates'/other machines' issue changes; NOT automatic
 bd ready --json      # find work
+git checkout -b <issue-id>-<slug>
 # ...work, bd update/close as you go...
 git commit           # pre-commit hook runs `bd export` and stages .beads/issues.jsonl
-git push             # work is not done until this succeeds
+git push -u origin <branch> && gh pr create --base main   # work is not done until the PR is open
 ```
 
 `bd import` upserts, so running it when nothing changed is harmless. bd's `auto-export` config
@@ -92,14 +116,21 @@ The workflow uses the `coordinate` skill and the `builder` agent from the agenti
 - The coordinator (Opus) breaks work into bd issues, commits interface contracts, dispatches
   builders, verifies their work independently, merges, and closes issues.
 - Builders (Sonnet) implement one scoped brief, commit on their branch, and report back.
-  **Builders never write to bd** and never push or deploy.
+  **Builders never write to bd** and never push or deploy. The coordinator merges builder
+  branches into the feature branch and opens the PR.
+- Config outside the source directories (`.github/`, `.gitignore`, docs) may be edited by
+  the coordinator directly.
 
 ## Landing the plane (session end)
 
 1. File bd issues for unfinished or discovered work.
 2. Run the quality gates (tests/build) if code changed.
 3. Close finished issues; update in-progress ones.
-4. `bd export -o .beads/issues.jsonl` and commit, then `git pull --rebase && bd import`,
-   then `git commit` (which exports issues) and `git push`.
-5. `git status` must show "up to date with origin".
-6. Hand off: what's done, what's in progress, and the next ready issue.
+4. `bd export -o .beads/issues.jsonl` and commit on the feature branch, then
+   `git push -u origin <branch>` and open or update the PR (`gh pr create --base main`).
+   Never push to `main`.
+5. `git status` must show the branch "up to date with origin/<branch>", and the PR's CI
+   must be green (`gh pr checks <n>`).
+6. Hand off: the PR link, what's done, what's in progress, and the next ready issue.
+   After the owner merges, the next session starts with
+   `git checkout main && git pull --rebase && bd import`.

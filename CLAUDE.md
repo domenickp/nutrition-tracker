@@ -9,6 +9,8 @@ exists only so Claude-specific tooling finds it.
    `bd dolt push`. There is no Dolt remote, and the database itself is gitignored. Run
    `bd import` after every `git pull`.
 2. **As coordinator, you own bd.** Builder subagents never write to it.
+3. **Never push to `main`.** Work on a branch, push it, and open a PR with `gh pr create`.
+   The owner reviews and merges. CI deploys the `usda` function after merge.
 
 ## Note on the user-level CLAUDE.md
 

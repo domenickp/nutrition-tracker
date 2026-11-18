@@ -1,0 +1,17 @@
+// Cloudflare Workers Builds config for the static app (no server code, just assets).
+// Before this file existed, Cloudflare auto-detected these settings for `main`; writing them
+// down lets PR-branch builds (`npx wrangler preview`) work too. See docs/deploy.md, CI/CD.
+{
+  "name": "nutrition-tracker",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    // React Router handles /day/..., /settings etc.; unknown paths get index.html.
+    "not_found_handling": "single-page-application"
+  },
+  // Keep variables set in the Cloudflare dashboard; this file doesn't manage them.
+  "keep_vars": true,
+  // PR-branch previews. Empty on purpose: the app needs no runtime variables, because the
+  // Supabase URL and anon key are baked in at build time from Cloudflare's build variables.
+  "previews": {}
+}
