@@ -45,3 +45,8 @@ npm run build
 | `docs/` | Design, interface contracts, deploy guide, sample workout export |
 
 Issues are tracked with `bd` (beads). See `AGENTS.md`.
+
+## License
+
+[MIT](LICENSE) © 2026 Domenick Petrella. You may copy and reuse the code as long as you keep
+the copyright notice and license text.
