@@ -1,0 +1,62 @@
+.wk { padding-bottom: calc(var(--tap) + var(--sp-6)); }
+.wk-link { color: var(--brand); font-weight: 700; text-decoration: none; min-height: var(--tap); display: inline-flex; align-items: center; padding: 0 var(--sp-2); }
+.wk-days { display: grid; grid-template-columns: 1fr; gap: var(--sp-2); }
+.wk-day {
+  min-height: var(--tap); padding: 0 var(--sp-3); text-align: left; font-weight: 600;
+  background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); border-radius: var(--radius-sm); cursor: pointer;
+}
+.wk-day[aria-pressed='true'] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.wk-ex { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+.wk-ex--warm { background: var(--surface-2); }
+.wk-ex__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.wk-ex__name { font-size: var(--fs-md); font-weight: 700; overflow-wrap: anywhere; }
+.wk-tag { font-size: var(--fs-sm); background: var(--accent); color: #14211c; border-radius: 99px; padding: 0 var(--sp-2); white-space: nowrap; }
+.wk-target { font-weight: 600; }
+.wk-set { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--sp-2); display: flex; flex-direction: column; gap: var(--sp-2); }
+.wk-set--done { border-color: var(--good); background: color-mix(in srgb, var(--good) 10%, transparent); }
+.wk-set__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.wk-set__n { font-weight: 700; }
+.wk-set__btns { display: flex; gap: var(--sp-2); }
+.wk-done, .wk-remove {
+  min-height: var(--tap); min-width: var(--tap); padding: 0 var(--sp-3); font-weight: 700; cursor: pointer;
+  border-radius: var(--radius-sm); border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.wk-done[aria-pressed='true'] { background: var(--good); border-color: var(--good); color: #fff; }
+.wk-fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.wk-fields--one { grid-template-columns: 1fr; }
+.wk-stepper-field { display: flex; flex-direction: column; gap: var(--sp-1); min-width: 0; }
+.wk-stepper-label { font-size: var(--fs-sm); color: var(--ink-soft); }
+.wk-stepper { display: grid; grid-template-columns: var(--tap) minmax(0, 1fr) var(--tap); }
+.wk-stepper button {
+  min-height: var(--tap); font-size: var(--fs-lg); font-weight: 700; cursor: pointer;
+  background: var(--surface-2); color: var(--ink); border: 1.5px solid var(--line);
+}
+.wk-stepper button:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.wk-stepper button:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.wk-stepper input {
+  min-width: 0; width: 100%; min-height: var(--tap); text-align: center; font-size: var(--fs-md);
+  background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); border-left: 0; border-right: 0; border-radius: 0;
+}
+.wk-ex__actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.wk-notes {
+  width: 100%; padding: var(--sp-3); background: var(--surface); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: var(--radius-sm); resize: vertical; font: inherit;
+}
+.wk-finish {
+  position: fixed; left: 0; right: 0; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); z-index: 9;
+  padding: var(--sp-2) var(--sp-4); background: var(--bg); border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: var(--sp-2); max-width: 640px; margin: 0 auto;
+}
+.wk-rest {
+  position: fixed; left: var(--sp-2); right: var(--sp-2); bottom: calc(var(--nav-h) + var(--tap) + var(--sp-5) + env(safe-area-inset-bottom)); z-index: 9;
+  max-width: 624px; margin: 0 auto; padding: var(--sp-2) var(--sp-3);
+  background: var(--brand); color: var(--brand-ink); border-radius: var(--radius-sm); box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: var(--sp-2);
+}
+.wk-rest--over { background: var(--warn); }
+.wk-rest__label { flex: 1; min-width: 0; font-size: var(--fs-sm); font-weight: 600; }
+.wk-rest__time { font-size: var(--fs-lg); font-weight: 700; }
+.wk-rest__btn {
+  min-height: var(--tap); min-width: var(--tap); padding: 0 var(--sp-2); font-weight: 700; cursor: pointer;
+  background: transparent; color: inherit; border: 1.5px solid currentColor; border-radius: var(--radius-sm);
+}

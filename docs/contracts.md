@@ -286,8 +286,119 @@ Indexes on `(user_id, date)` for log tables.
 | `/` and `/day/:date` | `src/screens/today/` | "today" |
 | `/day/:date/add` | `src/screens/addfood/` | "addfood" |
 | `/day/:date/activity` | `src/screens/activity/` | "activity" |
+| `/workout` | `src/screens/workout/` | nt-7km.3 (see §8) |
+| `/workout/history`, `/workout/history/:id`, `/workout/import` | `src/screens/workouthistory/` | nt-7km.4 (see §8) |
 
 Each folder exports a default component from `index.tsx`. Shared UI lives in
 `src/components/` (owned by scaffold; screen tasks may *add* new files in their own folder
 only). The App shell redirects to `/signin` without a session and to `/settings` when
 signed in with no profile.
+
+## §8 Workout tab (epic nt-7km, added 2026-11-18)
+
+Design: `docs/superpowers/specs/2026-11-18-workout-tab-design.md`. The original app is
+copied for reference in `docs/reference/fatherworkout/` (FatherWorkout @ a7a085f, MIT, same
+author): `index.html` (UI; the pure `FW` module is lines ~222–432, the UI after it), `Lib.js`,
+`contracts.md` (its session format §2 and UI behaviour §5), `lib.test.js`, `ui.test.js`,
+`routine.json`. **Port behaviour exactly** unless this section says otherwise. No database
+migration.
+
+### §8.1 `src/lib/routine.ts` (task nt-7km.1)
+```ts
+export interface RoutineExercise {
+  id: string; name: string; warmup: boolean; sets: number | null; reps: number | null;
+  weightLb: number | null; timeMin: number | null; timeSec: number | null;
+  rest: string | null; notes: string | null;
+}
+export interface RoutineDay { day: number; areas: string; exercises: RoutineExercise[] }
+export interface Routine { schemaVersion: 1; days: RoutineDay[] }
+export const ROUTINE: Routine;   // content of docs/reference/fatherworkout/routine.json (drop "source")
+export function routineDay(routine: Routine, day: number): RoutineDay | null;
+```
+
+### §8.2 `src/lib/workoutSession.ts` (task nt-7km.1, pure)
+```ts
+export interface SessionSet { reps: number | null; weightLb: number | null; timeMin: number | null; timeSec: number | null; done: boolean }
+export interface SessionEntry { exerciseId: string; name: string; sets: SessionSet[]; notes: string | null }
+export interface WorkoutSession {
+  schemaVersion: 1; id: string; day: number; startedAt: string; completedAt: string | null;
+  entries: SessionEntry[]; notes: string | null; savedAt?: string;
+}
+export interface SessionSummary { id: string; day: number; startedAt: string; completedAt: string | null; exerciseCount: number; setsDone: number }
+export interface ExerciseLog { sets: SessionSet[]; notes: string }          // UI state per exercise
+export interface DraftState {                                              // what localStorage holds
+  id: string; day: number; startedAt: string; log: Record<string, ExerciseLog>; notes: string;
+}
+export const DRAFT_KEY = 'nt-workout-draft';
+
+// From Lib.js (same rules; validateSession also requires schemaVersion === 1):
+export function validateSession(s: unknown, routine?: Routine): string[];
+export function normalizeSession(s: WorkoutSession): WorkoutSession;   // absent timeSec/notes -> null; new object
+export function summarizeSession(s: WorkoutSession): SessionSummary;
+export function sortSessionsNewestFirst(s: WorkoutSession[]): WorkoutSession[];
+export function latestCompletedByDay(s: WorkoutSession[], days: number[]): Record<string, WorkoutSession | null>;
+// From index.html's FW module and UI helpers (same behaviour):
+export function toNum(v: unknown): number | null;
+export function formatNum(n: number | null | undefined): string;
+export function parseRestSeconds(rest: string | null): number | null;
+export function formatTarget(ex: RoutineExercise): string;
+export function defaultDay(routine: Routine, recent: SessionSummary[]): number | null;
+export function formatLastTime(entry: SessionEntry | null | undefined): string;
+export function isTimed(ex: RoutineExercise): boolean;
+export function isSeconds(ex: RoutineExercise): boolean;
+export function initialSets(ex: RoutineExercise, lastEntry: SessionEntry | null | undefined): SessionSet[];
+export function newSetFor(sets: SessionSet[], lastEntry: SessionEntry | null | undefined): SessionSet; // index.html newSetFor
+export function removeSetAt(sets: SessionSet[], idx: number): SessionSet[];
+export function buildSession(state: { id: string; day: number; startedAt: string; completedAt: string | null;
+  notes: string; exercises: { id: string; name: string }[]; log: Record<string, ExerciseLog> }): WorkoutSession;
+export function countDone(log: Record<string, ExerciseLog>): number;
+export function formatClock(totalSec: number): string;
+export function formatSessionDate(iso: string, timeZone?: string): string;
+```
+A session is **completed** when `completedAt` is non-null.
+
+### §8.3 `src/data/workouts.ts` (task nt-7km.1)
+Uses the existing `workouts` table via `saveWorkout`, `listExerciseRules`,
+`saveExerciseRules` and `getProfile` from `api.ts`, plus the supabase client for reads. Only
+rows whose `raw` passes `validateSession(raw)` (no routine) count as sessions; others are
+skipped silently.
+```ts
+export function loadWorkoutData(): Promise<{ recent: SessionSummary[]; lastByDay: Record<string, WorkoutSession | null> }>;
+  // recent: 20 newest by started_at. lastByDay: for each ROUTINE day, the newest session whose
+  // raw.completedAt is set and raw.day is that day (query per day with raw->> filters, or fetch and filter in code).
+export function getWorkoutSession(id: string): Promise<WorkoutSession>;   // throws Error('Session not found: ' + id)
+export function saveWorkoutSession(s: WorkoutSession, now?: Date): Promise<{ id: string; date: string; savedAt: string }>;
+  // validateSession(s, ROUTINE) -> throw Error('Invalid session: ' + errors.join('; ')) on failure.
+  // savedAt = (now ?? new Date()).toISOString(); a = analyzeWorkout(session, { timeZone: profile.timezone,
+  // rules: await listExerciseRules() }); saveWorkout(summarizeWorkout(a), true); saveExerciseRules(rulesFromAnalysis(a)).
+  // Returns date = the summary's date. Throws if there is no profile.
+export function importWorkoutSessions(raws: unknown[]): Promise<{ imported: number; existing: number; invalid: { index: number; errors: string[] }[] }>;
+  // per item: validateSession(raw) (no routine) -> normalizeSession -> analyze/summarize as above ->
+  // saveWorkout(summary, false); 'exists' counts as existing. Rules from all imported items saved once at the end.
+```
+
+### §8.4 Shell (task nt-7km.2)
+- Routes in `src/App.tsx`: `/workout` → `src/screens/workout/index.tsx` default export;
+  `/workout/history` → `src/screens/workouthistory/index.tsx` default export;
+  `/workout/history/:id` → `src/screens/workouthistory/session.tsx` default export;
+  `/workout/import` → `src/screens/workouthistory/import.tsx` default export.
+- `Layout` nav: Today · **Workout** (`/workout`, active on all `/workout/*`) · Activity · Settings.
+- Placeholder screens (a `Layout` with a title) in those four files, replaced by nt-7km.3 / .4.
+
+### §8.5 Workout screen `src/screens/workout/` (task nt-7km.3)
+FatherWorkout contracts §5 "Load", "Day picker", "Workout view", "Rest timer", "Saving",
+built on §8.2 and §8.3. Differences: Finish calls `saveWorkoutSession`, then shows
+"Saved · counts toward <date>'s activity" with a link to `/workout/history`; drafts use
+`DRAFT_KEY`. The header links to History. Rest timer: countdown banner with −15 s / +15 s and
+dismiss, `navigator.vibrate` at zero when available (index.html `startRest` / `extendRest` /
+`tickRest`).
+
+### §8.6 History, session, import `src/screens/workouthistory/` (task nt-7km.4)
+- History (`index.tsx`): `recent` from `loadWorkoutData()`; each row shows date ·
+  `Day N · areas` · `N sets`, and opens `/workout/history/:id`. Links to Import.
+- Session (`session.tsx`): read-only view via `getWorkoutSession` (index.html `renderDetail`).
+- Import (`import.tsx`): `<input type="file" multiple accept=".json,application/json">`.
+  Parse each file with `JSON.parse` (a file holding an array contributes each element), call
+  `importWorkoutSessions`, then show the three counts and each invalid file's name and
+  errors. Explain where the files are: Google Drive → "FatherWorkout Data" → "sessions",
+  download (Drive zips it), unzip, select all.

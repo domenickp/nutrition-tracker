@@ -57,3 +57,25 @@ describe('USDA food → saved food → log entry', () => {
     expect(sumNutrients([log.totals]).kcal).toBeCloseTo(food.nutrients.kcal * 1.5, 0);
   });
 });
+
+describe('workout tab session → workouts row → session again', () => {
+  it('a FatherWorkout session survives the workouts table and feeds the workout screen helpers', async () => {
+    const { validateSession, normalizeSession, latestCompletedByDay, defaultDay, summarizeSession, initialSets } =
+      await import('./lib/workoutSession');
+    const { ROUTINE, routineDay } = await import('./lib/routine');
+    const session = normalizeSession(JSON.parse(readFileSync('docs/samples/workout-2026-11-16-d3.json', 'utf8')));
+    expect(validateSession(session, ROUTINE)).toEqual([]);
+    const summary = summarizeWorkout(analyzeWorkout(session, { timeZone: profile.timezone, rules: [] }));
+    const stored = viaDb(fromWorkout(summary) as Record<string, unknown>, toWorkout);
+    expect(stored.date).toBe('2026-11-15');
+    // raw is jsonb: numbers stay numbers, so it must still be a valid session when read back.
+    const back = normalizeSession(JSON.parse(JSON.stringify(stored.raw)));
+    expect(validateSession(back, ROUTINE)).toEqual([]);
+    const last = latestCompletedByDay([back], ROUTINE.days.map((d) => d.day));
+    expect(last['3']?.id).toBe(session.id);
+    expect(defaultDay(ROUTINE, [summarizeSession(back)])).toBe(4);
+    const ex = routineDay(ROUTINE, 3)!.exercises.find((e) => !e.warmup && e.reps !== null)!;
+    const entry = back.entries.find((e) => e.exerciseId === ex.id);
+    if (entry) expect(initialSets(ex, entry)[0].reps).toBe(entry.sets.find((s) => s.done)?.reps ?? null);
+  });
+});
