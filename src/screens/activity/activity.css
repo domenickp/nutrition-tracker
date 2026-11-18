@@ -14,3 +14,8 @@
 .act-estimate { display: flex; flex-direction: column; gap: var(--sp-1); }
 .act-estimate strong { font-size: var(--fs-lg); }
 .act-date { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); }
+.act-breakdown { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.act-breakdown th, .act-breakdown td { padding: var(--sp-1) 0; text-align: right; font-weight: normal; }
+.act-breakdown th:first-child { text-align: left; }
+.act-breakdown thead th { color: var(--ink-soft); }
+.act-breakdown small { color: var(--ink-soft); margin-left: var(--sp-1); }

@@ -95,6 +95,29 @@ describe('ActivityScreen', () => {
     expect((screen.getByLabelText('Workout JSON') as HTMLTextAreaElement).value).toBe('{nope');
   });
 
+  it('hours mode: no sedentary input, states the rule, shows the breakdown', async () => {
+    api.loadDay.mockResolvedValue({
+      ...day,
+      activity: {
+        date: day.date, mode: 'hours', directKcal: null,
+        hours: { sedentaryH: 9, lightCardioH: 0, strenuousCardioH: 0, liftingH: 1 },
+      },
+      workouts: [{ id: 'w', startedAt: '2026-11-16T15:00:00Z', raw: null, lightCardioH: 1, strenuousCardioH: 0, liftingH: 0 }],
+    });
+    renderScreen();
+    await screen.findByText('Activity total:', { exact: false });
+    expect(screen.queryByLabelText(/Sedentary hours/)).toBeNull();
+    expect(screen.getByText(/16 waking hours minus all exercise/)).toBeTruthy();
+    const row = screen.getByText('Sedentary').closest('tr')!;
+    // 16 - (1 lifting + 1 light) = 14 h; 0.3 * 80 * 14 = 336 kcal
+    expect(row.textContent).toMatch(/14\.0/);
+    expect(row.textContent).toMatch(/336/);
+    expect(screen.getByText(/Hours include this day/)).toBeTruthy();
+    fireEvent.click(screen.getByText('Save activity'));
+    await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
+    expect(api.saveActivity.mock.calls[0][0].hours.sedentaryH).toBe(0);
+  });
+
   it('saves direct mode', async () => {
     renderScreen();
     fireEvent.click(await screen.findByText('Enter calories'));

@@ -195,7 +195,6 @@ export default function TodayScreen() {
   const a = day.activity;
   const hourParts: Array<[string, number]> = a
     ? [
-        ['sedentary', a.hours.sedentaryH],
         ['light cardio', a.hours.lightCardioH],
         ['strenuous cardio', a.hours.strenuousCardioH],
         ['lifting', a.hours.liftingH],

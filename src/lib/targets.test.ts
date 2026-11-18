@@ -59,12 +59,31 @@ describe('computeTargets', () => {
     expect(r.exerciseH).toBe(0);
   });
 
-  it('explicit sedentaryH used when > 0', () => {
-    expect(run({}, hoursAct({ sedentaryH: 10 })).activityKcal).toBe(240);
+  it('stored sedentaryH is ignored: sedentary is always 16 h minus exercise', () => {
+    const r = run({}, hoursAct({ sedentaryH: 10 }));
+    expect(r.breakdown?.sedentary.hours).toBe(16);
+    expect(r.activityKcal).toBe(Math.round(0.3 * 80 * 16));
+  });
+
+  it('manual lifting 1 h + workout: sedentary 13.711 and breakdown rows', () => {
+    const r = run({}, hoursAct({ sedentaryH: 16, liftingH: 1 }), sample);
+    const b = r.breakdown!;
+    expect(b.sedentary.hours).toBeCloseTo(13.711, 6);
+    expect(b.light.hours).toBeCloseTo(0.667, 6);
+    expect(b.strenuous.hours).toBe(0);
+    expect(b.lifting.hours).toBeCloseTo(1.622, 6);
+    expect(b.sedentary.met).toBe(1.3);
+    expect(b.lifting.kcal).toBeCloseTo(4 * 80 * 1.622, 6);
+    expect(b.sedentary.kcal).toBeCloseTo(0.3 * 80 * 13.711, 6);
+    const sum = b.sedentary.kcal + b.light.kcal + b.strenuous.kcal + b.lifting.kcal;
+    expect(Math.round(sum)).toBe(r.activityKcal);
+    expect(r.activityKcal).toBe(1008);
   });
 
   it('sedentary floors at 0 when exercise exceeds 16 h', () => {
-    expect(run({}, hoursAct({ lightCardioH: 17 })).activityKcal).toBe(4080);
+    const r = run({}, hoursAct({ lightCardioH: 17 }));
+    expect(r.activityKcal).toBe(4080);
+    expect(r.breakdown?.sedentary.hours).toBe(0);
   });
 
   it.each([
