@@ -68,7 +68,7 @@ jobs:
       - if: steps.changes.outputs.deploy == 'true'
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.2.0   # pinned: a new major changed deploy flags once already
 
       - if: steps.changes.outputs.deploy == 'true'
         env:
@@ -79,4 +79,4 @@ jobs:
             echo "::error::Set SUPABASE_ACCESS_TOKEN and SUPABASE_PROJECT_REF in the repo's Actions secrets (docs/deploy.md, CI/CD)."
             exit 1
           fi
-          supabase functions deploy usda --project-ref "$SUPABASE_PROJECT_REF" --use-api
+          supabase functions deploy usda --remote="$SUPABASE_PROJECT_REF" --use-api --yes

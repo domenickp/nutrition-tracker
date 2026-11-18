@@ -22,7 +22,7 @@ enable_refresh_token_rotation = true
 enable_signup = false
 
 [auth.email]
-enable_signup = false
+# Sign-ups are already off for every provider via [auth] enable_signup above.
 enable_confirmations = false
 otp_length = 6
 otp_expiry = 3600
