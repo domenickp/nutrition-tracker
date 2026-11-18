@@ -63,6 +63,23 @@ describe('computeTargets', () => {
     expect(run({}, hoursAct({ sedentaryH: 10 })).activityKcal).toBe(240);
   });
 
+  it('entered sedentaryH is reduced by logged workout hours', () => {
+    // sedentary 16 - (0.667 + 0.622) = 14.711
+    const r = run({}, hoursAct({ sedentaryH: 16 }), sample);
+    expect(r.activityKcal).toBe(
+      Math.round(0.3 * 80 * 14.711 + 3 * 80 * 0.667 + 4 * 80 * 0.622),
+    );
+  });
+
+  it('entered sedentaryH is not reduced by manual hours', () => {
+    expect(run({}, hoursAct({ sedentaryH: 10, liftingH: 1 })).activityKcal).toBe(240 + 320);
+  });
+
+  it('entered sedentaryH floors at 0 when workouts exceed it', () => {
+    const w: WorkoutHours[] = [{ lightCardioH: 2, strenuousCardioH: 0, liftingH: 0 }];
+    expect(run({}, hoursAct({ sedentaryH: 1 }), w).activityKcal).toBe(480);
+  });
+
   it('sedentary floors at 0 when exercise exceeds 16 h', () => {
     expect(run({}, hoursAct({ lightCardioH: 17 })).activityKcal).toBe(4080);
   });

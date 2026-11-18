@@ -204,7 +204,7 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
         ) : (
           <>
             <p className="act-note">Enter hours as decimals (1.5 = 1 h 30 min).</p>
-            {hourField('sedentaryH', 'Sedentary hours', 'Leave 0 to assume the rest of a 16-hour day')}
+            {hourField('sedentaryH', 'Sedentary hours', 'Leave 0 to assume the rest of a 16-hour day. Logged workouts are subtracted either way.')}
             {hourField('lightCardioH', 'Light cardio hours')}
             {hourField('strenuousCardioH', 'Strenuous cardio hours')}
             {hourField('liftingH', 'Weight lifting hours')}

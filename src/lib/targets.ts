@@ -46,9 +46,14 @@ export function computeTargets(input: {
   if (direct) {
     activityKcal = activity?.directKcal ?? 0;
   } else {
+    // An entered sedentary value is reduced by logged/imported workout hours (not manual hours).
+    const workoutH = workouts.reduce(
+      (s, w) => s + w.lightCardioH + w.strenuousCardioH + w.liftingH,
+      0,
+    );
     const sedentary =
       activity && activity.hours.sedentaryH > 0
-        ? activity.hours.sedentaryH
+        ? Math.max(0, activity.hours.sedentaryH - workoutH)
         : Math.max(0, WAKING_HOURS - exerciseH);
     activityKcal =
       (MET.sedentary - 1) * weightKg * sedentary +
