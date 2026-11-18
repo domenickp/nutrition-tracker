@@ -6,7 +6,12 @@ that day's activity. You log food from your saved foods, USDA FoodData Central, 
 and the app shows what's left.
 
 Activity can be entered as calories, as hours of sedentary time / light cardio / strenuous
-cardio / weight lifting, or by importing workout JSON from your workout app.
+cardio / weight lifting, or by importing workout JSON.
+
+The **Workout** tab is a 4-day dumbbell routine logger (merged in from
+[FatherWorkout](https://github.com/domenickp/FatherWorkout)): last time's numbers prefilled,
+rest timer, history. A finished workout counts toward that day's activity automatically, and
+old FatherWorkout session files can be imported from Workout → History → Import.
 
 **Targets are estimates, not medical advice.**
 
@@ -36,9 +41,9 @@ npm run build
 
 | Path | What's there |
 |---|---|
-| `src/lib/` | Pure, tested logic: targets, units/portions, dates, workout import |
+| `src/lib/` | Pure, tested logic: targets, units/portions, dates, workout import, workout sessions and routine |
 | `src/data/` | Supabase access and auth |
-| `src/screens/` | One folder per screen: today, addfood, activity, settings, signin |
+| `src/screens/` | One folder per screen: today, addfood, activity, workout, workouthistory, settings, signin |
 | `src/components/` | Shared UI |
 | `supabase/migrations/` | Database schema and security policies |
 | `supabase/functions/usda/` | USDA proxy Edge Function |
