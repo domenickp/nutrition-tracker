@@ -102,10 +102,14 @@ export interface WorkoutSummary extends WorkoutHours {
   raw: unknown;              // the original workout object
 }
 
+export interface ActivityPart { hours: number; met: number; kcal: number }   // kcal = (met − 1) × kg × hours, unrounded
 export interface TargetResult {
   targets: Nutrients;
   bmr: number;
   activityKcal: number;
+  /** Hours mode only (null in direct mode). Hours include manual + workout hours;
+   *  sedentary = max(0, 16 − exerciseH). Added 2026-11-18 (nt-rgd). */
+  breakdown: { sedentary: ActivityPart; light: ActivityPart; strenuous: ActivityPart; lifting: ActivityPart } | null;
   burn: number;
   exerciseH: number;         // light + strenuous + lifting hours counted for water
   countsWorkouts: boolean;   // false in direct mode

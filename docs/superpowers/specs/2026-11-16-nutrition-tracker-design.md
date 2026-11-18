@@ -135,12 +135,12 @@ All in one pure TypeScript module with unit tests.
      avoids counting resting burn twice, since BMR already covers it.
    - Hours from imported workouts for that day are **added** to the manually entered
      hours for light cardio, strenuous cardio and lifting.
-   - If `sedentary_h` is 0 or unset, it defaults to `16 − (exercise hours)`, floored at 0.
-     (16 waking hours.)
-   - If `sedentary_h` is entered (> 0), the hours of that day's logged or imported workouts
-     are subtracted from it, floored at 0, so a fixed "16" never double-counts workout time.
-     Manually entered exercise hours are not subtracted: the owner accounts for those when
-     entering sedentary hours. *(Owner request, 2026-11-18.)*
+   - **Sedentary hours are always `16 − (exercise hours)`, floored at 0** (16 waking hours),
+     where exercise hours = manually entered light cardio + strenuous cardio + lifting plus
+     that day's logged/imported workouts. There is no sedentary input; the `sedentary_h`
+     column is kept but ignored (written as 0). The Activity tab states this rule and shows
+     each category's hours and calories. *(Owner request, 2026-11-18; replaces the earlier
+     entered-sedentary rule.)*
 4. **Burn** = `BMR × 1.1 + activity calories`. The 1.1 factor covers the energy used
    digesting food.
 5. **Calorie target** by goal: lose fat `burn × 0.80`, maintain `burn`, build muscle
