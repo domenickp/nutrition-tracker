@@ -1,9 +1,9 @@
-import type { DailyActivity, Goal, Profile, TargetResult, WorkoutHours } from './types';
+import type { ActivityPart, DailyActivity, Goal, Profile, TargetResult, WorkoutHours } from './types';
 
 const LB_PER_KG = 2.20462;
 const ML_PER_FLOZ = 29.5735;
-const MET = { sedentary: 1.3, light: 4.0, strenuous: 8.0, lifting: 5.0 };
-const WAKING_HOURS = 16;
+export const MET = { sedentary: 1.3, light: 4.0, strenuous: 8.0, lifting: 5.0 };
+export const WAKING_HOURS = 16;
 const DIGESTION_FACTOR = 1.1;
 const WATER_ML_PER_HALF_HOUR = 12 * ML_PER_FLOZ; // 354.882 ml per 0.5 h of exercise
 const DEFAULT_WATER_ML_PER_KG = 0.5 * ML_PER_FLOZ * LB_PER_KG;
@@ -43,23 +43,24 @@ export function computeTargets(input: {
   const exerciseH = light + strenuous + lifting;
 
   let activityKcal: number;
+  let breakdown: TargetResult['breakdown'] = null;
   if (direct) {
     activityKcal = activity?.directKcal ?? 0;
   } else {
-    // An entered sedentary value is reduced by logged/imported workout hours (not manual hours).
-    const workoutH = workouts.reduce(
-      (s, w) => s + w.lightCardioH + w.strenuousCardioH + w.liftingH,
-      0,
-    );
-    const sedentary =
-      activity && activity.hours.sedentaryH > 0
-        ? Math.max(0, activity.hours.sedentaryH - workoutH)
-        : Math.max(0, WAKING_HOURS - exerciseH);
+    // Sedentary is whatever is left of the waking day after all exercise (entered hours are ignored).
+    const part = (hours: number, met: number): ActivityPart => ({
+      hours,
+      met,
+      kcal: (met - 1) * weightKg * hours,
+    });
+    breakdown = {
+      sedentary: part(Math.max(0, WAKING_HOURS - exerciseH), MET.sedentary),
+      light: part(light, MET.light),
+      strenuous: part(strenuous, MET.strenuous),
+      lifting: part(lifting, MET.lifting),
+    };
     activityKcal =
-      (MET.sedentary - 1) * weightKg * sedentary +
-      (MET.light - 1) * weightKg * light +
-      (MET.strenuous - 1) * weightKg * strenuous +
-      (MET.lifting - 1) * weightKg * lifting;
+      breakdown.sedentary.kcal + breakdown.light.kcal + breakdown.strenuous.kcal + breakdown.lifting.kcal;
   }
 
   const burn = bmr * DIGESTION_FACTOR + activityKcal;
@@ -82,6 +83,7 @@ export function computeTargets(input: {
     },
     bmr: Math.round(bmr),
     activityKcal: Math.round(activityKcal),
+    breakdown,
     burn: Math.round(burn),
     exerciseH,
     countsWorkouts: !direct,

@@ -10,7 +10,7 @@ import {
   saveWorkout,
 } from '../../data/api';
 import { addDays } from '../../lib/dates';
-import { computeTargets } from '../../lib/targets';
+import { MET, WAKING_HOURS, computeTargets } from '../../lib/targets';
 import type { DailyActivity, DayData, ExerciseCategory, WorkoutSummary } from '../../lib/types';
 import {
   analyzeWorkout,
@@ -60,6 +60,13 @@ function shortDate(date: string): string {
     utcDate(date),
   );
 }
+
+const BREAKDOWN_ROWS = [
+  ['sedentary', 'Sedentary'],
+  ['light', 'Light cardio'],
+  ['strenuous', 'Strenuous cardio'],
+  ['lifting', 'Weight lifting'],
+] as const;
 
 const min = (h: number) => Math.round(h * 60);
 const toNum = (s: string) => {
@@ -113,7 +120,6 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
   const [mode, setMode] = useState<Mode>(a?.mode ?? 'hours');
   const [kcal, setKcal] = useState(a?.directKcal != null ? String(a.directKcal) : '');
   const [h, setH] = useState({
-    sedentaryH: String(a?.hours.sedentaryH ?? 0),
     lightCardioH: String(a?.hours.lightCardioH ?? 0),
     strenuousCardioH: String(a?.hours.strenuousCardioH ?? 0),
     liftingH: String(a?.hours.liftingH ?? 0),
@@ -128,7 +134,7 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
       mode,
       directKcal: mode === 'direct' ? toNum(kcal) : null,
       hours: {
-        sedentaryH: toNum(h.sedentaryH),
+        sedentaryH: 0, // derived (16 h minus exercise); column kept for compatibility
         lightCardioH: toNum(h.lightCardioH),
         strenuousCardioH: toNum(h.strenuousCardioH),
         liftingH: toNum(h.liftingH),
@@ -166,10 +172,9 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
     }
   };
 
-  const hourField = (key: keyof typeof h, label: string, hint?: string) => (
+  const hourField = (key: keyof typeof h, label: string) => (
     <Field
       label={label}
-      hint={hint}
       type="number"
       inputMode="decimal"
       min={0}
@@ -204,7 +209,10 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
         ) : (
           <>
             <p className="act-note">Enter hours as decimals (1.5 = 1 h 30 min).</p>
-            {hourField('sedentaryH', 'Sedentary hours', 'Leave 0 to assume the rest of a 16-hour day. Logged workouts are subtracted either way.')}
+            <p className="act-note">
+              Sedentary time is {WAKING_HOURS} waking hours minus all exercise: the hours entered here plus logged
+              workouts (never below 0).
+            </p>
             {hourField('lightCardioH', 'Light cardio hours')}
             {hourField('strenuousCardioH', 'Strenuous cardio hours')}
             {hourField('liftingH', 'Weight lifting hours')}
@@ -213,7 +221,31 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
 
         {estimate ? (
           <div className="act-estimate" aria-live="polite">
-            <span>Activity: <strong className="num">{estimate.activityKcal} kcal</strong></span>
+            {estimate.breakdown && (
+              <>
+                <table className="act-breakdown">
+                  <thead>
+                    <tr><th scope="col">Category</th><th scope="col">Hours</th><th scope="col">kcal</th></tr>
+                  </thead>
+                  <tbody>
+                    {BREAKDOWN_ROWS.map(([key, label]) => {
+                      const p = estimate.breakdown![key];
+                      return (
+                        <tr key={key}>
+                          <th scope="row">{label} <small>MET {MET[key]}</small></th>
+                          <td className="num">{p.hours.toFixed(1)}</td>
+                          <td className="num">{Math.round(p.kcal)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                {day.workouts.length > 0 && (
+                  <p className="act-note">Hours include this day’s imported workouts.</p>
+                )}
+              </>
+            )}
+            <span>Activity total: <strong className="num">{estimate.activityKcal} kcal</strong></span>
             <span>Calorie target: <strong className="num">{estimate.targets.kcal} kcal</strong></span>
           </div>
         ) : (
