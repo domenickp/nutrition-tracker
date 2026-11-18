@@ -28,6 +28,31 @@ afterEach(() => {
   state.profile = null;
 });
 
+describe('Workout routes', () => {
+  const signedIn = () => {
+    state.session = { user: { id: 'u' } };
+    state.profile = {};
+  };
+  it.each([
+    ['/workout', 'Workout'],
+    ['/workout/history', 'Workout history'],
+    ['/workout/history/abc', 'Workout'],
+    ['/workout/import', 'Import workouts'],
+  ])('renders %s', async (path, title) => {
+    signedIn();
+    at(path);
+    await waitFor(() => expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(title));
+  });
+  it('lists nav items in order with Workout active on /workout/history/abc', async () => {
+    signedIn();
+    at('/workout/history/abc');
+    const nav = await screen.findByRole('navigation', { name: 'Main' });
+    const links = Array.from(nav.querySelectorAll('a'));
+    expect(links.map((a) => a.textContent)).toEqual(['Today', 'Workout', 'Activity', 'Settings']);
+    expect(links.map((a) => a.getAttribute('aria-current'))).toEqual([null, 'page', null, null]);
+  });
+});
+
 describe('App shell redirects', () => {
   it('shows a spinner while loading', () => {
     state.loading = true;
