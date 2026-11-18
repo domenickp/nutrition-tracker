@@ -65,7 +65,7 @@ export default function App() {
       <Route path="/workout/history" element={<WorkoutHistoryScreen />} />
       <Route path="/workout/history/:id" element={<WorkoutSessionScreen />} />
       <Route path="/workout/import" element={<WorkoutImportScreen />} />
-      <Route path="/activity"element={<RedirectToActivityToday />} />
+      <Route path="/activity" element={<RedirectToActivityToday />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
