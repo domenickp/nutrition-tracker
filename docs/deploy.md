@@ -142,6 +142,67 @@ Supabase dashboard → **Authentication → URL Configuration**:
 - Activity → Import workout → paste one of your workout files. It should land on the
   correct local date.
 
+## CI/CD: automatic checks and function deploys (10 minutes, once)
+
+Changes arrive as pull requests. GitHub Actions (`.github/workflows/ci.yml`) runs the
+typecheck, tests, build and a Deno check of the USDA function on every PR. After you merge a
+PR into `main`, it runs them again and, if they pass and the USDA function changed, deploys
+the function. You no longer run `npx supabase functions deploy` yourself.
+
+### 1. Create a Supabase access token
+
+1. Supabase dashboard → your avatar (top right) → **Account preferences → Access Tokens**
+   (or go to <https://supabase.com/dashboard/account/tokens>).
+2. **Generate new token**, name it `github-actions-nutrition-tracker`, and copy it.
+   It's shown only once.
+
+This token can manage every project in your Supabase account, so put it only in GitHub
+secrets. If it ever leaks, delete it on that same page and generate a new one.
+
+### 2. Add two GitHub secrets
+
+GitHub → the `nutrition-tracker` repo → **Settings → Secrets and variables → Actions →
+New repository secret**. Add:
+
+| Name | Value |
+|---|---|
+| `SUPABASE_ACCESS_TOKEN` | the token from step 1 |
+| `SUPABASE_PROJECT_REF` | your project ref (from Step 2 above) |
+
+### 3. Make Cloudflare run the tests before publishing
+
+Cloudflare Pages builds `main` by itself, separately from GitHub Actions. To stop a build
+with failing tests from going live:
+
+1. Cloudflare dashboard → **Workers & Pages** → `nutrition-tracker` → **Settings → Build**
+   (called "Build configuration").
+2. Edit **Build command** to:
+   ```
+   npm test && npm run build
+   ```
+   (`npm run build` already includes the typecheck.)
+3. Save. It applies from the next build.
+
+Cloudflare also builds a **preview** for each PR branch and links it on the PR, so you can
+try a change on your phone before merging.
+
+### 4. (Optional) Require green checks before merging
+
+GitHub → **Settings → Branches → Add branch ruleset** (or "branch protection rule") for
+`main`: require a pull request, and require the `check` status to pass. On a free personal
+account, GitHub may not offer rulesets for private repos. Without one, just don't merge a PR
+whose checks are red.
+
+### Checking a deploy
+
+GitHub → **Actions** tab shows each run. The `deploy-usda` job prints "skipping deploy" when
+the function didn't change. If it fails with "Set SUPABASE_ACCESS_TOKEN…", the secrets in
+step 2 are missing or misnamed.
+
+**Database migrations are not automated.** When a PR adds a file under
+`supabase/migrations/`, its description will say so. Run `npx supabase db push` yourself
+after merging.
+
 ## Later: letting other people use it
 
 Turn "Allow new users to sign up" back on (Step 4.1) or invite them under Authentication →
