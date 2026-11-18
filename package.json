@@ -11,7 +11,7 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.119.0",
+    "@supabase/supabase-js": "^2.119.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.6"
@@ -27,7 +27,7 @@
     "typescript": "~5.7",
     "vite": "^7.3.8",
     "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^5.1.0",
+    "vitest": "^5.1.1",
     "workbox-build": "^7.4.1",
     "workbox-window": "^7.4.1"
   }
