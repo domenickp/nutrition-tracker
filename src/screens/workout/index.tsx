@@ -215,20 +215,23 @@ function Logger({ data, tz, onReload }: { data: WorkoutData; tz: string | undefi
   const last = lastEntries(data, day);
 
   // The workout clock starts at the first change (completedAt - startedAt counts as lifting time).
-  const touch = () => {
-    setMeta((m) => (m.startedAt ? m : { ...m, startedAt: new Date().toISOString() }));
+  // backdateSec: when the first action is finishing a timed set, the clock starts that long ago.
+  const touch = (backdateSec = 0) => {
+    setMeta((m) => (m.startedAt ? m : { ...m, startedAt: new Date(Date.now() - backdateSec * 1000).toISOString() }));
     setDirty(true);
   };
-  const patchLog = (id: string, fn: (l: ExerciseLog) => ExerciseLog) => {
+  const patchLog = (id: string, fn: (l: ExerciseLog) => ExerciseLog, backdateSec = 0) => {
     setLog((cur) => ({ ...cur, [id]: fn(cur[id]) }));
-    touch();
+    touch(backdateSec);
   };
-  const patchSet = (id: string, idx: number, patch: Partial<SessionSet>) =>
-    patchLog(id, (l) => ({ ...l, sets: l.sets.map((s, i) => (i === idx ? { ...s, ...patch } : s)) }));
+  const patchSet = (id: string, idx: number, patch: Partial<SessionSet>, backdateSec = 0) =>
+    patchLog(id, (l) => ({ ...l, sets: l.sets.map((s, i) => (i === idx ? { ...s, ...patch } : s)) }), backdateSec);
 
   const toggleDone = (ex: RoutineExercise, idx: number) => {
-    const wasDone = log[ex.id].sets[idx].done;
-    patchSet(ex.id, idx, { done: !wasDone });
+    const set = log[ex.id].sets[idx];
+    const wasDone = set.done;
+    const backdate = !wasDone && isTimed(ex) ? (set.timeMin ?? 0) * 60 + (set.timeSec ?? 0) : 0;
+    patchSet(ex.id, idx, { done: !wasDone }, backdate);
     const restSec = parseRestSeconds(ex.rest);
     if (!wasDone && restSec) setRest({ end: Date.now() + restSec * 1000, label: ex.name });
   };

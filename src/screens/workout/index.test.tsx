@@ -158,6 +158,33 @@ describe('WorkoutScreen', () => {
     expect(Date.parse(s.completedAt as string)).toBe(firstChange + 10 * 60_000);
   });
 
+  it('backdates the start by the duration when the first action is a timed set', async () => {
+    wk.loadWorkoutData.mockResolvedValue({
+      ...data,
+      lastByDay: {
+        ...data.lastByDay,
+        '2': {
+          ...lastDay2,
+          entries: [{
+            exerciseId: 'd2-warm-up-stationary-bike', name: 'Warm Up: Stationary Bike', notes: null,
+            sets: [{ reps: null, weightLb: null, timeMin: 40, timeSec: null, done: true }],
+          }],
+        },
+      },
+    });
+    renderScreen();
+    await screen.findByText('Day 2 · Legs');
+    vi.useFakeTimers();
+    act(() => { vi.advanceTimersByTime(5 * 60_000); });
+    const t = Date.now();
+    fireEvent.click(screen.getByLabelText('Done set 1 of Warm Up: Stationary Bike'));
+    act(() => { vi.advanceTimersByTime(30 * 60_000); });
+    await act(async () => { fireEvent.click(screen.getByText('Finish workout · 1 set')); });
+    const s: WorkoutSession = wk.saveWorkoutSession.mock.calls[0][0];
+    expect(Date.parse(s.startedAt)).toBe(t - 40 * 60_000);
+    expect(Date.parse(s.completedAt as string)).toBe(t + 30 * 60_000);
+  });
+
   it('keeps the draft and shows the error when saving fails', async () => {
     wk.saveWorkoutSession.mockRejectedValueOnce(new Error('network down'));
     renderScreen();
