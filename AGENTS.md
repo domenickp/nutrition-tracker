@@ -22,7 +22,7 @@ A nutrition tracker PWA: React + TypeScript + Vite frontend on Cloudflare Pages,
 - CI: `.github/workflows/ci.yml` runs typecheck, tests, build and `deno check` on every PR
   and push to `main`, then deploys the `usda` Edge Function on `main` when
   `supabase/functions/`, `supabase/config.toml` or `src/lib/types.ts` changed. Cloudflare
-  Pages builds `main` itself with `npm test && npm run build`, so failing tests block the
+  (a Workers project with Workers Builds) builds `main` itself with `npm test && npm run build`, so failing tests block the
   app deploy too. Migrations are applied manually by the owner.
 
 ## Branches and pull requests

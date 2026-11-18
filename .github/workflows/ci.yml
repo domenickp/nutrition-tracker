@@ -1,6 +1,6 @@
 # Checks every pull request and every push to main. On main, once checks pass, deploys the
 # `usda` Edge Function if anything it depends on changed. The app itself is deployed by
-# Cloudflare Pages, whose build command also runs the tests (see docs/deploy.md, "CI/CD").
+# Cloudflare Workers Builds, whose build command also runs the tests (see docs/deploy.md, "CI/CD").
 name: CI
 
 on:

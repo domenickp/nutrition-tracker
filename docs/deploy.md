@@ -171,20 +171,26 @@ New repository secret**. Add:
 
 ### 3. Make Cloudflare run the tests before publishing
 
-Cloudflare Pages builds `main` by itself, separately from GitHub Actions. To stop a build
-with failing tests from going live:
+Cloudflare builds `main` by itself, separately from GitHub Actions. This app ended up as a
+Cloudflare **Workers** project with Workers Builds (the PR checks show "Workers Builds:
+nutrition-tracker"). To stop a build with failing tests from going live:
 
-1. Cloudflare dashboard → **Workers & Pages** → `nutrition-tracker` → **Settings → Build**
-   (called "Build configuration").
-2. Edit **Build command** to:
+1. Cloudflare dashboard → **Compute → Workers & Pages** → `nutrition-tracker` →
+   **Settings → Build**.
+2. Edit **Build command** to the line below. Leave the deploy command as it is.
    ```
    npm test && npm run build
    ```
-   (`npm run build` already includes the typecheck.)
+   `npm run build` already includes the typecheck.
 3. Save. It applies from the next build.
 
-Cloudflare also builds a **preview** for each PR branch and links it on the PR, so you can
-try a change on your phone before merging.
+**Builds for PR branches.** Workers Builds also builds non-production branches by default,
+and that build failed on the first PR, while builds of `main` succeed. The log is under the
+same project → **Deployments / Builds**, on the failed build. Choose one:
+- If you want preview URLs for PRs, open the failed build's log and paste the error into a
+  Claude session.
+- If you don't, set **Settings → Build → Branch control** to build only `main` (turn off
+  builds for non-production branches). GitHub Actions still checks every PR.
 
 ### 4. (Optional) Require green checks before merging
 
