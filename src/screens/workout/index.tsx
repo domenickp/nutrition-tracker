@@ -163,7 +163,7 @@ export default function WorkoutScreen() {
 function Logger({ data, tz, onReload }: { data: WorkoutData; tz: string | undefined; onReload: () => Promise<void> }) {
   const initialDay = useMemo(() => defaultDay(ROUTINE, data.recent) ?? ROUTINE.days[0].day, [data.recent]);
   const [day, setDay] = useState(initialDay);
-  const [meta, setMeta] = useState<Meta>(() => ({ id: newId(), startedAt: new Date().toISOString() }));
+  const [meta, setMeta] = useState<Meta>(() => ({ id: newId(), startedAt: '' }));
   const [log, setLog] = useState<Record<string, ExerciseLog>>(() => freshLog(data, initialDay));
   const [notes, setNotes] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -194,7 +194,7 @@ function Logger({ data, tz, onReload }: { data: WorkoutData; tz: string | undefi
       setNotes(draft.notes || '');
       setDirty(true);
     } else {
-      setMeta({ id: newId(), startedAt: new Date().toISOString() });
+      setMeta({ id: newId(), startedAt: '' });
       setLog(base);
       setNotes('');
       setDirty(false);
@@ -214,7 +214,11 @@ function Logger({ data, tz, onReload }: { data: WorkoutData; tz: string | undefi
   const exercises = useMemo(() => dayDef?.exercises ?? [], [dayDef]);
   const last = lastEntries(data, day);
 
-  const touch = () => setDirty(true);
+  // The workout clock starts at the first change (completedAt - startedAt counts as lifting time).
+  const touch = () => {
+    setMeta((m) => (m.startedAt ? m : { ...m, startedAt: new Date().toISOString() }));
+    setDirty(true);
+  };
   const patchLog = (id: string, fn: (l: ExerciseLog) => ExerciseLog) => {
     setLog((cur) => ({ ...cur, [id]: fn(cur[id]) }));
     touch();
@@ -231,7 +235,7 @@ function Logger({ data, tz, onReload }: { data: WorkoutData; tz: string | undefi
 
   const session = useMemo(
     () => buildSession({
-      id: meta.id, day, startedAt: meta.startedAt, completedAt: null, notes, exercises, log,
+      id: meta.id, day, startedAt: meta.startedAt || new Date(0).toISOString(), completedAt: null, notes, exercises, log,
     }),
     [meta, day, notes, exercises, log],
   );

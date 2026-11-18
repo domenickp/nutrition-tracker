@@ -143,6 +143,21 @@ describe('WorkoutScreen', () => {
     expect(screen.getByText('View history').getAttribute('href')).toBe('/workout/history');
   });
 
+  it('starts the clock at the first change, not at mount', async () => {
+    renderScreen();
+    await screen.findByText('Day 2 · Legs');
+    vi.useFakeTimers();
+    const mountTime = Date.now();
+    act(() => { vi.advanceTimersByTime(30 * 60_000); });
+    fireEvent.click(screen.getByLabelText('Done set 1 of Goblet Squat'));
+    const firstChange = mountTime + 30 * 60_000;
+    act(() => { vi.advanceTimersByTime(10 * 60_000); });
+    await act(async () => { fireEvent.click(screen.getByText('Finish workout · 1 set')); });
+    const s: WorkoutSession = wk.saveWorkoutSession.mock.calls[0][0];
+    expect(Date.parse(s.startedAt)).toBe(firstChange);
+    expect(Date.parse(s.completedAt as string)).toBe(firstChange + 10 * 60_000);
+  });
+
   it('keeps the draft and shows the error when saving fails', async () => {
     wk.saveWorkoutSession.mockRejectedValueOnce(new Error('network down'));
     renderScreen();
