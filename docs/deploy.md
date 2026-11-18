@@ -184,13 +184,10 @@ nutrition-tracker"). To stop a build with failing tests from going live:
    `npm run build` already includes the typecheck.
 3. Save. It applies from the next build.
 
-**Builds for PR branches.** Workers Builds also builds non-production branches by default,
-and that build failed on the first PR, while builds of `main` succeed. The log is under the
-same project → **Deployments / Builds**, on the failed build. Choose one:
-- If you want preview URLs for PRs, open the failed build's log and paste the error into a
-  Claude session.
-- If you don't, set **Settings → Build → Branch control** to build only `main` (turn off
-  builds for non-production branches). GitHub Actions still checks every PR.
+**Preview builds for PRs.** Cloudflare also builds each PR branch (with
+`npx wrangler preview`) and links a preview URL on the PR, so you can try a change on your
+phone before merging. Its settings live in `wrangler.jsonc` in the repo. Previews use the
+same Supabase project as the live app, so data you enter in a preview is real.
 
 ### 4. (Optional) Require green checks before merging
 

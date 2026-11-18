@@ -23,7 +23,8 @@ A nutrition tracker PWA: React + TypeScript + Vite frontend on Cloudflare Pages,
   and push to `main`, then deploys the `usda` Edge Function on `main` when
   `supabase/functions/`, `supabase/config.toml` or `src/lib/types.ts` changed. Cloudflare
   (a Workers project with Workers Builds) builds `main` itself with `npm test && npm run build`, so failing tests block the
-  app deploy too. Migrations are applied manually by the owner.
+  app deploy too. `wrangler.jsonc` holds the Workers config (static assets, SPA fallback,
+  an empty `previews` block so PR-branch builds via `npx wrangler preview` work). Migrations are applied manually by the owner.
 
 ## Branches and pull requests
 
