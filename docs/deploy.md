@@ -204,7 +204,8 @@ step 2 are missing or misnamed.
 
 **Database migrations are not automated.** When a PR adds a file under
 `supabase/migrations/`, its description will say so. Run `npx supabase db push` yourself
-after merging.
+after merging. Until you do, the app keeps working, but weight suggestions are hidden (the
+`target_suggestions` table from `20261122000000_target_suggestions.sql` doesn't exist yet).
 
 ## Later: letting other people use it
 
