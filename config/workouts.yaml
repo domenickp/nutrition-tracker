@@ -153,7 +153,7 @@ days:
         sets: 3
         reps: 12
         rest: 2 min
-        notes: 10 pound leg weights
+        notes: Focus on lats, do 15 seconds holds until pullups are possible.
       - id: d3-dumbbell-row
         name: Dumbbell Row
         sets: 3
@@ -166,18 +166,12 @@ days:
         reps: 12
         weightLb: 35
         rest: 90 sec
-        notes: Lie face down on an incline bench and row both dumbbells.
+        notes: Lie face down on a 30 or 45 degree inclined bench and row both dumbbells.
       - id: d3-dumbbell-shrugs
         name: Dumbbell Shrugs
         sets: 3
         reps: 15
         weightLb: 52.5
-        rest: 60–90 sec
-      - id: d3-dumbbell-curl
-        name: Dumbbell Curl
-        sets: 3
-        reps: 12
-        weightLb: 35
         rest: 60–90 sec
       - id: d3-incline-dumbbell-curl
         name: Incline Dumbbell Curl
@@ -185,12 +179,19 @@ days:
         reps: 12
         weightLb: 20
         rest: 60–90 sec
-        notes: Seated on an incline bench, arms hanging straight down.
-      - id: d3-seated-hammer-curl
-        name: Seated Hammer Curl
+        notes: Seated on a 30 degree inclined bench, arms hanging straight down.
+      - id: d3-preacher-hammer-curl
+        name: Preacher Hammer Curl
         sets: 3
         reps: 12
         weightLb: 30
+        rest: 60–90 sec
+        notes: Arm extends down from the top of the 60 degree inclined bench.
+      - id: d3-dumbbell-curl
+        name: Dumbbell Curl
+        sets: 3
+        reps: 12
+        weightLb: 35
         rest: 60–90 sec
       - id: d3-dead-hangs
         name: Dead Hangs
