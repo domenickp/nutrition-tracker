@@ -7,6 +7,7 @@ import { computeEntry, amountOptions, sumNutrients } from './lib/portions';
 import { fromWorkout, toWorkout, fromFood, toFood, fromFoodLog, toFoodLog, fromExerciseRule, toExerciseRule } from './data/mappers';
 import { normalizeFoodDetail } from '../supabase/functions/usda/normalize';
 import type { Profile } from './lib/types';
+import { loadReferenceRoutine } from './test/referenceRoutine';
 
 const profile: Profile = {
   userId: 'u1', birthMonth: 6, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain',
@@ -62,7 +63,8 @@ describe('workout tab session → workouts row → session again', () => {
   it('a FatherWorkout session survives the workouts table and feeds the workout screen helpers', async () => {
     const { validateSession, normalizeSession, latestCompletedByDay, defaultDay, summarizeSession, initialSets } =
       await import('./lib/workoutSession');
-    const { ROUTINE, routineDay } = await import('./lib/routine');
+    const { routineDay } = await import('./lib/routine');
+    const ROUTINE = loadReferenceRoutine();
     const session = normalizeSession(JSON.parse(readFileSync('docs/samples/workout-2026-11-16-d3.json', 'utf8')));
     expect(validateSession(session, ROUTINE)).toEqual([]);
     const summary = summarizeWorkout(analyzeWorkout(session, { timeZone: profile.timezone, rules: [] }));

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { loadReferenceRoutine } from '../test/referenceRoutine';
 import { ROUTINE, type Routine, type RoutineExercise } from './routine';
 import {
   buildSession, countDone, defaultDay, DRAFT_KEY, formatClock, formatLastTime, formatNum,
@@ -101,7 +102,7 @@ describe('validateSession', () => {
   it('validates the sample workout with and without ROUTINE', () => {
     const sample = JSON.parse(readFileSync('docs/samples/workout-2026-11-16-d3.json', 'utf8'));
     expect(validateSession(sample)).toEqual([]);
-    expect(validateSession(sample, ROUTINE)).toEqual([]);
+    expect(validateSession(sample, loadReferenceRoutine())).toEqual([]);
   });
 });
 
