@@ -14,3 +14,10 @@
 .today__calc summary { cursor: pointer; min-height: var(--tap); display: flex; align-items: center; color: var(--ink-soft); }
 .today__actions { display: flex; gap: var(--sp-2); margin-top: var(--sp-3); }
 .today__actions .btn { flex: 1; }
+.weighin__row { display: flex; align-items: flex-end; gap: var(--sp-3); }
+.weighin__row .field { flex: 1; }
+.weighin__row--done { align-items: center; justify-content: space-between; min-height: var(--tap); }
+.weighin__trend { margin-top: var(--sp-2); }
+.suggestion__actions { display: flex; gap: var(--sp-2); margin-top: var(--sp-3); }
+.suggestion__actions .btn { flex: 1; }
+.suggestion__reason summary { cursor: pointer; min-height: var(--tap); display: flex; align-items: center; color: var(--ink-soft); }

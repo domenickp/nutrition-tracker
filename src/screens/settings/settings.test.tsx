@@ -8,6 +8,7 @@ const api = vi.hoisted(() => ({
   saveProfile: vi.fn(async (p: unknown) => ({ userId: 'u', ...(p as object) })),
   addWeight: vi.fn(async (_d: string, _kg: number) => {}),
   getLatestWeight: vi.fn(async (_d: string) => null as number | null),
+  listSuggestionRecords: vi.fn(async () => null as unknown[] | null),
 }));
 vi.mock('../../data/api', () => api);
 vi.mock('../../data/auth', () => ({ signOut: vi.fn(async () => {}) }));
@@ -96,5 +97,31 @@ describe('SettingsScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /Metric/ }));
     expect((screen.getByLabelText('Current weight (kg)') as HTMLInputElement).value).toBe('81.6');
     expect((screen.getByLabelText('Height (cm)') as HTMLInputElement).value).toBe('177.8');
+  });
+
+  const rec = (over: object) => ({
+    id: 'r', kind: 'calorie', action: 'accepted', snoozeUntil: null, oldAdjustPct: -20, newAdjustPct: -15,
+    oldKcal: 2000, newKcal: 2200, reason: 'x', createdAt: '2026-11-10T15:00:00Z', ...over,
+  });
+
+  it('notes a suggestion-set calorie adjustment when it matches the override', async () => {
+    api.getProfile.mockResolvedValue({ ...profile, overrideKcalAdjustPct: -15 });
+    api.listSuggestionRecords.mockResolvedValue([rec({})]);
+    setup();
+    expect(await screen.findByText('Set from a suggestion on Nov 10')).toBeTruthy();
+  });
+
+  it('shows no note when the override differs or records are unavailable', async () => {
+    api.getProfile.mockResolvedValue({ ...profile, overrideKcalAdjustPct: -12 });
+    api.listSuggestionRecords.mockResolvedValue([rec({})]);
+    setup();
+    await screen.findByText('Your profile');
+    expect(screen.queryByText(/Set from a suggestion/)).toBeNull();
+    cleanup();
+    api.getProfile.mockResolvedValue({ ...profile, overrideKcalAdjustPct: -15 });
+    api.listSuggestionRecords.mockResolvedValue(null);
+    setup();
+    await screen.findByText('Your profile');
+    expect(screen.queryByText(/Set from a suggestion/)).toBeNull();
   });
 });

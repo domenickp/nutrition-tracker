@@ -1,12 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Field, Layout, ProgressBar, Sheet, Spinner } from '../../components';
+import { Button, Card, Field, Layout, ProgressBar, Sheet, Spinner, SuggestionCard } from '../../components';
 import {
+  acceptCalorieSuggestion,
   addWater,
+  addWeight,
   deleteFoodLog,
   deleteWater,
   getProfile,
+  listSuggestionRecords,
+  loadAnalysisData,
   loadDay,
+  snoozeSuggestion,
   updateFoodLog,
 } from '../../data/api';
 import { addDays, todayIn } from '../../lib/dates';
@@ -14,6 +19,9 @@ import { scaleTotals, sumNutrients } from '../../lib/portions';
 import { computeTargets } from '../../lib/targets';
 import type { DayData, FoodLog } from '../../lib/types';
 import { flOzToMl, formatVolume, mlToFlOz } from '../../lib/units';
+import { analyzeWeight, type WeightAnalysis } from '../../lib/weightAnalysis';
+import type { WeighIn as WeighInPoint } from '../../lib/types';
+import { WeighIn } from './WeighIn';
 import './today.css';
 
 const r1 = (n: number) => Math.round(n * 10) / 10;
@@ -46,6 +54,10 @@ export default function TodayScreen() {
   const [sheetError, setSheetError] = useState<string | null>(null);
   const [customOpen, setCustomOpen] = useState(false);
   const [custom, setCustom] = useState('');
+  const [analysis, setAnalysis] = useState<WeightAnalysis | null>(null);
+  const [weighIns, setWeighIns] = useState<WeighInPoint[]>([]);
+  const [saved, setSaved] = useState<{ date: string; kg: number } | null>(null);
+  const analysisSeq = useRef(0);
 
   const paramDate = params.date ?? null;
   const date = paramDate ?? resolvedDate;
@@ -92,6 +104,37 @@ export default function TodayScreen() {
       active = false;
     };
   }, [date]);
+
+  const hasDay = day !== null;
+  const realToday = date !== null && date === today;
+
+  /** Load the weight analysis. A failure hides the trend line and card; it never sets `error`. */
+  const loadAnalysis = useCallback(async (t: string) => {
+    const seq = ++analysisSeq.current;
+    try {
+      const data = await loadAnalysisData(t);
+      const records = await listSuggestionRecords();
+      if (seq !== analysisSeq.current) return;
+      setWeighIns(data.weighIns);
+      setAnalysis(
+        analyzeWeight({ profile: data.profile, today: t, weighIns: data.weighIns, days: data.days, records }),
+      );
+    } catch {
+      if (seq !== analysisSeq.current) return;
+      setAnalysis(null);
+      setWeighIns([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasDay || !realToday || !today) {
+      analysisSeq.current++;
+      setAnalysis(null);
+      setWeighIns([]);
+      return;
+    }
+    void loadAnalysis(today);
+  }, [hasDay, realToday, today, loadAnalysis]);
 
   /** Run a write, then re-load the day. Errors are shown, never dropped. */
   const write = async (
@@ -192,6 +235,30 @@ export default function TodayScreen() {
     }
   };
 
+  const todayWeighIn =
+    weighIns.find((w) => w.date === date)?.kg ?? (saved && saved.date === date ? saved.kg : null);
+  const saveWeight = async (kg: number) => {
+    const ok = await write(() => addWeight(date, kg));
+    if (ok) {
+      setSaved({ date, kg });
+      await loadAnalysis(date);
+    }
+    return ok;
+  };
+  const suggestion = isToday ? (analysis?.suggestions[0] ?? null) : null;
+  const acceptSuggestion = async () => {
+    if (!suggestion) return;
+    const ok = await write(() => acceptCalorieSuggestion(day.profile, suggestion));
+    if (ok) await loadAnalysis(date);
+  };
+  const snooze = async () => {
+    if (!suggestion) return;
+    const ok = await write(async () => {
+      if (!(await snoozeSuggestion(suggestion.kind, date))) throw new Error('Could not snooze this suggestion.');
+    });
+    if (ok) await loadAnalysis(date);
+  };
+
   const a = day.activity;
   const hourParts: Array<[string, number]> = a
     ? [
@@ -231,6 +298,28 @@ export default function TodayScreen() {
         )}
         {actionError && <p className="today__error" role="alert">{actionError}</p>}
         {error && <p className="today__error" role="alert">{error}</p>}
+
+        {isToday && (
+          <Card title="Weight">
+            <WeighIn
+              units={units}
+              todayKg={todayWeighIn}
+              fallbackKg={day.weightKg}
+              analysis={analysis}
+              busy={busy}
+              onSave={saveWeight}
+              onInvalid={setActionError}
+            />
+          </Card>
+        )}
+        {suggestion && (
+          <SuggestionCard
+            suggestion={suggestion}
+            onAccept={suggestion.kind === 'calorie' ? acceptSuggestion : undefined}
+            onSnooze={snooze}
+            busy={busy}
+          />
+        )}
 
         {calc ? (
           <Card title="Remaining">
