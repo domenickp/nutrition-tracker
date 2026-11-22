@@ -1,0 +1,14 @@
+.wchart { display: block; width: 100%; height: auto; }
+.wchart__grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 3; }
+.wchart__label { fill: var(--ink-soft); font-size: 10px; font-family: var(--font); }
+.wchart__trend { stroke: var(--brand); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.wchart__dot { fill: var(--ink-soft); opacity: 0.7; }
+.progress__status { font-size: var(--fs-lg); font-weight: 600; }
+.progress__error { color: var(--warn); background: var(--warn-bg); padding: var(--sp-3); border-radius: var(--radius-sm); }
+.progress__stats { display: grid; grid-template-columns: 1fr auto; gap: var(--sp-2) var(--sp-3); margin: 0 0 var(--sp-3); }
+.progress__stats dt { color: var(--ink-soft); }
+.progress__stats dd { margin: 0; text-align: right; font-weight: 600; }
+.progress__history { list-style: none; margin: 0; padding: 0; }
+.progress__history li { padding: var(--sp-2) 0; border-bottom: 1px solid var(--line); }
+.progress__history li:last-child { border-bottom: 0; }
+.progress__history-head { display: flex; justify-content: space-between; gap: var(--sp-3); font-weight: 600; }

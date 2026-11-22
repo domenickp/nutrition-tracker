@@ -19,6 +19,7 @@ import type {
   WorkoutSummary,
 } from '../lib/types';
 import { addDays } from '../lib/dates';
+import type { Suggestion } from '../lib/weightAnalysis';
 import type { UsdaFood } from '../../supabase/functions/usda/normalize';
 import { queryWords } from '../../supabase/functions/usda/search';
 import {
@@ -181,15 +182,6 @@ export async function loadAnalysisData(
 
 // ---- suggestions (every access fails soft: the table may not exist until the migration is applied) ----
 
-// Structural subset of weightAnalysis.Suggestion (contracts §9.3).
-interface CalorieSuggestion {
-  oldAdjustPct: number;
-  newAdjustPct: number | null;
-  oldKcal: number;
-  newKcal: number | null;
-  reason: string;
-}
-
 export async function listSuggestionRecords(): Promise<SuggestionRecord[] | null> {
   try {
     const since = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
@@ -217,7 +209,7 @@ export async function recordSuggestion(r: NewSuggestionRecord): Promise<boolean>
   }
 }
 
-export async function acceptCalorieSuggestion(profile: Profile, s: CalorieSuggestion): Promise<Profile> {
+export async function acceptCalorieSuggestion(profile: Profile, s: Suggestion): Promise<Profile> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { userId, ...input } = profile;
   const saved = await saveProfile({ ...input, overrideKcalAdjustPct: s.newAdjustPct });

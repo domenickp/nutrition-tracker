@@ -56,6 +56,7 @@ import {
   snoozeSuggestion,
 } from './api';
 import type { NewFood, NewSuggestionRecord, Profile, WorkoutSummary } from '../lib/types';
+import type { Suggestion } from '../lib/weightAnalysis';
 
 const queue = (table: string, ...r: Result[]) => {
   (h.results[table] ??= []).push(...r);
@@ -332,7 +333,7 @@ describe('acceptCalorieSuggestion / snoozeSuggestion', () => {
     units: 'metric', timezone: 'UTC', overrideKcalAdjustPct: null, overrideProteinGPerLb: null,
     overrideFatPct: null, overrideWaterBaseMlPerKg: null,
   };
-  const s = { oldAdjustPct: 0, newAdjustPct: 5, oldKcal: 2500, newKcal: 2625, reason: 'why' };
+  const s: Suggestion = { kind: 'calorie', title: 'Raise your target', oldAdjustPct: 0, newAdjustPct: 5, oldKcal: 2500, newKcal: 2625, reason: 'why' };
   it('saves the override then records acceptance', async () => {
     queue('profiles', { data: { ...profileRow, override_kcal_adjust_pct: 5 } });
     const saved = await acceptCalorieSuggestion(profile, s);
