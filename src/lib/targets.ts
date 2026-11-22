@@ -8,7 +8,7 @@ const DIGESTION_FACTOR = 1.1;
 const WATER_ML_PER_HALF_HOUR = 12 * ML_PER_FLOZ; // 354.882 ml per 0.5 h of exercise
 const DEFAULT_WATER_ML_PER_KG = 0.5 * ML_PER_FLOZ * LB_PER_KG;
 
-const KCAL_ADJUST_PCT: Record<Goal, number> = { lose_fat: -20, maintain: 0, build_muscle: 10 };
+export const KCAL_ADJUST_PCT: Record<Goal, number> = { lose_fat: -20, maintain: 0, build_muscle: 10 };
 const PROTEIN_G_PER_LB: Record<Goal, number> = { lose_fat: 1.0, maintain: 0.8, build_muscle: 1.0 };
 const FAT_PCT: Record<Goal, number> = { lose_fat: 25, maintain: 30, build_muscle: 25 };
 

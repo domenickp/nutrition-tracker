@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, Field, Layout, Spinner } from '../../components';
-import { addWeight, getLatestWeight, getProfile, saveProfile } from '../../data/api';
+import { addWeight, getLatestWeight, getProfile, listSuggestionRecords, saveProfile } from '../../data/api';
 import { signOut } from '../../data/auth';
-import { todayIn } from '../../lib/dates';
+import { localDate, todayIn } from '../../lib/dates';
 import type { Goal, Profile, ProfileInput, Sex, Units } from '../../lib/types';
 import {
   DEFAULT_WATER_ML_PER_KG,
@@ -36,6 +36,13 @@ function timeZones(current: string): string[] {
   }
   if (!zones.includes(current)) zones = [current, ...zones];
   return zones;
+}
+
+function fmtDate(date: string): string {
+  const [y, m, d] = date.split('-').map(Number);
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' }).format(
+    new Date(Date.UTC(y, m - 1, d)),
+  );
 }
 
 const browserZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -135,6 +142,7 @@ export default function SettingsScreen() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [suggestedOn, setSuggestedOn] = useState<{ pct: number; date: string } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -150,6 +158,14 @@ export default function SettingsScreen() {
           if (!active) return;
           setInitialKg(kg);
           setForm(formFromProfile(profile, kg));
+          const records = await listSuggestionRecords();
+          if (!active) return;
+          const latest = records
+            ?.filter((r) => r.kind === 'calorie' && r.action === 'accepted' && r.newAdjustPct !== null)
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+          if (latest && latest.newAdjustPct === profile.overrideKcalAdjustPct) {
+            setSuggestedOn({ pct: latest.newAdjustPct as number, date: localDate(latest.createdAt, profile.timezone) });
+          }
         }
       } catch (err) {
         if (active) setLoadError(err instanceof Error ? err.message : 'Could not load your settings.');
@@ -396,6 +412,9 @@ export default function SettingsScreen() {
                   onChange={(e) => set('adjust', e.target.value)}
                 />
                 {resetBtn('adjust', 'calorie adjustment')}
+                {suggestedOn && num(form.adjust) === suggestedOn.pct && (
+                  <p className="muted">Set from a suggestion on {fmtDate(suggestedOn.date)}</p>
+                )}
               </div>
               <div className={styles.override}>
                 <Field

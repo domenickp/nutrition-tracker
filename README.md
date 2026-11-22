@@ -13,6 +13,13 @@ The **Workout** tab is a 4-day dumbbell routine logger (merged in from
 rest timer, history. A finished workout counts toward that day's activity automatically, and
 old FatherWorkout session files can be imported from Workout → History → Import.
 
+**Weight trend.** Weigh in on Today. The app smooths daily weigh-ins into a trend, compares
+the weekly rate with what your goal (lose fat / maintain / build muscle) aims for, and after
+about two weeks of weigh-ins and food logs it estimates how much you really burn. When the
+results and the goal disagree it *suggests* a new calorie target (you accept or dismiss it;
+nothing changes on its own) plus protein, cardio or lifting advice. Details and the chart are
+on the Progress screen, linked from Today.
+
 **Targets are estimates, not medical advice.**
 
 ## Stack

@@ -81,3 +81,39 @@ describe('workout tab session → workouts row → session again', () => {
     if (entry) expect(initialSets(ex, entry)[0].reps).toBe(entry.sets.find((s) => s.done)?.reps ?? null);
   });
 });
+
+describe('weight trend: suggestion record → table row → analysis', () => {
+  it('a snooze written by the data layer hides that kind in analyzeWeight; an accept starts the cooldown', async () => {
+    const { fromSuggestionRecord, toSuggestionRecord } = await import('./data/mappers');
+    const { analyzeWeight } = await import('./lib/weightAnalysis');
+    const { addDays } = await import('./lib/dates');
+    const today = '2026-11-22';
+    const loseFat: Profile = { ...profile, goal: 'lose_fat' };
+    // 21 days ending yesterday: 2000 kcal a day, losing ~2 % a week (too fast for lose_fat).
+    const weighIns = Array.from({ length: 22 }, (_, i) => ({
+      date: addDays(today, -21 + i), kg: 90 * (1 - (0.02 / 7) * i),
+    }));
+    const days = Array.from({ length: 21 }, (_, i) => ({
+      date: addDays(today, -21 + i), intakeKcal: 2000, proteinG: 80, activity: null, workouts: [],
+    }));
+    const row = (r: Parameters<typeof fromSuggestionRecord>[0], createdAt: string) =>
+      toSuggestionRecord({ id: 'r', user_id: 'u1', created_at: createdAt, ...fromSuggestionRecord(r) });
+    const none = { oldAdjustPct: null, newAdjustPct: null, oldKcal: null, newKcal: null, reason: null };
+
+    const base = analyzeWeight({ profile: loseFat, today, weighIns, days, records: [] });
+    expect(base.status).toBe('below');
+    expect(base.suggestions.map((s) => s.kind)).toEqual(expect.arrayContaining(['calorie', 'protein']));
+
+    const snoozed = row({ ...none, kind: 'protein', action: 'snoozed', snoozeUntil: addDays(today, 7) },
+      '2026-11-22T15:00:00Z');
+    const kinds = analyzeWeight({ profile: loseFat, today, weighIns, days, records: [snoozed] })
+      .suggestions.map((s) => s.kind);
+    expect(kinds).toContain('calorie');
+    expect(kinds).not.toContain('protein');
+
+    const accepted = row({ ...none, kind: 'calorie', action: 'accepted', snoozeUntil: null,
+      oldAdjustPct: -20, newAdjustPct: -12, oldKcal: 2000, newKcal: 2200, reason: 'x' }, '2026-11-20T02:00:00Z');
+    expect(analyzeWeight({ profile: loseFat, today, weighIns, days, records: [accepted] })
+      .suggestions.map((s) => s.kind)).not.toContain('calorie');
+  });
+});

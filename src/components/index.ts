@@ -12,3 +12,5 @@ export { progressState } from './progress';
 export { Spinner } from './Spinner';
 export { Sheet } from './Sheet';
 export type { SheetProps } from './Sheet';
+export { SuggestionCard } from './SuggestionCard';
+export type { SuggestionCardProps } from './SuggestionCard';

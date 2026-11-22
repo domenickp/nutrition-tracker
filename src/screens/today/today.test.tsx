@@ -2,7 +2,9 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { DayData } from '../../lib/types';
+import type { AnalysisDay, DayData, Profile } from '../../lib/types';
+import { addDays, todayIn } from '../../lib/dates';
+import { analyzeWeight, type Suggestion } from '../../lib/weightAnalysis';
 
 vi.mock('../../data/api', () => ({
   loadDay: vi.fn(),
@@ -11,10 +13,22 @@ vi.mock('../../data/api', () => ({
   deleteWater: vi.fn(),
   updateFoodLog: vi.fn(async () => ({})),
   deleteFoodLog: vi.fn(),
+  addWeight: vi.fn(async () => {}),
+  loadAnalysisData: vi.fn(),
+  listSuggestionRecords: vi.fn(async () => [] as unknown[] | null),
+  acceptCalorieSuggestion: vi.fn(async () => ({})),
+  snoozeSuggestion: vi.fn(async () => true),
 }));
+vi.mock('../../lib/weightAnalysis', async (orig) => {
+  const m = await orig<typeof import('../../lib/weightAnalysis')>();
+  return { ...m, analyzeWeight: vi.fn(m.analyzeWeight) };
+});
 import * as api from '../../data/api';
 import { computeTargets } from '../../lib/targets';
 import TodayScreen from './index';
+
+const realImpl = vi.mocked(analyzeWeight).getMockImplementation()!;
+const realAnalyze = realImpl;
 
 const zero = { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0, waterMl: 0 };
 function fixture(over: Partial<DayData> = {}): DayData {
@@ -47,8 +61,33 @@ function renderIt() {
   );
 }
 
+const TODAY = todayIn('America/New_York');
+
+function analysisData(weighIns: Array<{ date: string; kg: number }>, profile?: Profile) {
+  const days: AnalysisDay[] = [];
+  for (let i = 21; i >= 1; i--) {
+    days.push({ date: addDays(TODAY, -i), intakeKcal: null, proteinG: null, activity: null, workouts: [] });
+  }
+  return { profile: profile ?? fixture().profile, weighIns, days };
+}
+
+function renderToday() {
+  render(
+    <MemoryRouter initialEntries={['/']}>
+      <Routes>
+        <Route path="/" element={<TodayScreen />} />
+        <Route path="/progress" element={<p>PROGRESS</p>} />
+      </Routes>
+    </MemoryRouter>,
+  );
+}
+
 beforeEach(() => {
+  vi.mocked(analyzeWeight).mockImplementation(realImpl);
   vi.mocked(api.loadDay).mockResolvedValue(fixture());
+  vi.mocked(api.getProfile).mockResolvedValue(fixture().profile);
+  vi.mocked(api.loadAnalysisData).mockResolvedValue(analysisData([]));
+  vi.mocked(api.listSuggestionRecords).mockResolvedValue([]);
 });
 afterEach(() => {
   cleanup();
@@ -93,5 +132,108 @@ describe('TodayScreen', () => {
     renderIt();
     expect(await screen.findByText(/Add your weight in Settings/)).toBeTruthy();
     expect(screen.getByText('Oats')).toBeTruthy();
+  });
+
+  it('past-day pages show no weigh-in and skip the analysis', async () => {
+    renderIt();
+    await screen.findByText('Oats');
+    expect(screen.queryByText('Save weight')).toBeNull();
+    expect(api.loadAnalysisData).not.toHaveBeenCalled();
+  });
+});
+
+describe('TodayScreen weigh-in', () => {
+  const todayDay = () => fixture({ date: TODAY });
+  const falling = () =>
+    Array.from({ length: 22 }, (_, i) => ({ date: addDays(TODAY, -21 + i), kg: 90 - i * 0.05 }));
+
+  it('saves a weight in lb as kg, then shows it', async () => {
+    vi.mocked(api.loadDay).mockResolvedValue(todayDay());
+    renderToday();
+    fireEvent.change(await screen.findByLabelText('Weight (lb)'), { target: { value: '200' } });
+    fireEvent.click(screen.getByText('Save weight'));
+    await waitFor(() => expect(api.addWeight).toHaveBeenCalled());
+    const [date, kg] = vi.mocked(api.addWeight).mock.calls[0] as unknown as [string, number];
+    expect(date).toBe(TODAY);
+    expect(kg).toBeCloseTo(90.72, 1);
+    expect(await screen.findByText('Edit')).toBeTruthy();
+    expect(screen.getByText('200.0 lb')).toBeTruthy();
+  });
+
+  it('shows the trend line and a Progress link', async () => {
+    vi.mocked(api.loadDay).mockResolvedValue(todayDay());
+    vi.mocked(api.loadAnalysisData).mockResolvedValue(analysisData(falling()));
+    renderToday();
+    const el = await screen.findByText(/^Trend \d+\.\d lb · /);
+    expect(el.textContent).toMatch(/^Trend \d+\.\d lb · (collecting data|[−+]?\d+\.\d lb\/wk)/);
+    expect((screen.getByText('Progress') as HTMLAnchorElement).getAttribute('href')).toBe('/progress');
+  });
+
+  it('metric profile shows kg', async () => {
+    const d = todayDay();
+    d.profile = { ...d.profile, units: 'metric' };
+    vi.mocked(api.loadDay).mockResolvedValue(d);
+    vi.mocked(api.loadAnalysisData).mockResolvedValue(analysisData(falling(), d.profile));
+    renderToday();
+    expect(await screen.findByLabelText('Weight (kg)')).toBeTruthy();
+    const el = await screen.findByText(/^Trend \d+\.\d kg · /);
+    expect(el.textContent).not.toMatch(/lb/);
+  });
+
+  describe('suggestion card', () => {
+    const calorie: Suggestion = {
+      kind: 'calorie', title: 'Raise calories', reason: 'because', oldAdjustPct: -20, oldKcal: 2000,
+      newAdjustPct: -15, newKcal: 2200,
+    };
+    /** First analysis has the suggestion, later ones (after a reload) do not. */
+    function suggestOnce() {
+      let n = 0;
+      vi.mocked(analyzeWeight).mockImplementation((i) => ({
+        ...realAnalyze(i),
+        suggestions: n++ === 0 ? [calorie] : [],
+      }));
+    }
+
+    it('Accept saves the new adjustment and refreshes the day', async () => {
+      vi.mocked(api.loadDay).mockResolvedValue(todayDay());
+      suggestOnce();
+      renderToday();
+      expect(await screen.findByText('Raise calories')).toBeTruthy();
+      fireEvent.click(screen.getByText('Accept'));
+      await waitFor(() => expect(api.acceptCalorieSuggestion).toHaveBeenCalled());
+      expect(vi.mocked(api.acceptCalorieSuggestion).mock.calls[0][1]).toMatchObject({ newAdjustPct: -15 });
+      await waitFor(() => expect(api.loadDay).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(screen.queryByText('Raise calories')).toBeNull());
+    });
+
+    it('Not now snoozes and hides the card', async () => {
+      vi.mocked(api.loadDay).mockResolvedValue(todayDay());
+      suggestOnce();
+      renderToday();
+      fireEvent.click(await screen.findByText('Not now'));
+      await waitFor(() => expect(api.snoozeSuggestion).toHaveBeenCalledWith('calorie', TODAY));
+      await waitFor(() => expect(screen.queryByText('Raise calories')).toBeNull());
+    });
+  });
+
+  it('records unavailable: no card, no error, weigh-in still works', async () => {
+    vi.mocked(api.loadDay).mockResolvedValue(todayDay());
+    vi.mocked(api.listSuggestionRecords).mockResolvedValue(null);
+    renderToday();
+    fireEvent.change(await screen.findByLabelText('Weight (lb)'), { target: { value: '180' } });
+    fireEvent.click(screen.getByText('Save weight'));
+    await waitFor(() => expect(api.addWeight).toHaveBeenCalled());
+    expect(screen.queryByText('Suggestion')).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('an analysis failure hides the trend but never errors the screen', async () => {
+    vi.mocked(api.loadDay).mockResolvedValue(todayDay());
+    vi.mocked(api.loadAnalysisData).mockRejectedValue(new Error('boom'));
+    renderToday();
+    expect(await screen.findByLabelText('Weight (lb)')).toBeTruthy();
+    await waitFor(() => expect(api.loadAnalysisData).toHaveBeenCalled());
+    expect(screen.queryByText(/^Trend/)).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
   });
 });

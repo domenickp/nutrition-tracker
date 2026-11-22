@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Spinner } from './components';
 import { getProfile } from './data/api';
@@ -12,6 +12,8 @@ import WorkoutScreen from './screens/workout';
 import WorkoutHistoryScreen from './screens/workouthistory';
 import WorkoutImportScreen from './screens/workouthistory/import';
 import WorkoutSessionScreen from './screens/workouthistory/session';
+
+const ProgressScreen = lazy(() => import('./screens/progress'));
 
 /** Today's date in the browser's zone; only used to resolve the /activity nav link. */
 function RedirectToActivityToday() {
@@ -61,6 +63,7 @@ export default function App() {
       <Route path="/day/:date" element={<TodayScreen />} />
       <Route path="/day/:date/add" element={<AddFoodScreen />} />
       <Route path="/day/:date/activity" element={<ActivityScreen />} />
+      <Route path="/progress" element={<Suspense fallback={<Spinner />}><ProgressScreen /></Suspense>} />
       <Route path="/workout" element={<WorkoutScreen />} />
       <Route path="/workout/history" element={<WorkoutHistoryScreen />} />
       <Route path="/workout/history/:id" element={<WorkoutSessionScreen />} />

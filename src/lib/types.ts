@@ -98,3 +98,25 @@ export interface DayData {
   foodLogs: FoodLog[];
   waterLogs: WaterLog[];
 }
+
+// ---- weight trend and suggestions (contracts §9.1) ----
+export type SuggestionKind = 'calorie' | 'protein' | 'cardio' | 'lifting' | 'logging';
+export interface SuggestionRecord {
+  id: string;
+  kind: SuggestionKind;
+  action: 'accepted' | 'snoozed';
+  snoozeUntil: string | null;          // YYYY-MM-DD, set when snoozed
+  oldAdjustPct: number | null; newAdjustPct: number | null;   // calorie + accepted only
+  oldKcal: number | null; newKcal: number | null;
+  reason: string | null;
+  createdAt: string;                   // ISO timestamp
+}
+export type NewSuggestionRecord = Omit<SuggestionRecord, 'id' | 'createdAt'>;
+export interface WeighIn { date: string; kg: number }
+export interface AnalysisDay {
+  date: string;
+  intakeKcal: number | null;           // null = no food logs that day
+  proteinG: number | null;             // null = no food logs that day
+  activity: DailyActivity | null;
+  workouts: WorkoutHours[];            // completed workouts that day
+}

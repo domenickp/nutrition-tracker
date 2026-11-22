@@ -446,3 +446,106 @@ export function parseRoutineConfig(data: unknown): Routine;
 - `src/lib/routine.ts`: `import routineData from '../../config/workouts.yaml'` and
   `export const ROUTINE: Routine = routineData`. A `declare module '*.yaml'` gives the default
   export the type `Routine`.
+
+## §9 Weight trend and suggestions (epic nt-fzp, added 2026-11-22)
+
+Design: `docs/superpowers/specs/2026-11-22-weight-trend-design.md` (the numbers live there;
+this section fixes names and shapes). Plan: `docs/superpowers/plans/2026-11-22-weight-trend.md`.
+
+### §9.1 Types (`src/lib/types.ts`)
+```ts
+export type SuggestionKind = 'calorie' | 'protein' | 'cardio' | 'lifting' | 'logging';
+export interface SuggestionRecord {
+  id: string;
+  kind: SuggestionKind;
+  action: 'accepted' | 'snoozed';
+  snoozeUntil: string | null;          // YYYY-MM-DD, set when snoozed
+  oldAdjustPct: number | null; newAdjustPct: number | null;   // calorie + accepted only
+  oldKcal: number | null; newKcal: number | null;
+  reason: string | null;
+  createdAt: string;                   // ISO timestamp
+}
+export type NewSuggestionRecord = Omit<SuggestionRecord, 'id' | 'createdAt'>;
+export interface WeighIn { date: string; kg: number }
+export interface AnalysisDay {
+  date: string;
+  intakeKcal: number | null;           // null = no food logs that day
+  proteinG: number | null;             // null = no food logs that day
+  activity: DailyActivity | null;
+  workouts: WorkoutHours[];            // completed workouts that day
+}
+```
+
+### §9.2 `src/lib/weightTrend.ts` (pure)
+```ts
+export const TREND_SMOOTHING = 0.1;
+export const KCAL_PER_LB = 3500;
+export const WINDOW_DAYS = 21;
+export const AIM_PCT_PER_WEEK: Record<Goal, number>;   // lose_fat −0.75, maintain 0, build_muscle 0.3
+export interface TrendPoint { date: string; kg: number | null; trendKg: number }
+export interface Rate { kgPerWeek: number; pctPerWeek: number }   // signed; negative = losing
+export type RateStatus = 'below' | 'slow' | 'on_track' | 'above';  // below/above = off, sign of pct
+
+/** One point per day from the first weigh-in (or `from`, if later) to `to`, inclusive. Seeds
+ *  with the first weigh-in ever; trend += 0.1 × (weight − trend) on weigh-in days, carried
+ *  forward otherwise. Weigh-ins may be unsorted. Empty when no weigh-in is on or before `to`. */
+export function weightTrend(weighIns: WeighIn[], from: string, to: string): TrendPoint[];
+/** Least-squares slope of trendKg per day × 7; pct relative to the last trendKg. null if < 2 points. */
+export function weeklyRate(points: TrendPoint[]): Rate | null;
+/** Least-squares slope of the actual weigh-ins dated from..to (kg vs real day number) × 7; pct
+ *  relative to their mean. null if < 2 weigh-ins or all on one date. Used for the analysis rate. */
+export function weighInRate(weighIns: WeighIn[], from: string, to: string): Rate | null;
+/** Design table; boundaries belong to the band nearer on_track. */
+export function classifyRate(goal: Goal, pctPerWeek: number): RateStatus;
+```
+
+### §9.3 `src/lib/weightAnalysis.ts` (pure)
+```ts
+export interface Suggestion {
+  kind: SuggestionKind;
+  title: string;                 // one short sentence
+  reason: string;                // the numbers behind it, plain language
+  oldAdjustPct: number; oldKcal: number;                 // always present
+  newAdjustPct: number | null; newKcal: number | null;   // calorie only
+}
+export interface WeightAnalysis {
+  status: 'collecting' | RateStatus;
+  missing: string[];             // when collecting, e.g. ["8 more days", "weigh in more often"]
+  window: { from: string; to: string; days: number; loggedDays: number; weighedDays: number; lowLogDays: number };
+  trend: TrendPoint[];           // chart range: today − 55 .. today
+  rate: Rate | null;             // weighInRate over the window
+  avgIntakeKcal: number | null; avgEstimatedBurn: number | null; impliedBurn: number | null;
+  avgProteinG: number | null; proteinTargetG: number | null;
+  suggestions: Suggestion[];     // after snooze/cooldown filtering; empty when records === null
+}
+export function analyzeWeight(input: {
+  profile: Profile;
+  today: string;                 // YYYY-MM-DD in profile timezone
+  weighIns: WeighIn[];           // all weigh-ins on or before today
+  days: AnalysisDay[];           // every date from today − 21 to today − 1 (missing dates = empty days)
+  records: SuggestionRecord[] | null;   // null = table unavailable
+}): WeightAnalysis;
+```
+
+### §9.4 Data (`src/data/api.ts`, `src/data/mappers.ts`)
+```ts
+export async function loadAnalysisData(today: string):
+  Promise<{ profile: Profile; weighIns: WeighIn[]; days: AnalysisDay[] }>;   // throws like loadDay
+export async function listSuggestionRecords(): Promise<SuggestionRecord[] | null>; // last 90 days; null on ANY error
+export async function recordSuggestion(r: NewSuggestionRecord): Promise<boolean>;  // false on ANY error
+export async function acceptCalorieSuggestion(profile: Profile, s: Suggestion): Promise<Profile>;
+//   saveProfile({...profile minus userId, overrideKcalAdjustPct: s.newAdjustPct}); then recordSuggestion
+//   (accepted, with old/new pct and kcal, reason) — a failed record does not undo or throw.
+export async function snoozeSuggestion(kind: SuggestionKind, today: string): Promise<boolean>;  // until today + 7
+```
+Migration `supabase/migrations/20261122000000_target_suggestions.sql`: table per the design,
+`check (action <> 'snoozed' or snooze_until is not null)`, index on (user_id, created_at),
+updated_at trigger, the four `_own` policies, `revoke all ... from anon` — same shape as init.
+
+### §9.5 UI
+- `src/components/SuggestionCard.tsx`: `<SuggestionCard suggestion onAccept? onSnooze busy? />`. Accept
+  button only when `suggestion.kind === 'calorie'`. Exported from `src/components/index.ts`.
+- Today: weigh-in row + first suggestion card. Progress (`/progress`, lazy route): chart, window
+  numbers, all suggestions, accepted history. Settings: "Set from a suggestion on <date>" under
+  the calorie-adjust field when the latest accepted calorie record's `newAdjustPct` equals the
+  saved override.
