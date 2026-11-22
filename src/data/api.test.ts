@@ -49,8 +49,13 @@ import {
   searchUsda,
   getUsdaFood,
   addWeight,
+  acceptCalorieSuggestion,
+  listSuggestionRecords,
+  loadAnalysisData,
+  recordSuggestion,
+  snoozeSuggestion,
 } from './api';
-import type { NewFood, WorkoutSummary } from '../lib/types';
+import type { NewFood, NewSuggestionRecord, Profile, WorkoutSummary } from '../lib/types';
 
 const queue = (table: string, ...r: Result[]) => {
   (h.results[table] ??= []).push(...r);
@@ -236,5 +241,121 @@ describe('USDA', () => {
     h.invoke.mockResolvedValue({ data: { fdcId: 5 }, error: null });
     await getUsdaFood(5);
     expect(h.invoke).toHaveBeenCalledWith('usda?op=food&fdcId=5', { method: 'GET' });
+  });
+});
+
+describe('loadAnalysisData', () => {
+  it('builds 21 ordered days from the range queries', async () => {
+    queue('profiles', { data: profileRow });
+    queue('weights', { data: [{ date: '2026-11-10', weight_kg: '80.5' }, { date: '2026-11-22', weight_kg: '80' }] });
+    queue('food_logs', {
+      data: [
+        { date: '2026-11-03', kcal: '500', protein_g: '30' },
+        { date: '2026-11-03', kcal: '250.5', protein_g: '10' },
+        { date: '2026-11-05', kcal: '100', protein_g: '1' },
+      ],
+    });
+    queue('daily_activity', {
+      data: [{ date: '2026-11-03', mode: 'direct', direct_kcal: '400', sedentary_h: 0, light_cardio_h: 0, strenuous_cardio_h: 0, lifting_h: 0 }],
+    });
+    queue('workouts', { data: [{ date: '2026-11-04', light_cardio_h: '0.5', strenuous_cardio_h: 0, lifting_h: '1' }] });
+    const r = await loadAnalysisData('2026-11-22');
+    expect(r.profile.heightCm).toBe(180);
+    expect(r.weighIns).toEqual([{ date: '2026-11-10', kg: 80.5 }, { date: '2026-11-22', kg: 80 }]);
+    expect(r.days).toHaveLength(21);
+    expect(r.days[0].date).toBe('2026-11-01');
+    expect(r.days[20].date).toBe('2026-11-21');
+    expect(r.days[0].intakeKcal).toBeNull();
+    expect(r.days[0].proteinG).toBeNull();
+    expect(r.days[2]).toMatchObject({ date: '2026-11-03', intakeKcal: 750.5, proteinG: 40 });
+    expect(r.days[2].activity?.directKcal).toBe(400);
+    expect(r.days[3].workouts).toEqual([{ lightCardioH: 0.5, strenuousCardioH: 0, liftingH: 1 }]);
+    expect(r.days[4].workouts).toEqual([]);
+    for (const t of ['food_logs', 'daily_activity', 'workouts']) {
+      const c = callsOn(t)[0];
+      expect(op(c, 'gte')).toEqual(['date', '2026-11-01']);
+      expect(op(c, 'lte')).toEqual(['date', '2026-11-21']);
+    }
+    expect(op(callsOn('weights')[0], 'lte')).toEqual(['date', '2026-11-22']);
+    expect(op(callsOn('workouts')[0], 'not')).toEqual(['completed_at', 'is', null]);
+  });
+  it('throws without a profile and on read errors', async () => {
+    queue('profiles', { data: null });
+    await expect(loadAnalysisData('2026-11-22')).rejects.toThrow('No profile');
+    queue('profiles', { data: profileRow });
+    queue('food_logs', { error: { message: 'boom' } });
+    await expect(loadAnalysisData('2026-11-22')).rejects.toThrow('boom');
+  });
+});
+
+describe('suggestion records', () => {
+  const rec: NewSuggestionRecord = {
+    kind: 'calorie', action: 'accepted', snoozeUntil: null, oldAdjustPct: -20, newAdjustPct: -15,
+    oldKcal: 2000, newKcal: 2200, reason: 'r',
+  };
+  it('list returns rows newest first', async () => {
+    queue('target_suggestions', { data: [{ id: 's', kind: 'protein', action: 'snoozed', snooze_until: '2026-11-29', created_at: 't' }] });
+    const list = await listSuggestionRecords();
+    expect(list).toHaveLength(1);
+    expect(list![0].snoozeUntil).toBe('2026-11-29');
+    expect(op(callsOn('target_suggestions')[0], 'order')).toEqual(['created_at', { ascending: false }]);
+    expect((op(callsOn('target_suggestions')[0], 'gte') as unknown[])[0]).toBe('created_at');
+  });
+  it('list returns null on error', async () => {
+    queue('target_suggestions', { error: { message: 'relation does not exist' } });
+    expect(await listSuggestionRecords()).toBeNull();
+  });
+  it('list returns null on a thrown exception', async () => {
+    const spy = vi.spyOn(Date, 'now').mockImplementation(() => {
+      throw new Error('x');
+    });
+    expect(await listSuggestionRecords()).toBeNull();
+    spy.mockRestore();
+  });
+  it('recordSuggestion returns false on error and when signed out', async () => {
+    queue('target_suggestions', { error: { message: 'nope' } });
+    expect(await recordSuggestion(rec)).toBe(false);
+    h.user = null;
+    expect(await recordSuggestion(rec)).toBe(false);
+  });
+  it('recordSuggestion inserts with user_id', async () => {
+    expect(await recordSuggestion(rec)).toBe(true);
+    expect(op(callsOn('target_suggestions')[0], 'insert')).toEqual([
+      expect.objectContaining({ user_id: 'u1', kind: 'calorie', new_adjust_pct: -15 }),
+    ]);
+  });
+});
+
+describe('acceptCalorieSuggestion / snoozeSuggestion', () => {
+  const profile: Profile = {
+    userId: 'u1', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain',
+    units: 'metric', timezone: 'UTC', overrideKcalAdjustPct: null, overrideProteinGPerLb: null,
+    overrideFatPct: null, overrideWaterBaseMlPerKg: null,
+  };
+  const s = { oldAdjustPct: 0, newAdjustPct: 5, oldKcal: 2500, newKcal: 2625, reason: 'why' };
+  it('saves the override then records acceptance', async () => {
+    queue('profiles', { data: { ...profileRow, override_kcal_adjust_pct: 5 } });
+    const saved = await acceptCalorieSuggestion(profile, s);
+    expect(saved.overrideKcalAdjustPct).toBe(5);
+    const up = op(callsOn('profiles')[0], 'upsert') as unknown[];
+    expect(up[0]).toMatchObject({ override_kcal_adjust_pct: 5, user_id: 'u1', goal: 'maintain' });
+    expect(op(callsOn('target_suggestions')[0], 'insert')).toEqual([
+      expect.objectContaining({
+        kind: 'calorie', action: 'accepted', snooze_until: null, old_adjust_pct: 0,
+        new_adjust_pct: 5, old_kcal: 2500, new_kcal: 2625, reason: 'why', user_id: 'u1',
+      }),
+    ]);
+  });
+  it('still resolves when the record insert fails', async () => {
+    queue('profiles', { data: { ...profileRow, override_kcal_adjust_pct: 5 } });
+    queue('target_suggestions', { error: { message: 'missing table' } });
+    const saved = await acceptCalorieSuggestion(profile, s);
+    expect(saved.overrideKcalAdjustPct).toBe(5);
+  });
+  it('snooze inserts snooze_until a week out', async () => {
+    expect(await snoozeSuggestion('calorie', '2026-11-22')).toBe(true);
+    expect(op(callsOn('target_suggestions')[0], 'insert')).toEqual([
+      expect.objectContaining({ kind: 'calorie', action: 'snoozed', snooze_until: '2026-11-29', reason: null, new_kcal: null }),
+    ]);
   });
 });

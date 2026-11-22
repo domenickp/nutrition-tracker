@@ -8,10 +8,12 @@ import type {
   FoodLog,
   NewFood,
   NewFoodLog,
+  NewSuggestionRecord,
   Nutrients,
   Portion,
   Profile,
   ProfileInput,
+  SuggestionRecord,
   WaterLog,
   WorkoutSummary,
 } from '../lib/types';
@@ -203,6 +205,34 @@ export function fromWorkout(w: WorkoutSummary): Row {
     light_cardio_h: w.lightCardioH,
     strenuous_cardio_h: w.strenuousCardioH,
     lifting_h: w.liftingH,
+  };
+}
+
+// target_suggestions
+export function toSuggestionRecord(r: Row): SuggestionRecord {
+  return {
+    id: r.id,
+    kind: r.kind,
+    action: r.action,
+    snoozeUntil: r.snooze_until ?? null,
+    oldAdjustPct: numOrNull(r.old_adjust_pct),
+    newAdjustPct: numOrNull(r.new_adjust_pct),
+    oldKcal: numOrNull(r.old_kcal),
+    newKcal: numOrNull(r.new_kcal),
+    reason: r.reason ?? null,
+    createdAt: r.created_at,
+  };
+}
+export function fromSuggestionRecord(r: NewSuggestionRecord): Row {
+  return {
+    kind: r.kind,
+    action: r.action,
+    snooze_until: r.snoozeUntil,
+    old_adjust_pct: r.oldAdjustPct,
+    new_adjust_pct: r.newAdjustPct,
+    old_kcal: r.oldKcal,
+    new_kcal: r.newKcal,
+    reason: r.reason,
   };
 }
 

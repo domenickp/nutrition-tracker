@@ -15,6 +15,8 @@ import {
   toFood,
   toFoodLog,
   toProfile,
+  toSuggestionRecord,
+  fromSuggestionRecord,
   toWaterLog,
   toWeightKg,
   toWorkout,
@@ -139,5 +141,36 @@ describe('exercise rule', () => {
   it('round-trips', () => {
     const r: ExerciseRule = { exerciseId: 'e1', name: 'Run', category: 'strenuous_cardio' };
     expect(toExerciseRule(fromExerciseRule(r))).toEqual(r);
+  });
+});
+
+describe('suggestion record', () => {
+  it('round-trips a target_suggestions row', () => {
+    const row = {
+      id: 's1', kind: 'calorie', action: 'accepted', snooze_until: null,
+      old_adjust_pct: '-20', new_adjust_pct: '-15', old_kcal: 2000, new_kcal: 2200,
+      reason: 'because', created_at: '2026-11-22T10:00:00Z',
+    };
+    const rec = toSuggestionRecord(row);
+    expect(rec).toEqual({
+      id: 's1', kind: 'calorie', action: 'accepted', snoozeUntil: null,
+      oldAdjustPct: -20, newAdjustPct: -15, oldKcal: 2000, newKcal: 2200,
+      reason: 'because', createdAt: '2026-11-22T10:00:00Z',
+    });
+    const { id: _id, createdAt: _c, ...input } = rec;
+    expect(fromSuggestionRecord(input)).toEqual({
+      kind: 'calorie', action: 'accepted', snooze_until: null,
+      old_adjust_pct: -20, new_adjust_pct: -15, old_kcal: 2000, new_kcal: 2200, reason: 'because',
+    });
+  });
+  it('maps a snooze row with nulls', () => {
+    const rec = toSuggestionRecord({
+      id: 's2', kind: 'protein', action: 'snoozed', snooze_until: '2026-11-29',
+      old_adjust_pct: null, new_adjust_pct: null, old_kcal: null, new_kcal: null, reason: null,
+      created_at: 't',
+    });
+    expect(rec.snoozeUntil).toBe('2026-11-29');
+    expect(rec.oldAdjustPct).toBeNull();
+    expect(rec.reason).toBeNull();
   });
 });
