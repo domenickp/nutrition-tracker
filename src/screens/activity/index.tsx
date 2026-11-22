@@ -10,7 +10,7 @@ import {
   saveWorkout,
 } from '../../data/api';
 import { addDays } from '../../lib/dates';
-import { MET, WAKING_HOURS, computeTargets } from '../../lib/targets';
+import { WAKING_HOURS, computeTargets } from '../../lib/targets';
 import type { DailyActivity, DayData, ExerciseCategory, WorkoutSummary } from '../../lib/types';
 import {
   analyzeWorkout,
@@ -232,7 +232,7 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
                       const p = estimate.breakdown![key];
                       return (
                         <tr key={key}>
-                          <th scope="row">{label} <small>MET {MET[key]}</small></th>
+                          <th scope="row">{label} <small>MET {p.met}</small></th>
                           <td className="num">{p.hours.toFixed(1)}</td>
                           <td className="num">{Math.round(p.kcal)}</td>
                         </tr>

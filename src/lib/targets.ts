@@ -1,8 +1,10 @@
-import type { ActivityPart, DailyActivity, Goal, Profile, TargetResult, WorkoutHours } from './types';
+import type { ActivityPart, DailyActivity, EverydayActivity, Goal, Profile, TargetResult, WorkoutHours } from './types';
 
 const LB_PER_KG = 2.20462;
 const ML_PER_FLOZ = 29.5735;
 export const MET = { sedentary: 1.3, light: 4.0, strenuous: 8.0, lifting: 5.0 };
+/** MET for waking hours not spent exercising, by everyday activity. */
+export const BASELINE_MET: Record<EverydayActivity, number> = { sedentary: 1.3, moderate: 1.5, active: 1.7 };
 export const WAKING_HOURS = 16;
 const DIGESTION_FACTOR = 1.1;
 const WATER_ML_PER_HALF_HOUR = 12 * ML_PER_FLOZ; // 354.882 ml per 0.5 h of exercise
@@ -54,7 +56,7 @@ export function computeTargets(input: {
       kcal: (met - 1) * weightKg * hours,
     });
     breakdown = {
-      sedentary: part(Math.max(0, WAKING_HOURS - exerciseH), MET.sedentary),
+      sedentary: part(Math.max(0, WAKING_HOURS - exerciseH), BASELINE_MET[profile.everydayActivity ?? 'sedentary']),
       light: part(light, MET.light),
       strenuous: part(strenuous, MET.strenuous),
       lifting: part(lifting, MET.lifting),

@@ -29,7 +29,7 @@ const type = (label: string | RegExp, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
 const profile = {
-  userId: 'u', birthMonth: 3, birthYear: 1985, sex: 'male', heightCm: 177.8, goal: 'maintain',
+  userId: 'u', birthMonth: 3, birthYear: 1985, sex: 'male', heightCm: 177.8, goal: 'maintain', everydayActivity: 'sedentary',
   units: 'imperial', timezone: 'America/New_York',
   overrideKcalAdjustPct: null, overrideProteinGPerLb: null, overrideFatPct: 35, overrideWaterBaseMlPerKg: null,
 };
@@ -73,6 +73,26 @@ describe('SettingsScreen', () => {
     const [date, kg] = api.addWeight.mock.calls[0];
     expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(kg).toBeCloseTo(81.65, 1);
+  });
+
+  it('saves the chosen everyday activity', async () => {
+    api.getProfile.mockResolvedValue(profile);
+    api.getLatestWeight.mockResolvedValue(81.65);
+    setup();
+    await screen.findByText('Your profile');
+    type('Everyday activity', 'moderate');
+    expect((screen.getByLabelText('Everyday activity') as HTMLSelectElement).selectedOptions[0].textContent).toBe('On your feet part of the day');
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await screen.findByText('Saved');
+    expect(api.saveProfile.mock.calls[0][0]).toMatchObject({ everydayActivity: 'moderate' });
+  });
+
+  it('preselects an existing active profile', async () => {
+    api.getProfile.mockResolvedValue({ ...profile, everydayActivity: 'active' });
+    api.getLatestWeight.mockResolvedValue(81.65);
+    setup();
+    await screen.findByText('Your profile');
+    expect((screen.getByLabelText('Everyday activity') as HTMLSelectElement).value).toBe('active');
   });
 
   it('reset to default sends null for an override and skips unchanged weight', async () => {

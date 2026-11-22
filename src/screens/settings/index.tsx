@@ -5,7 +5,7 @@ import { Button, Card, Field, Layout, Spinner } from '../../components';
 import { addWeight, getLatestWeight, getProfile, listSuggestionRecords, saveProfile } from '../../data/api';
 import { signOut } from '../../data/auth';
 import { localDate, todayIn } from '../../lib/dates';
-import type { Goal, Profile, ProfileInput, Sex, Units } from '../../lib/types';
+import type { EverydayActivity, Goal, Profile, ProfileInput, Sex, Units } from '../../lib/types';
 import {
   DEFAULT_WATER_ML_PER_KG,
   GOAL_DEFAULTS,
@@ -55,6 +55,7 @@ interface Form {
   heightFt: string;
   heightIn: string;
   goal: Goal;
+  everydayActivity: EverydayActivity;
   units: Units;
   timezone: string;
   weight: string;
@@ -67,7 +68,7 @@ interface Form {
 function emptyForm(): Form {
   return {
     birthMonth: '', birthYear: '', sex: 'male', heightCm: '', heightFt: '', heightIn: '',
-    goal: 'maintain', units: 'imperial', timezone: browserZone(), weight: '',
+    goal: 'maintain', everydayActivity: 'sedentary', units: 'imperial', timezone: browserZone(), weight: '',
     adjust: '', protein: '', fat: '', water: '',
   };
 }
@@ -80,6 +81,7 @@ function formFromProfile(p: Profile, weightKg: number | null): Form {
     sex: p.sex,
     heightCm: h.cm, heightFt: h.ft, heightIn: h.in,
     goal: p.goal,
+    everydayActivity: p.everydayActivity,
     units: p.units,
     timezone: p.timezone,
     weight: weightKg === null ? '' : weightToField(weightKg, p.units),
@@ -218,6 +220,7 @@ export default function SettingsScreen() {
       sex: form.sex,
       heightCm,
       goal: form.goal,
+      everydayActivity: form.everydayActivity,
       units: form.units,
       timezone: form.timezone,
       overrideKcalAdjustPct: num(form.adjust),
@@ -381,6 +384,16 @@ export default function SettingsScreen() {
                 <option value="maintain">Maintain</option>
                 <option value="build_muscle">Build muscle</option>
               </select>
+            </div>
+
+            <div className="field">
+              <label className="field__label" htmlFor="everyday">Everyday activity</label>
+              <select id="everyday" className="field__input" value={form.everydayActivity} onChange={(e) => set('everydayActivity', e.target.value as EverydayActivity)}>
+                <option value="sedentary">Mostly sitting</option>
+                <option value="moderate">On your feet part of the day</option>
+                <option value="active">On your feet most of the day / physical job</option>
+              </select>
+              <p className="muted">Counts for the hours you're not exercising.</p>
             </div>
 
             <div className="field">

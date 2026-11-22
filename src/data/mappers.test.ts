@@ -24,7 +24,7 @@ import {
 
 describe('profile', () => {
   const input: ProfileInput = {
-    birthMonth: 3, birthYear: 1990, sex: 'male', heightCm: 180.5, goal: 'maintain', units: 'metric',
+    birthMonth: 3, birthYear: 1990, sex: 'male', heightCm: 180.5, goal: 'maintain', everydayActivity: 'sedentary', units: 'metric',
     timezone: 'America/New_York', overrideKcalAdjustPct: -15, overrideProteinGPerLb: null,
     overrideFatPct: 30, overrideWaterBaseMlPerKg: null,
   };
@@ -32,6 +32,13 @@ describe('profile', () => {
     const row = fromProfile(input);
     expect(row.override_protein_g_per_lb).toBeNull();
     expect(toProfile({ ...row, user_id: 'u1' })).toEqual({ ...input, userId: 'u1' });
+  });
+  it('defaults a missing everyday_activity to sedentary and round-trips the value', () => {
+    const row = fromProfile(input);
+    delete row.everyday_activity;
+    expect(toProfile({ ...row, user_id: 'u1' }).everydayActivity).toBe('sedentary');
+    const active = fromProfile({ ...input, everydayActivity: 'active' });
+    expect(toProfile({ ...active, user_id: 'u1' }).everydayActivity).toBe('active');
   });
   it('coerces numeric strings', () => {
     const p = toProfile({ ...fromProfile(input), user_id: 'u', height_cm: '180.5', override_fat_pct: '30', override_kcal_adjust_pct: '-15' });

@@ -15,6 +15,7 @@ function profile(goal: Goal, over: Partial<Profile> = {}): Profile {
     sex: 'male',
     heightCm: 180,
     goal,
+    everydayActivity: 'sedentary',
     units: 'imperial',
     timezone: 'UTC',
     overrideKcalAdjustPct: null,

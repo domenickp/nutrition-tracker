@@ -35,7 +35,7 @@ function fixture(over: Partial<DayData> = {}): DayData {
   return {
     date: '2026-11-15',
     profile: {
-      userId: 'u', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain',
+      userId: 'u', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain', everydayActivity: 'sedentary',
       units: 'imperial', timezone: 'America/New_York', overrideKcalAdjustPct: null,
       overrideProteinGPerLb: null, overrideFatPct: null, overrideWaterBaseMlPerKg: null,
     },

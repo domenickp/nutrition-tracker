@@ -3,7 +3,7 @@ import { ageOn, computeTargets } from './targets';
 import type { DailyActivity, Profile, WorkoutHours } from './types';
 
 const profile: Profile = {
-  userId: 'u', birthMonth: 6, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain',
+  userId: 'u', birthMonth: 6, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain', everydayActivity: 'sedentary',
   units: 'metric', timezone: 'America/New_York',
   overrideKcalAdjustPct: null, overrideProteinGPerLb: null, overrideFatPct: null,
   overrideWaterBaseMlPerKg: null,
@@ -23,6 +23,25 @@ describe('ageOn', () => {
   it('in and after birthday month', () => {
     expect(ageOn(6, 1990, '2026-06-01')).toBe(36);
     expect(ageOn(6, 1990, '2026-11-15')).toBe(36);
+  });
+});
+
+describe('everyday activity', () => {
+  const rawBurn = (over: Partial<Profile>) => run(over, null, [], 70);
+  it('moderate adds 0.2 x 70 x 16 kcal over sedentary; active adds 0.4 x 70 x 16', () => {
+    const s = rawBurn({ everydayActivity: 'sedentary' });
+    const m = rawBurn({ everydayActivity: 'moderate' });
+    const a = rawBurn({ everydayActivity: 'active' });
+    expect(Math.abs(m.burn - s.burn - 224)).toBeLessThanOrEqual(1);
+    expect(Math.abs(a.burn - s.burn - 448)).toBeLessThanOrEqual(1);
+  });
+  it('breakdown shows the baseline MET', () => {
+    expect(rawBurn({ everydayActivity: 'moderate' }).breakdown!.sedentary.met).toBe(1.5);
+    expect(rawBurn({ everydayActivity: 'active' }).breakdown!.sedentary.met).toBe(1.7);
+  });
+  it('direct mode is unaffected', () => {
+    const d: DailyActivity = { date, mode: 'direct', directKcal: 500, hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 } };
+    expect(run({ everydayActivity: 'active' }, d).burn).toBe(run({ everydayActivity: 'sedentary' }, d).burn);
   });
 });
 

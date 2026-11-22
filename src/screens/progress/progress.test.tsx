@@ -22,7 +22,7 @@ import App from '../../App';
 import ProgressScreen from './index';
 
 const profile: Profile = {
-  userId: 'u', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'lose_fat',
+  userId: 'u', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'lose_fat', everydayActivity: 'sedentary',
   units: 'imperial', timezone: 'America/New_York', overrideKcalAdjustPct: null,
   overrideProteinGPerLb: null, overrideFatPct: null, overrideWaterBaseMlPerKg: null,
 };
