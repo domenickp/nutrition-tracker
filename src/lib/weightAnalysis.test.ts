@@ -96,6 +96,18 @@ describe('analyzeWeight', () => {
     expect(Math.abs((a.impliedBurn as number) - 2500)).toBeLessThanOrEqual(30);
   });
 
+  it('no warm-up bias', () => {
+    const kgPerDay = 1 / LB / 7;
+    const start = addDays(TODAY, -21);
+    const w: WeighIn[] = [];
+    for (let i = 0; i < 21; i++) w.push({ date: addDays(start, i), kg: 90.7 - kgPerDay * i }); // ~200 lb
+    const a = analyzeWeight({ profile: profile('lose_fat'), today: TODAY, weighIns: w, days: days(2000), records: [] });
+    expect(a.window.days).toBe(21);
+    expect(Math.abs((a.impliedBurn as number) - 2500)).toBeLessThanOrEqual(30);
+    expect(Math.abs((a.rate as { kgPerWeek: number }).kgPerWeek + 0.4536)).toBeLessThan(0.02);
+    expect(a.status).toBe('on_track');
+  });
+
   it('lose_fat too fast -> calorie up, never less exercise', () => {
     const a = run('lose_fat', -1.4);
     expect(a.status).toBe('below');

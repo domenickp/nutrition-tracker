@@ -7,7 +7,7 @@ import {
   classifyRate,
   KCAL_PER_LB,
   WINDOW_DAYS,
-  weeklyRate,
+  weighInRate,
   weightTrend,
   type Rate,
   type RateStatus,
@@ -100,7 +100,7 @@ export function analyzeWeight(input: {
 
   const points = length > 0 ? weightTrend(weighIns, from, to) : [];
   const trendByDate = new Map(points.map((p) => [p.date, p.trendKg]));
-  const rate = weeklyRate(points);
+  const rate = length > 0 ? weighInRate(weighIns, from, to) : null;
 
   // Per-day estimated burn and targets, at that day's trend weight.
   const burns: number[] = [];
@@ -118,11 +118,8 @@ export function analyzeWeight(input: {
   const avgProtein = mean(winDays.filter((d) => d.proteinG !== null).map((d) => d.proteinG as number));
   const avgBurn = mean(burns);
   const proteinTarget = mean(proteinTargets);
-  const changeKg = points.length >= 2 ? points[points.length - 1].trendKg - points[0].trendKg : null;
   const impliedBurn =
-    avgIntake !== null && changeKg !== null && length > 0
-      ? avgIntake - (kgToLb(changeKg) * KCAL_PER_LB) / length
-      : null;
+    avgIntake !== null && rate !== null ? avgIntake - kgToLb(rate.kgPerWeek / 7) * KCAL_PER_LB : null;
 
   const missing: string[] = [];
   if (length < MIN_DAYS) missing.push(`${MIN_DAYS - length} more days`);

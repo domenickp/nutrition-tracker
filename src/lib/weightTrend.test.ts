@@ -5,6 +5,7 @@ import {
   AIM_PCT_PER_WEEK,
   classifyRate,
   weeklyRate,
+  weighInRate,
   weightTrend,
   type TrendPoint,
 } from './weightTrend';
@@ -107,5 +108,29 @@ describe('classifyRate', () => {
 
   it('aim rates', () => {
     expect(AIM_PCT_PER_WEEK).toEqual({ lose_fat: -0.75, maintain: 0, build_muscle: 0.3 });
+  });
+});
+
+describe('weighInRate', () => {
+  it('exact linear series with gaps', () => {
+    const w = [0, 1, 4, 5, 9, 14].map((i) => ({ date: addDays('2026-11-01', i), kg: 100 - 0.1 * i }));
+    const r = weighInRate(w, '2026-11-01', '2026-11-30')!;
+    expect(r.kgPerWeek).toBeCloseTo(-0.7, 6);
+    const meanKg = w.reduce((s, x) => s + x.kg, 0) / w.length;
+    expect(r.pctPerWeek).toBeCloseTo((-0.7 / meanKg) * 100, 6);
+  });
+  it('null cases', () => {
+    expect(weighInRate([], 'a', 'z')).toBeNull();
+    expect(weighInRate([{ date: '2026-11-01', kg: 80 }], '2026-11-01', '2026-11-30')).toBeNull();
+    const same = [{ date: '2026-11-01', kg: 80 }, { date: '2026-11-01', kg: 81 }];
+    expect(weighInRate(same, '2026-11-01', '2026-11-30')).toBeNull();
+    // only one weigh-in inside the range
+    const w = [{ date: '2026-10-01', kg: 80 }, { date: '2026-11-05', kg: 79 }];
+    expect(weighInRate(w, '2026-11-01', '2026-11-30')).toBeNull();
+  });
+  it('unsorted input', () => {
+    const w = [0, 3, 5, 8].map((i) => ({ date: addDays('2026-11-01', i), kg: 90 - 0.2 * i }));
+    const a = weighInRate(w, '2026-11-01', '2026-11-30');
+    expect(weighInRate([w[2], w[0], w[3], w[1]], '2026-11-01', '2026-11-30')).toEqual(a);
   });
 });

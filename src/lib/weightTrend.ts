@@ -59,6 +59,27 @@ export function weeklyRate(points: TrendPoint[]): Rate | null {
   return { kgPerWeek, pctPerWeek: (kgPerWeek / points[n - 1].trendKg) * 100 };
 }
 
+/** Least-squares slope of the actual weigh-ins (kg vs real day number, so gaps are fine) x 7, over
+ *  weigh-ins dated from..to; pct relative to their mean. null if < 2 weigh-ins or all on one date. */
+export function weighInRate(weighIns: WeighIn[], from: string, to: string): Rate | null {
+  const ins = weighIns.filter((w) => w.date >= from && w.date <= to);
+  if (ins.length < 2) return null;
+  const day = (d: string) => Date.parse(`${d}T00:00:00Z`) / 86400000;
+  const xs = ins.map((w) => day(w.date));
+  const n = ins.length;
+  const meanX = xs.reduce((a, b) => a + b, 0) / n;
+  const meanY = ins.reduce((a, w) => a + w.kg, 0) / n;
+  let num = 0;
+  let den = 0;
+  ins.forEach((w, i) => {
+    num += (xs[i] - meanX) * (w.kg - meanY);
+    den += (xs[i] - meanX) ** 2;
+  });
+  if (den === 0) return null;
+  const kgPerWeek = (num / den) * 7;
+  return { kgPerWeek, pctPerWeek: (kgPerWeek / meanY) * 100 };
+}
+
 /** Design table; boundaries belong to the band nearer on_track (build_muscle 0 is 'below'). */
 export function classifyRate(goal: Goal, pctPerWeek: number): RateStatus {
   const p = pctPerWeek;
