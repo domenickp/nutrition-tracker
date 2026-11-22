@@ -2,9 +2,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { yamlRoutinePlugin } from './build/yamlRoutinePlugin.ts';
 
 export default defineConfig({
   plugins: [
+    yamlRoutinePlugin(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',

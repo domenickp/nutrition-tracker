@@ -1,0 +1,267 @@
+# Workout plan, shared by all users.
+#
+# - List order is display order, for days and for exercises within a day.
+# - Every field below is per exercise. Omit a field to leave it empty; omit
+#   `warmup` unless it is true.
+#     id        Unique across the WHOLE file. Never change it once workouts have
+#               been saved with it: saved sessions and "last time" refer to it,
+#               and changing it blocks saving an unfinished on-device draft for
+#               that day. A new exercise needs a new id in `d<day>-<slug>` style.
+#     name      Display name.
+#     warmup    true marks a warm-up. It does not reorder anything.
+#     sets      Number of sets.
+#     reps      Repetitions per set.
+#     weightLb  Weight in pounds.
+#     timeMin   Minutes. timeMin or timeSec makes the exercise timed.
+#     timeSec   Seconds.
+#     rest      Free text, for example "2 min".
+#     notes     Free text shown with the exercise.
+# - The file is checked at build and test time; a mistake fails the build and
+#   names the line to fix.
+# - Changes ship via pull request and merge.
+
+schemaVersion: 1
+days:
+  - day: 1
+    areas: Chest, Triceps
+    exercises:
+      - id: d1-warm-up-stationary-bike
+        name: "Warm Up: Stationary Bike"
+        warmup: true
+        sets: 1
+        timeMin: 10
+      - id: d1-warm-up-dumbell-press
+        name: "Warm Up: Dumbell Press"
+        warmup: true
+        sets: 1
+        reps: 12
+        weightLb: 25
+      - id: d1-dumbbell-press
+        name: Dumbbell Press
+        sets: 3
+        reps: 12
+        weightLb: 45
+        rest: 2 min
+      - id: d1-incline-dumbbell-press
+        name: Incline Dumbbell Press
+        sets: 3
+        reps: 12
+        weightLb: 40
+        rest: 2 min
+        notes: Bench at about 30 degrees. Targets upper chest.
+      - id: d1-dumbbell-flys
+        name: Dumbbell Flys
+        sets: 3
+        reps: 12
+        weightLb: 25
+        rest: 60–90 sec
+      - id: d1-push-ups
+        name: Push Ups
+        sets: 3
+        reps: 20
+        rest: 60–90 sec
+        notes: With a weighted backpack, 20 pounds
+      - id: d1-skullcrushers
+        name: Skullcrushers
+        sets: 3
+        reps: 12
+        weightLb: 20
+        rest: 60–90 sec
+      - id: d1-overhead-dumbbell-triceps-extension
+        name: Overhead Dumbbell Triceps Extension
+        sets: 3
+        reps: 12
+        weightLb: 30
+        rest: 60–90 sec
+        notes: One dumbbell held with both hands, seated with back support.
+      - id: d1-diamond-push-ups
+        name: Diamond Push Ups
+        sets: 3
+        reps: 22
+        rest: 60–90 sec
+
+  - day: 2
+    areas: Legs
+    exercises:
+      - id: d2-warm-up-stationary-bike
+        name: "Warm Up: Stationary Bike"
+        warmup: true
+        sets: 1
+        timeMin: 15
+      - id: d2-warm-up-body-weight-squat
+        name: "Warm Up: Body Weight Squat"
+        warmup: true
+        sets: 3
+        reps: 15
+        rest: 60 sec
+      - id: d2-goblet-squat
+        name: Goblet Squat
+        sets: 3
+        reps: 12
+        weightLb: 40
+        rest: 2 min
+      - id: d2-dumbbell-romanian-deadlift
+        name: Dumbbell Romanian Deadlift
+        sets: 3
+        reps: 12
+        weightLb: 40
+        rest: 2 min
+        notes: Weight is per hand. Push hips back, slight knee bend, flat back. You should feel it in the hamstrings.
+      - id: d2-bulgarian-split-squat
+        name: Bulgarian Split Squat
+        sets: 3
+        reps: 12
+        weightLb: 17.5
+        rest: 90 sec
+      - id: d2-dumbbell-lunge
+        name: Dumbbell Lunge
+        sets: 3
+        reps: 12
+        weightLb: 25
+        rest: 90 sec
+      - id: d2-hip-thrust
+        name: Hip Thrust
+        sets: 3
+        reps: 15
+        weightLb: 50
+        rest: 90 sec
+        notes: Upper back on a bench, dumbbell resting on hips. Squeeze at the top.
+      - id: d2-single-leg-calf-raise
+        name: Single-Leg Calf Raise
+        sets: 3
+        reps: 15
+        weightLb: 25
+        rest: 60 sec
+        notes: Each leg. Hold the dumbbell on the working side, other hand on a wall for balance.
+
+  - day: 3
+    areas: Back, Biceps
+    exercises:
+      - id: d3-warm-up-stationary-bike
+        name: "Warm Up: Stationary Bike"
+        warmup: true
+        sets: 1
+        timeMin: 10
+      - id: d3-warm-up-dumbell-row
+        name: "Warm Up: Dumbell Row"
+        warmup: true
+        sets: 1
+        reps: 12
+        weightLb: 25
+      - id: d3-pullups
+        name: Pullups
+        sets: 3
+        reps: 12
+        rest: 2 min
+        notes: 10 pound leg weights
+      - id: d3-dumbbell-row
+        name: Dumbbell Row
+        sets: 3
+        reps: 15
+        weightLb: 52.5
+        rest: 90 sec
+      - id: d3-chest-supported-incline-row
+        name: Chest-Supported Incline Row
+        sets: 3
+        reps: 12
+        weightLb: 35
+        rest: 90 sec
+        notes: Lie face down on an incline bench and row both dumbbells.
+      - id: d3-dumbbell-shrugs
+        name: Dumbbell Shrugs
+        sets: 3
+        reps: 15
+        weightLb: 52.5
+        rest: 60–90 sec
+      - id: d3-dumbbell-curl
+        name: Dumbbell Curl
+        sets: 3
+        reps: 12
+        weightLb: 35
+        rest: 60–90 sec
+      - id: d3-incline-dumbbell-curl
+        name: Incline Dumbbell Curl
+        sets: 3
+        reps: 12
+        weightLb: 20
+        rest: 60–90 sec
+        notes: Seated on an incline bench, arms hanging straight down.
+      - id: d3-seated-hammer-curl
+        name: Seated Hammer Curl
+        sets: 3
+        reps: 12
+        weightLb: 30
+        rest: 60–90 sec
+      - id: d3-dead-hangs
+        name: Dead Hangs
+        sets: 3
+        timeSec: 60
+        rest: 60 sec
+
+  - day: 4
+    areas: Shoulders, Abs
+    exercises:
+      - id: d4-warm-up-stationary-bike
+        name: "Warm Up: Stationary Bike"
+        warmup: true
+        sets: 1
+        timeMin: 10
+      - id: d4-warm-up-arm-circles
+        name: "Warm Up: Arm Circles"
+        warmup: true
+        sets: 1
+        reps: 12
+      - id: d4-warm-up-shoulder-press
+        name: "Warm Up: Shoulder Press"
+        warmup: true
+        sets: 1
+        reps: 25
+      - id: d4-seated-dumbbell-shoulder-press
+        name: Seated Dumbbell Shoulder Press
+        sets: 3
+        reps: 12
+        weightLb: 40
+        rest: 2 min
+      - id: d4-arnold-press
+        name: Arnold Press
+        sets: 3
+        reps: 12
+        weightLb: 25
+        rest: 90 sec
+      - id: d4-lateral-raises
+        name: Lateral Raises
+        sets: 3
+        reps: 12
+        weightLb: 22.5
+        rest: 60–90 sec
+      - id: d4-bench-rear-delt-fly
+        name: Bench Rear Delt Fly
+        sets: 3
+        reps: 15
+        weightLb: 12.5
+        rest: 60 sec
+        notes: Light weight, squeeze the shoulder blades together.
+      - id: d4-side-lying-external-rotation
+        name: Side-Lying External Rotation
+        sets: 2
+        reps: 15
+        weightLb: 5
+        rest: 60 sec
+        notes: Each arm. Very light and slow. Protects the rotator cuff.
+      - id: d4-russian-twist
+        name: Russian Twist
+        sets: 3
+        reps: 20
+        weightLb: 52.5
+        rest: 60 sec
+      - id: d4-ab-rollout
+        name: Ab Rollout
+        sets: 3
+        reps: 20
+        rest: 60–90 sec
+      - id: d4-leg-raises
+        name: Leg Raises
+        sets: 3
+        reps: 12
+        rest: 60 sec
+        notes: 10 pound leg weights
