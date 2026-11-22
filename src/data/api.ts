@@ -1,6 +1,7 @@
 // Data layer (contracts §5). The only place that talks to Supabase tables and maps rows.
 import { supabase } from '../lib/supabase';
 import type {
+  AnalysisDay,
   DailyActivity,
   DayData,
   ExerciseRule,
@@ -8,11 +9,16 @@ import type {
   FoodLog,
   NewFood,
   NewFoodLog,
+  NewSuggestionRecord,
   Profile,
   ProfileInput,
+  SuggestionKind,
+  SuggestionRecord,
   WaterLog,
+  WeighIn,
   WorkoutSummary,
 } from '../lib/types';
+import { addDays } from '../lib/dates';
 import type { UsdaFood } from '../../supabase/functions/usda/normalize';
 import { queryWords } from '../../supabase/functions/usda/search';
 import {
@@ -22,6 +28,7 @@ import {
   fromFoodLog,
   fromFoodLogPatch,
   fromProfile,
+  fromSuggestionRecord,
   fromWaterLog,
   fromWeight,
   fromWorkout,
@@ -30,6 +37,7 @@ import {
   toFood,
   toFoodLog,
   toProfile,
+  toSuggestionRecord,
   toWaterLog,
   toWeightKg,
   toWorkout,
@@ -111,6 +119,132 @@ export async function loadDay(date: string): Promise<DayData> {
     foodLogs: (foodRes.data ?? []).map(toFoodLog),
     waterLogs: (waterRes.data ?? []).map(toWaterLog),
   };
+}
+
+// ---- analysis ----
+
+export async function loadAnalysisData(
+  today: string,
+): Promise<{ profile: Profile; weighIns: WeighIn[]; days: AnalysisDay[] }> {
+  const from = addDays(today, -21);
+  const to = addDays(today, -1);
+  const [profile, weightsRes, foodRes, activityRes, workoutsRes] = await Promise.all([
+    getProfile(),
+    supabase.from('weights').select('date, weight_kg').lte('date', today).order('date', { ascending: true }),
+    supabase.from('food_logs').select('date, kcal, protein_g').gte('date', from).lte('date', to),
+    supabase.from('daily_activity').select('*').gte('date', from).lte('date', to),
+    supabase
+      .from('workouts')
+      .select('date, light_cardio_h, strenuous_cardio_h, lifting_h')
+      .gte('date', from)
+      .lte('date', to)
+      .not('completed_at', 'is', null),
+  ]);
+  if (!profile) throw new Error('No profile');
+  fail(weightsRes.error, 'Could not load weights');
+  fail(foodRes.error, 'Could not load food log');
+  fail(activityRes.error, 'Could not load activity');
+  fail(workoutsRes.error, 'Could not load workouts');
+
+  const weighIns: WeighIn[] = (weightsRes.data ?? []).map((r) => ({ date: r.date, kg: toWeightKg(r) }));
+  const intake = new Map<string, { kcal: number; proteinG: number }>();
+  for (const r of foodRes.data ?? []) {
+    const t = intake.get(r.date) ?? { kcal: 0, proteinG: 0 };
+    t.kcal += Number(r.kcal);
+    t.proteinG += Number(r.protein_g);
+    intake.set(r.date, t);
+  }
+  const activity = new Map((activityRes.data ?? []).map((r) => [r.date as string, toActivity(r)]));
+  const workouts = new Map<string, AnalysisDay['workouts']>();
+  for (const r of workoutsRes.data ?? []) {
+    const list = workouts.get(r.date) ?? [];
+    list.push({
+      lightCardioH: Number(r.light_cardio_h),
+      strenuousCardioH: Number(r.strenuous_cardio_h),
+      liftingH: Number(r.lifting_h),
+    });
+    workouts.set(r.date, list);
+  }
+  const days: AnalysisDay[] = [];
+  for (let d = from; d <= to; d = addDays(d, 1)) {
+    const t = intake.get(d);
+    days.push({
+      date: d,
+      intakeKcal: t ? t.kcal : null,
+      proteinG: t ? t.proteinG : null,
+      activity: activity.get(d) ?? null,
+      workouts: workouts.get(d) ?? [],
+    });
+  }
+  return { profile, weighIns, days };
+}
+
+// ---- suggestions (every access fails soft: the table may not exist until the migration is applied) ----
+
+// Structural subset of weightAnalysis.Suggestion (contracts §9.3).
+interface CalorieSuggestion {
+  oldAdjustPct: number;
+  newAdjustPct: number | null;
+  oldKcal: number;
+  newKcal: number | null;
+  reason: string;
+}
+
+export async function listSuggestionRecords(): Promise<SuggestionRecord[] | null> {
+  try {
+    const since = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await supabase
+      .from('target_suggestions')
+      .select('*')
+      .gte('created_at', since)
+      .order('created_at', { ascending: false });
+    if (error) return null;
+    return (data ?? []).map(toSuggestionRecord);
+  } catch {
+    return null;
+  }
+}
+
+export async function recordSuggestion(r: NewSuggestionRecord): Promise<boolean> {
+  try {
+    const userId = await currentUserId();
+    const { error } = await supabase
+      .from('target_suggestions')
+      .insert({ ...fromSuggestionRecord(r), user_id: userId });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function acceptCalorieSuggestion(profile: Profile, s: CalorieSuggestion): Promise<Profile> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { userId, ...input } = profile;
+  const saved = await saveProfile({ ...input, overrideKcalAdjustPct: s.newAdjustPct });
+  await recordSuggestion({
+    kind: 'calorie',
+    action: 'accepted',
+    snoozeUntil: null,
+    oldAdjustPct: s.oldAdjustPct,
+    newAdjustPct: s.newAdjustPct,
+    oldKcal: s.oldKcal,
+    newKcal: s.newKcal,
+    reason: s.reason,
+  });
+  return saved;
+}
+
+export async function snoozeSuggestion(kind: SuggestionKind, today: string): Promise<boolean> {
+  return recordSuggestion({
+    kind,
+    action: 'snoozed',
+    snoozeUntil: addDays(today, 7),
+    oldAdjustPct: null,
+    newAdjustPct: null,
+    oldKcal: null,
+    newKcal: null,
+    reason: null,
+  });
 }
 
 // ---- foods ----
