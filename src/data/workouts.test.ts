@@ -36,6 +36,13 @@ vi.mock('./api', () => ({
   saveWorkout: h.saveWorkout,
 }));
 
+// saveWorkoutSession validates against the live ROUTINE; the sample was recorded with the reference routine.
+vi.mock('../lib/routine', async (importOriginal) => {
+  const orig = await importOriginal<typeof import('../lib/routine')>();
+  const { loadReferenceRoutine } = await import('../test/referenceRoutine');
+  return { ...orig, ROUTINE: loadReferenceRoutine() };
+});
+
 import { getWorkoutSession, importWorkoutSessions, loadWorkoutData, saveWorkoutSession } from './workouts';
 import type { WorkoutSession } from '../lib/workoutSession';
 
