@@ -1,6 +1,7 @@
 export type Sex = 'male' | 'female';
 export type Goal = 'lose_fat' | 'maintain' | 'build_muscle';
 export type Units = 'imperial' | 'metric';
+export type EverydayActivity = 'sedentary' | 'moderate' | 'active';
 
 export interface Profile {
   userId: string;
@@ -9,6 +10,7 @@ export interface Profile {
   sex: Sex;
   heightCm: number;
   goal: Goal;
+  everydayActivity: EverydayActivity;
   units: Units;
   timezone: string;          // IANA, e.g. "America/New_York"
   overrideKcalAdjustPct: number | null;     // e.g. -15 means burn × 0.85

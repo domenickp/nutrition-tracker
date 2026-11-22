@@ -41,7 +41,9 @@ export interface Profile {
   overrideProteinGPerLb: number | null;
   overrideFatPct: number | null;            // percent of calories, e.g. 30
   overrideWaterBaseMlPerKg: number | null;
+  everydayActivity: EverydayActivity;      // nt-7n5; DB column everyday_activity, default 'sedentary'
 }
+export type EverydayActivity = 'sedentary' | 'moderate' | 'active';
 export type ProfileInput = Omit<Profile, 'userId'>;
 
 export interface Nutrients {
@@ -137,7 +139,8 @@ export function computeTargets(input: {
 }): TargetResult;
 ```
 Implements design §"Target calculation" exactly, constants:
-MET sedentary 1.3, light 4.0, strenuous 8.0, lifting 5.0; waking hours 16; digestion
+MET for non-exercise waking hours by `profile.everydayActivity` (nt-7n5): sedentary 1.3,
+moderate 1.5, active 1.7 (exported as `BASELINE_MET`; `MET.sedentary` stays 1.3); light 4.0, strenuous 8.0, lifting 5.0; waking hours 16; digestion
 factor 1.1; goal kcal adjust −20 / 0 / +10 %; protein 1.0 / 0.8 / 1.0 g per lb; fat
 25 / 30 / 25 %; water base 0.5 fl oz per lb (= 32.54 ml/kg, use 0.5 × 29.5735 ml per lb),
 plus 12 fl oz (354.882 ml) per 0.5 h exercise. Results rounded to whole numbers

@@ -329,7 +329,7 @@ describe('suggestion records', () => {
 
 describe('acceptCalorieSuggestion / snoozeSuggestion', () => {
   const profile: Profile = {
-    userId: 'u1', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain',
+    userId: 'u1', birthMonth: 1, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain', everydayActivity: 'sedentary',
     units: 'metric', timezone: 'UTC', overrideKcalAdjustPct: null, overrideProteinGPerLb: null,
     overrideFatPct: null, overrideWaterBaseMlPerKg: null,
   };

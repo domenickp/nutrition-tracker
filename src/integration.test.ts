@@ -10,7 +10,7 @@ import type { Profile } from './lib/types';
 import { loadReferenceRoutine } from './test/referenceRoutine';
 
 const profile: Profile = {
-  userId: 'u1', birthMonth: 6, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain',
+  userId: 'u1', birthMonth: 6, birthYear: 1990, sex: 'male', heightCm: 180, goal: 'maintain', everydayActivity: 'sedentary',
   units: 'imperial', timezone: 'America/New_York', overrideKcalAdjustPct: null,
   overrideProteinGPerLb: null, overrideFatPct: null, overrideWaterBaseMlPerKg: null,
 };
