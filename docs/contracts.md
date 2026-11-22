@@ -492,6 +492,9 @@ export type RateStatus = 'below' | 'slow' | 'on_track' | 'above';  // below/abov
 export function weightTrend(weighIns: WeighIn[], from: string, to: string): TrendPoint[];
 /** Least-squares slope of trendKg per day × 7; pct relative to the last trendKg. null if < 2 points. */
 export function weeklyRate(points: TrendPoint[]): Rate | null;
+/** Least-squares slope of the actual weigh-ins dated from..to (kg vs real day number) × 7; pct
+ *  relative to their mean. null if < 2 weigh-ins or all on one date. Used for the analysis rate. */
+export function weighInRate(weighIns: WeighIn[], from: string, to: string): Rate | null;
 /** Design table; boundaries belong to the band nearer on_track. */
 export function classifyRate(goal: Goal, pctPerWeek: number): RateStatus;
 ```
@@ -510,7 +513,7 @@ export interface WeightAnalysis {
   missing: string[];             // when collecting, e.g. ["8 more days", "weigh in more often"]
   window: { from: string; to: string; days: number; loggedDays: number; weighedDays: number; lowLogDays: number };
   trend: TrendPoint[];           // chart range: today − 55 .. today
-  rate: Rate | null;             // over the window
+  rate: Rate | null;             // weighInRate over the window
   avgIntakeKcal: number | null; avgEstimatedBurn: number | null; impliedBurn: number | null;
   avgProteinG: number | null; proteinTargetG: number | null;
   suggestions: Suggestion[];     // after snooze/cooldown filtering; empty when records === null

@@ -70,8 +70,8 @@ Definitions the tests pin (from the design):
 - Window = `today − 21 .. today − 1`, clipped to start at the first date with a weigh-in or food log; `days` = its length.
 - Enough data = `days ≥ 14`, `weighedDays ≥ 0.6 × days`, `loggedDays ≥ 0.8 × days`; otherwise `status: 'collecting'` with `missing` entries.
 - Per day: weight = trendKg that day; `computeTargets({profile, weightKg, date, activity, workouts})` gives `burn` and `targets.kcal`/`proteinG`. Low-log = logged and `intakeKcal < 0.5 × targets.kcal`.
-- `impliedBurn = avgIntake − (kgToLb(trend change over window) × 3500 / days)`.
-- `oldAdjust = profile.overrideKcalAdjustPct ?? goal default`; `aimedIntake = impliedBurn − (kgToLb(AIM pct × trendKg / 100) × 3500 / 7)`; `newAdjust = round((aimedIntake / avgEstimatedBurn − 1) × 100)`, clamped so `(1+new/100)/(1+old/100)` ∈ [0.9, 1.1]; suggest only if that ratio is ≥ 1.03 or ≤ 0.97. `oldKcal`/`newKcal` = `round(avgEstimatedBurn × (1 + adj/100))`.
+- `rate = weighInRate(weighIns, window)` (least squares over the actual weigh-ins; the EMA trend lags ~10 days and is for display and per-day weights only). `impliedBurn = avgIntake − kgToLb(rate.kgPerWeek / 7) × 3500`.
+- `oldAdjust = profile.overrideKcalAdjustPct ?? goal default`; `aimedIntake = impliedBurn + (kgToLb(AIM pct × trendKg / 100) × 3500 / 7)` (AIM is signed, negative = losing); `newAdjust = round((aimedIntake / avgEstimatedBurn − 1) × 100)`, clamped so `(1+new/100)/(1+old/100)` ∈ [0.9, 1.1]; suggest only if that ratio is ≥ 1.03 or ≤ 0.97. `oldKcal`/`newKcal` = `round(avgEstimatedBurn × (1 + adj/100))`.
 - Lifting sessions (last 14 days of the window): a workout with `liftingH > 0` counts 1; a day with `activity.mode === 'hours'` and `liftingH ≥ 0.5` counts 1.
 - Cardio session kcal = `(MET.strenuous − 1) × trendKg × 0.5` (30 minutes), rounded to 10.
 

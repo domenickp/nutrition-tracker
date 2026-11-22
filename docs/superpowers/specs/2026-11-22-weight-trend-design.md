@@ -68,8 +68,10 @@ languages for no gain at one user's data size. One sensible way; not a choice pu
 
 - Exponentially smoothed moving average over daily weigh-ins, smoothing 0.1 per day
   (the "Hacker's Diet" trend). Days without a weigh-in carry the trend forward.
-- Weekly rate = slope of the trend over the analysis window, in lb (or kg) per week and as
-  % of body weight per week.
+- The trend is for display (chart, Today) and per-day weights. The weekly rate used for
+  judgements is a least-squares line through the actual weigh-ins in the analysis window,
+  because the smoothed trend lags about 10 days and would understate a new rate
+  (coordinator's call during build). Shown in lb (or kg) per week and % of body weight per week.
 
 ### Expected rate per goal (coordinator's call, flagged for the owner)
 
@@ -103,7 +105,7 @@ used to size a calorie suggestion.
 ### Implied burn and the calorie suggestion
 
 - Average intake = mean logged kcal over logged days in the window.
-- Implied burn per day = average intake − (trend change in lb over the window × 3,500 / days).
+- Implied burn per day = average intake − (weekly rate in lb ÷ 7 × 3,500).
 - Estimated burn per day = mean of `computeTargets(...).burn` for each day in the window,
   using that day's weight trend value, activity and workouts.
 - Aimed intake = implied burn − (aimed weekly rate in lb × 3,500 / 7). For maintain the aim is 0.
