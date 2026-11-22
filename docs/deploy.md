@@ -189,6 +189,12 @@ nutrition-tracker"). To stop a build with failing tests from going live:
 phone before merging. Its settings live in `wrangler.jsonc` in the repo. Previews use the
 same Supabase project as the live app, so data you enter in a preview is real.
 
+Previews don't inherit production settings. Add `VITE_SUPABASE_URL` and
+`VITE_SUPABASE_ANON_KEY` to the **Previews Base** section too (Workers & Pages →
+`nutrition-tracker` → Settings), or a preview shows "Failed to fetch" when you ask for a
+sign-in code. In a preview, sign in with the 6-digit code: the email's link goes to the
+live site.
+
 ### 4. (Optional) Require green checks before merging
 
 GitHub → **Settings → Branches → Add branch ruleset** (or "branch protection rule") for
