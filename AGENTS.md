@@ -13,7 +13,8 @@ A nutrition tracker PWA: React + TypeScript + Vite frontend on Cloudflare Pages,
 - Sample workout export: `docs/samples/workout-2026-11-16-d3.json`
 - Layout: `src/lib/` pure tested logic, `src/data/` Supabase access, `src/screens/<name>/`
   one folder per screen, `src/components/` shared UI, `supabase/migrations/`,
-  `supabase/functions/usda/`.
+  `supabase/functions/usda/`, `config/workouts.yaml` (the workout plan for all users, read
+  and validated at build time by `build/yamlRoutinePlugin.ts`; contracts §8.7).
 - Commands: `npm test`, `npm run typecheck`, `npm run build`.
 - Agents must never: commit `.env` or any key, run migrations against or deploy to the
   production Supabase project, or change Cloudflare/Supabase/GitHub settings or secrets.

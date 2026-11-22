@@ -41,6 +41,8 @@ npm run build
 
 | Path | What's there |
 |---|---|
+| `config/workouts.yaml` | The workout plan (days, exercises, order, targets), shared by all users. Edit it and open a PR to change the plan; a mistake fails the build |
+| `build/` | Build-time Vite plugin that reads and checks `config/workouts.yaml` |
 | `src/lib/` | Pure, tested logic: targets, units/portions, dates, workout import, workout sessions and routine |
 | `src/data/` | Supabase access and auth |
 | `src/screens/` | One folder per screen: today, addfood, activity, workout, workouthistory, settings, signin |
