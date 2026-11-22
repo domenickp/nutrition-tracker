@@ -316,7 +316,7 @@ export interface RoutineExercise {
 }
 export interface RoutineDay { day: number; areas: string; exercises: RoutineExercise[] }
 export interface Routine { schemaVersion: 1; days: RoutineDay[] }
-export const ROUTINE: Routine;   // content of docs/reference/fatherworkout/routine.json (drop "source")
+export const ROUTINE: Routine;   // loaded from config/workouts.yaml (see §8.7)
 export function routineDay(routine: Routine, day: number): RoutineDay | null;
 ```
 
@@ -406,3 +406,43 @@ dismiss, `navigator.vibrate` at zero when available (index.html `startRest` / `e
   `importWorkoutSessions`, then show the three counts and each invalid file's name and
   errors. Explain where the files are: Google Drive → "FatherWorkout Data" → "sessions",
   download (Drive zips it), unzip, select all.
+
+### §8.7 Routine config file `config/workouts.yaml` (task nt-5ee, added 2026-11-22)
+
+Design: `docs/superpowers/specs/2026-11-22-workout-config-yaml-design.md`. The plan lives in
+`config/workouts.yaml`, shared by all users, and is turned into plain data **at build time**.
+No YAML parser may reach the app bundle.
+
+File shape (YAML):
+```yaml
+schemaVersion: 1
+days:                      # list order = display order; day numbers unique
+  - day: 1                 # positive integer, required
+    areas: Chest, Triceps  # non-empty string, required
+    exercises:             # list order = display order; non-empty
+      - id: d1-dumbbell-press   # required, non-empty, unique across ALL days; never rename once used
+        name: Dumbbell Press    # required, non-empty
+        warmup: false           # optional boolean, default false
+        sets: 3                 # optional; sets/reps/weightLb/timeMin/timeSec: number or null, default null
+        reps: 12
+        weightLb: 45
+        rest: 2 min             # optional; rest/notes: string or null, default null
+```
+
+Code:
+```ts
+// src/lib/routineConfig.ts (pure; no Vite, Node or DOM imports)
+export function parseRoutineConfig(data: unknown): Routine;
+//   Returns a fully normalised Routine (every RoutineExercise field present, defaults filled,
+//   keys in the §8.1 order). Throws Error whose message lists EVERY problem, one per line,
+//   each prefixed with a path like `days[0].exercises[2].reps`. Rejects: non-object root,
+//   schemaVersion !== 1, unknown keys at any level, wrong types, missing required fields,
+//   empty days/exercises lists, duplicate day numbers, duplicate exercise ids.
+```
+- A Vite plugin (registered in `vite.config.ts`, so Vitest gets it too) handles imports of
+  `config/*.yaml`: parse with the `yaml` package, pass through `parseRoutineConfig`, and emit
+  `export default <JSON>`. A validation error fails the build/test with the file path and the
+  error lines. Changes to the YAML reload in `npm run dev`.
+- `src/lib/routine.ts`: `import routineData from '../../config/workouts.yaml'` and
+  `export const ROUTINE: Routine = routineData`. A `declare module '*.yaml'` gives the default
+  export the type `Routine`.
