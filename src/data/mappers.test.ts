@@ -117,7 +117,14 @@ describe('activity', () => {
   const a: DailyActivity = {
     date: '2026-11-16', mode: 'hours', directKcal: null,
     hours: { sedentaryH: 8, lightCardioH: 0.5, strenuousCardioH: 0, liftingH: 1 },
+    everydayActivity: null,
   };
+  it('keeps everydayActivity and maps a missing column to null', () => {
+    expect(toActivity(fromActivity({ ...a, everydayActivity: 'moderate' })).everydayActivity).toBe('moderate');
+    const row = fromActivity(a);
+    delete row.everyday_activity;
+    expect(toActivity(row).everydayActivity).toBeNull();
+  });
   it('round-trips with null directKcal', () => {
     expect(toActivity(fromActivity(a))).toEqual(a);
     expect(toActivity(fromActivity({ ...a, mode: 'direct', directKcal: 600 })).directKcal).toBe(600);

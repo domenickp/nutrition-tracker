@@ -5,6 +5,7 @@ import { Button, Card, Field, Layout, Spinner } from '../../components';
 import { addWeight, getLatestWeight, getProfile, listSuggestionRecords, saveProfile } from '../../data/api';
 import { signOut } from '../../data/auth';
 import { localDate, todayIn } from '../../lib/dates';
+import { EVERYDAY_LABEL, EVERYDAY_LEVELS } from '../../lib/activityLevels';
 import type { EverydayActivity, Goal, Profile, ProfileInput, Sex, Units } from '../../lib/types';
 import {
   DEFAULT_WATER_ML_PER_KG,
@@ -394,9 +395,9 @@ export default function SettingsScreen() {
             <div className="field">
               <label className="field__label" htmlFor="everyday">Everyday activity</label>
               <select id="everyday" className="field__input" value={form.everydayActivity} onChange={(e) => set('everydayActivity', e.target.value as EverydayActivity)}>
-                <option value="sedentary">Mostly sitting</option>
-                <option value="moderate">On your feet part of the day</option>
-                <option value="active">On your feet most of the day / physical job</option>
+                {EVERYDAY_LEVELS.map((l) => (
+                  <option key={l} value={l}>{EVERYDAY_LABEL[l]}</option>
+                ))}
               </select>
               <p className="muted">Counts for the hours you're not exercising.</p>
             </div>

@@ -56,7 +56,7 @@ export function computeTargets(input: {
       kcal: (met - 1) * weightKg * hours,
     });
     breakdown = {
-      sedentary: part(Math.max(0, WAKING_HOURS - exerciseH), BASELINE_MET[profile.everydayActivity ?? 'sedentary']),
+      sedentary: part(Math.max(0, WAKING_HOURS - exerciseH), BASELINE_MET[activity?.everydayActivity ?? profile.everydayActivity ?? 'sedentary']),
       light: part(light, MET.light),
       strenuous: part(strenuous, MET.strenuous),
       lifting: part(lifting, MET.lifting),

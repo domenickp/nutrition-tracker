@@ -205,7 +205,7 @@ describe('analyzeWeight', () => {
   });
 
   it('direct mode day burn', () => {
-    const direct: DailyActivity = { date: '', mode: 'direct', directKcal: 600, hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 } };
+    const direct: DailyActivity = { date: '', mode: 'direct', directKcal: 600, hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 }, everydayActivity: null };
     const a = run('maintain', 0, { dayList: days(2000, 150, (d) => ({ ...d, activity: { ...direct, date: d.date } })) });
     const expected = computeTargets({ profile: profile('maintain'), weightKg: 80, date: TODAY, activity: direct, workouts: [] }).burn;
     expect(Math.abs((a.avgEstimatedBurn as number) - expected)).toBeLessThanOrEqual(2);

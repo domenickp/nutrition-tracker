@@ -90,6 +90,7 @@ export interface DailyActivity {
   mode: ActivityMode;
   directKcal: number | null;
   hours: ActivityHours;
+  everydayActivity: EverydayActivity | null;   // nt-aa2: per-day override; null = profile default
 }
 
 export type ExerciseCategory = 'light_cardio' | 'strenuous_cardio' | 'lifting';
@@ -140,7 +141,8 @@ export function computeTargets(input: {
 ```
 Implements design §"Target calculation" exactly, constants:
 MET for non-exercise waking hours by `profile.everydayActivity` (nt-7n5): sedentary 1.3,
-moderate 1.5, active 1.7 (exported as `BASELINE_MET`; `MET.sedentary` stays 1.3); light 4.0, strenuous 8.0, lifting 5.0; waking hours 16; digestion
+moderate 1.5, active 1.7 (exported as `BASELINE_MET`; `MET.sedentary` stays 1.3). The day's
+`activity.everydayActivity`, when set, overrides the profile's (nt-aa2); light 4.0, strenuous 8.0, lifting 5.0; waking hours 16; digestion
 factor 1.1; goal kcal adjust −20 / 0 / +10 %; protein 1.0 / 0.8 / 1.0 g per lb; fat
 25 / 30 / 25 %; water base 0.5 fl oz per lb (= 32.54 ml/kg, use 0.5 × 29.5735 ml per lb),
 plus 12 fl oz (354.882 ml) per 0.5 h exercise. Results rounded to whole numbers

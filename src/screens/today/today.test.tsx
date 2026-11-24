@@ -18,6 +18,7 @@ vi.mock('../../data/api', () => ({
   listSuggestionRecords: vi.fn(async () => [] as unknown[] | null),
   acceptCalorieSuggestion: vi.fn(async () => ({})),
   snoozeSuggestion: vi.fn(async () => true),
+  saveActivity: vi.fn(async () => {}),
 }));
 vi.mock('../../lib/weightAnalysis', async (orig) => {
   const m = await orig<typeof import('../../lib/weightAnalysis')>();
@@ -262,5 +263,51 @@ describe('TodayScreen weigh-in', () => {
     await waitFor(() => expect(api.loadAnalysisData).toHaveBeenCalled());
     expect(screen.queryByText(/^Trend/)).toBeNull();
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  describe('everyday activity override', () => {
+    it('shows the default label and saves a zero-hours row when none exists', async () => {
+      renderIt();
+      const sel = (await screen.findByLabelText('Everyday activity today')) as HTMLSelectElement;
+      expect(sel.options[0].textContent).toBe('Settings default (Mostly sitting)');
+      expect(screen.getByText(/Same setting as on the Activity screen/)).toBeTruthy();
+      fireEvent.change(sel, { target: { value: 'moderate' } });
+      await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
+      expect(vi.mocked(api.saveActivity).mock.calls[0][0]).toEqual({
+        date: '2026-11-15', mode: 'hours', directKcal: null,
+        hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 },
+        everydayActivity: 'moderate',
+      });
+    });
+
+    it('keeps existing hours when a row exists', async () => {
+      const act = {
+        date: '2026-11-15', mode: 'hours' as const, directKcal: null,
+        hours: { sedentaryH: 0, lightCardioH: 1, strenuousCardioH: 0, liftingH: 0.5 },
+        everydayActivity: 'active' as const,
+      };
+      vi.mocked(api.loadDay).mockResolvedValue(fixture({ activity: act }));
+      renderIt();
+      const sel = (await screen.findByLabelText('Everyday activity today')) as HTMLSelectElement;
+      expect(sel.value).toBe('active');
+      fireEvent.change(sel, { target: { value: '' } });
+      await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
+      expect(vi.mocked(api.saveActivity).mock.calls[0][0]).toEqual({ ...act, everydayActivity: null });
+    });
+
+    it('is hidden on a direct-mode day', async () => {
+      vi.mocked(api.loadDay).mockResolvedValue(
+        fixture({
+          activity: {
+            date: '2026-11-15', mode: 'direct', directKcal: 400,
+            hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 },
+            everydayActivity: null,
+          },
+        }),
+      );
+      renderIt();
+      await screen.findByText(/already cover the whole day/);
+      expect(screen.queryByLabelText('Everyday activity today')).toBeNull();
+    });
   });
 });

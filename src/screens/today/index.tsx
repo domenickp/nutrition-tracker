@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Field, Layout, ProgressBar, Sheet, Spinner, SuggestionCard } from '../../components';
+import { Button, Card, DayActivityLevel, Field, Layout, ProgressBar, Sheet, Spinner, SuggestionCard } from '../../components';
 import {
   acceptCalorieSuggestion,
   addWater,
@@ -11,6 +11,7 @@ import {
   listSuggestionRecords,
   loadAnalysisData,
   loadDay,
+  saveActivity,
   snoozeSuggestion,
   updateFoodLog,
 } from '../../data/api';
@@ -422,6 +423,31 @@ export default function TodayScreen() {
           <p className="muted">
             {day.workouts.length} imported workout{day.workouts.length === 1 ? '' : 's'}
           </p>
+          {a?.mode === 'direct' ? (
+            <p className="muted">Your entered calories already cover the whole day.</p>
+          ) : (
+            <DayActivityLevel
+              value={a?.everydayActivity ?? null}
+              profileDefault={day.profile.everydayActivity}
+              otherScreen="Activity"
+              disabled={busy}
+              onChange={(v) =>
+                void write(() =>
+                  saveActivity(
+                    a
+                      ? { ...a, everydayActivity: v }
+                      : {
+                          date,
+                          mode: 'hours',
+                          directKcal: null,
+                          hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 },
+                          everydayActivity: v,
+                        },
+                  ),
+                )
+              }
+            />
+          )}
           <Link to={`/day/${date}/activity`}>Edit activity</Link>
         </Card>
       </div>

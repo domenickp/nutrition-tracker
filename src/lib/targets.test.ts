@@ -13,6 +13,7 @@ const sample: WorkoutHours[] = [{ lightCardioH: 0.667, strenuousCardioH: 0, lift
 const hoursAct = (h: Partial<DailyActivity['hours']>): DailyActivity => ({
   date, mode: 'hours', directKcal: null,
   hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0, ...h },
+  everydayActivity: null,
 });
 const run = (over: Partial<Profile> = {}, activity: DailyActivity | null = null,
   workouts: WorkoutHours[] = [], weightKg = 80) =>
@@ -39,8 +40,18 @@ describe('everyday activity', () => {
     expect(rawBurn({ everydayActivity: 'moderate' }).breakdown!.sedentary.met).toBe(1.5);
     expect(rawBurn({ everydayActivity: 'active' }).breakdown!.sedentary.met).toBe(1.7);
   });
+  it('a day override replaces the profile level', () => {
+    const o = (e: DailyActivity['everydayActivity']) => ({ ...hoursAct({}), everydayActivity: e });
+    expect(run({ everydayActivity: 'sedentary' }, o('moderate')).burn).toBe(run({ everydayActivity: 'moderate' }, hoursAct({})).burn);
+    expect(run({ everydayActivity: 'moderate' }, o(null)).burn).toBe(run({ everydayActivity: 'moderate' }, hoursAct({})).burn);
+    expect(run({ everydayActivity: 'moderate' }, null).burn).toBe(run({ everydayActivity: 'moderate' }, hoursAct({})).burn);
+  });
+  it('direct mode ignores the day override', () => {
+    const d: DailyActivity = { date, mode: 'direct', directKcal: 500, hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 }, everydayActivity: 'active' };
+    expect(run({ everydayActivity: 'sedentary' }, d).burn).toBe(run({ everydayActivity: 'sedentary' }, { ...d, everydayActivity: null }).burn);
+  });
   it('direct mode is unaffected', () => {
-    const d: DailyActivity = { date, mode: 'direct', directKcal: 500, hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 } };
+    const d: DailyActivity = { date, mode: 'direct', directKcal: 500, hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 }, everydayActivity: null };
     expect(run({ everydayActivity: 'active' }, d).burn).toBe(run({ everydayActivity: 'sedentary' }, d).burn);
   });
 });
@@ -141,6 +152,7 @@ describe('computeTargets', () => {
     const direct: DailyActivity = {
       date, mode: 'direct', directKcal: 500,
       hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 },
+      everydayActivity: null,
     };
     it('uses directKcal, ignores workouts for kcal, no sedentary baseline', () => {
       const r = run({}, direct, sample);

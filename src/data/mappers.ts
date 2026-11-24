@@ -170,6 +170,7 @@ export function toActivity(r: Row): DailyActivity {
       strenuousCardioH: num(r.strenuous_cardio_h),
       liftingH: num(r.lifting_h),
     },
+    everydayActivity: r.everyday_activity ?? null,
   };
 }
 export function fromActivity(a: DailyActivity): Row {
@@ -181,6 +182,7 @@ export function fromActivity(a: DailyActivity): Row {
     light_cardio_h: a.hours.lightCardioH,
     strenuous_cardio_h: a.hours.strenuousCardioH,
     lifting_h: a.hours.liftingH,
+    everyday_activity: a.everydayActivity,
   };
 }
 

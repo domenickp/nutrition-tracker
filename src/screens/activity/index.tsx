@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Field, Layout, Sheet, Spinner } from '../../components';
+import { Button, Card, DayActivityLevel, Field, Layout, Sheet, Spinner } from '../../components';
 import {
   deleteWorkout,
   listExerciseRules,
@@ -124,6 +124,7 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
     strenuousCardioH: String(a?.hours.strenuousCardioH ?? 0),
     liftingH: String(a?.hours.liftingH ?? 0),
   });
+  const [everyday, setEveryday] = useState(a?.everydayActivity ?? null);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -139,8 +140,9 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
         strenuousCardioH: toNum(h.strenuousCardioH),
         liftingH: toNum(h.liftingH),
       },
+      everydayActivity: everyday, // kept in direct mode too
     }),
-    [day.date, mode, kcal, h],
+    [day.date, mode, kcal, h, everyday],
   );
 
   const estimate = useMemo(
@@ -197,6 +199,8 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
         </div>
 
         {mode === 'direct' ? (
+          <>
+          <p className="act-note">Your entered calories already cover the whole day.</p>
           <Field
             label="Active calories (kcal)"
             hint="Active calories, like your watch shows"
@@ -206,8 +210,15 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
             value={kcal}
             onChange={(e) => setKcal(e.target.value)}
           />
+          </>
         ) : (
           <>
+            <DayActivityLevel
+              value={everyday}
+              profileDefault={day.profile.everydayActivity}
+              otherScreen="Today"
+              onChange={setEveryday}
+            />
             <p className="act-note">Enter hours as decimals (1.5 = 1 h 30 min).</p>
             <p className="act-note">
               Sedentary time is {WAKING_HOURS} waking hours minus all exercise: the hours entered here plus logged
