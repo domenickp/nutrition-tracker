@@ -145,4 +145,29 @@ describe('Your data', () => {
     expect(rows.food_logs[0].food_id).toBe(rows.foods[0].id);
     await waitFor(() => expect(api.getProfile).toHaveBeenCalledTimes(2));
   });
+
+  it('enables Import after a delete on a non-empty account', async () => {
+    api.accountIsEmpty.mockResolvedValue(false);
+    setup();
+    await screen.findByText('Import only works on an empty account. Delete your data first.');
+    fireEvent.change(screen.getByLabelText('Type DELETE to confirm'), { target: { value: 'DELETE' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Delete all my data' }));
+    await screen.findByText(MESSAGE);
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    expect(await screen.findByLabelText('Backup file')).toBeTruthy();
+    expect(screen.queryByText('Import only works on an empty account. Delete your data first.')).toBeNull();
+  });
+
+  it('closes Import after a successful import', async () => {
+    api.importMyData.mockResolvedValue(1);
+    setup();
+    await screen.findByText('Your data');
+    await waitFor(() => expect((screen.getByLabelText('Backup file') as HTMLInputElement).disabled).toBe(false));
+    chooseFile(JSON.stringify({ app: 'nutrition-tracker', version: 1, tables: { foods: [{ id: 'f1', name: 'Egg' }] } }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Import' }));
+    await screen.findByText('Imported 1 items.');
+    expect(screen.queryByLabelText('Backup file')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Import' })).toBeNull();
+    expect(screen.getByText('Import only works on an empty account. Delete your data first.')).toBeTruthy();
+  });
 });
