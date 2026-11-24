@@ -10,7 +10,12 @@ const state = vi.hoisted(() => ({
 }));
 
 vi.mock('./data/auth', () => ({ useSession: () => ({ session: state.session, loading: state.loading }) }));
-vi.mock('./data/api', () => ({ getProfile: async () => state.profile }));
+vi.mock('./data/api', () => ({
+  getProfile: async () => state.profile,
+  // Settings (the redirect target) also loads these.
+  accountIsEmpty: async () => true,
+  listSuggestionRecords: async () => null,
+}));
 
 import App from './App';
 
