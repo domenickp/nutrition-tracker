@@ -19,6 +19,7 @@ import type {
   WorkoutSummary,
 } from '../lib/types';
 import { addDays } from '../lib/dates';
+import { BACKUP_TABLES, type BackupRow, type BackupTable } from '../lib/backup';
 import type { Suggestion } from '../lib/weightAnalysis';
 import type { UsdaFood } from '../../supabase/functions/usda/normalize';
 import { queryWords } from '../../supabase/functions/usda/search';
@@ -426,4 +427,36 @@ export async function searchUsda(q: string): Promise<UsdaFood[]> {
 
 export async function getUsdaFood(fdcId: number): Promise<UsdaFood> {
   return invokeUsda<UsdaFood>('usda?op=food&fdcId=' + encodeURIComponent(String(fdcId)));
+}
+
+// ---- data controls (contracts §10.2) ----
+
+export async function exportMyData(): Promise<Record<BackupTable, BackupRow[]>> {
+  const out = {} as Record<BackupTable, BackupRow[]>;
+  for (const t of BACKUP_TABLES) {
+    const { data, error } = await supabase.from(t).select('*');
+    fail(error, `Could not read ${t}`);
+    out[t] = (data ?? []) as BackupRow[];
+  }
+  return out;
+}
+
+export async function accountIsEmpty(): Promise<boolean> {
+  for (const t of BACKUP_TABLES) {
+    const { count, error } = await supabase.from(t).select('*', { count: 'exact', head: true });
+    fail(error, `Could not check ${t}`);
+    if ((count ?? 0) > 0) return false;
+  }
+  return true;
+}
+
+export async function purgeMyData(): Promise<void> {
+  const { error } = await supabase.rpc('purge_my_data');
+  fail(error, 'Could not delete your data');
+}
+
+export async function importMyData(rows: Record<BackupTable, BackupRow[]>): Promise<number> {
+  const { data, error } = await supabase.rpc('import_my_data', { payload: rows });
+  fail(error, 'Could not import');
+  return Number(data ?? 0);
 }

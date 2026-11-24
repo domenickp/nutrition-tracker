@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-type Result = { data?: unknown; error?: { message: string } | null };
+type Result = { data?: unknown; error?: { message: string } | null; count?: number | null };
 interface Call { table: string; ops: Array<[string, unknown[]]> }
 
 const h = vi.hoisted(() => ({
   calls: [] as Array<{ table: string; ops: Array<[string, unknown[]]> }>,
-  results: {} as Record<string, Array<{ data?: unknown; error?: { message: string } | null }>>,
+  results: {} as Record<string, Array<{ data?: unknown; error?: { message: string } | null; count?: number | null }>>,
+  rpc: vi.fn(),
   user: { id: 'u1' } as { id: string } | null,
   invoke: vi.fn(),
 }));
@@ -19,7 +20,7 @@ function builder(table: string) {
       get(_t, prop: string) {
         if (prop === 'then') {
           const res: Result = h.results[table]?.shift() ?? { data: null, error: null };
-          return (resolve: (v: Result) => void) => resolve({ data: res.data ?? null, error: res.error ?? null });
+          return (resolve: (v: Result) => void) => resolve({ data: res.data ?? null, error: res.error ?? null, count: res.count ?? null } as Result);
         }
         return (...args: unknown[]) => {
           call.ops.push([prop, args]);
@@ -36,6 +37,7 @@ vi.mock('../lib/supabase', () => ({
     from: (t: string) => builder(t),
     auth: { getUser: async () => ({ data: { user: h.user } }) },
     functions: { invoke: h.invoke },
+    rpc: h.rpc,
   },
 }));
 
@@ -54,7 +56,12 @@ import {
   loadAnalysisData,
   recordSuggestion,
   snoozeSuggestion,
+  exportMyData,
+  accountIsEmpty,
+  purgeMyData,
+  importMyData,
 } from './api';
+import { BACKUP_TABLES } from '../lib/backup';
 import type { NewFood, NewSuggestionRecord, Profile, WorkoutSummary } from '../lib/types';
 import type { Suggestion } from '../lib/weightAnalysis';
 
@@ -69,6 +76,7 @@ beforeEach(() => {
   h.results = {};
   h.user = { id: 'u1' };
   h.invoke.mockReset();
+  h.rpc.mockReset();
 });
 
 const profileRow = {
@@ -358,5 +366,48 @@ describe('acceptCalorieSuggestion / snoozeSuggestion', () => {
     expect(op(callsOn('target_suggestions')[0], 'insert')).toEqual([
       expect.objectContaining({ kind: 'calorie', action: 'snoozed', snooze_until: '2026-11-29', reason: null, new_kcal: null }),
     ]);
+  });
+});
+
+describe('data controls', () => {
+  it('exportMyData selects * from all nine tables', async () => {
+    for (const t of BACKUP_TABLES) queue(t, { data: [{ id: t }] });
+    const out = await exportMyData();
+    for (const t of BACKUP_TABLES) {
+      expect(out[t]).toEqual([{ id: t }]);
+      expect(op(callsOn(t)[0], 'select')).toEqual(['*']);
+    }
+  });
+  it('exportMyData throws on error', async () => {
+    queue('foods', { error: { message: 'boom' } });
+    await expect(exportMyData()).rejects.toThrow(/boom/);
+  });
+  it('accountIsEmpty is true only when every table has no row', async () => {
+    for (const t of BACKUP_TABLES) queue(t, { count: 0 });
+    expect(await accountIsEmpty()).toBe(true);
+    expect(callsOn('profiles').length).toBe(1);
+  });
+  it('accountIsEmpty is false when any table has a row', async () => {
+    for (const t of BACKUP_TABLES) queue(t, { count: t === 'water_logs' ? 2 : 0 });
+    expect(await accountIsEmpty()).toBe(false);
+  });
+  it('accountIsEmpty throws on error', async () => {
+    queue('weights', { error: { message: 'nope' } });
+    await expect(accountIsEmpty()).rejects.toThrow(/nope/);
+  });
+  it('purgeMyData calls the rpc and throws on error', async () => {
+    h.rpc.mockResolvedValueOnce({ data: null, error: null });
+    await purgeMyData();
+    expect(h.rpc).toHaveBeenCalledWith('purge_my_data');
+    h.rpc.mockResolvedValueOnce({ data: null, error: { message: 'denied' } });
+    await expect(purgeMyData()).rejects.toThrow(/denied/);
+  });
+  it('importMyData calls the rpc with the payload and returns the count', async () => {
+    const payload = Object.fromEntries(BACKUP_TABLES.map((t) => [t, []])) as never;
+    h.rpc.mockResolvedValueOnce({ data: 12, error: null });
+    expect(await importMyData(payload)).toBe(12);
+    expect(h.rpc).toHaveBeenCalledWith('import_my_data', { payload });
+    h.rpc.mockResolvedValueOnce({ data: null, error: { message: 'account not empty' } });
+    await expect(importMyData(payload)).rejects.toThrow(/account not empty/);
   });
 });
