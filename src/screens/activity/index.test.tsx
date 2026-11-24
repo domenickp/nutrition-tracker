@@ -139,7 +139,7 @@ describe('ActivityScreen', () => {
     expect(api.saveActivity.mock.calls[0][0].everydayActivity).toBe('active');
   });
 
-  it('hides the selector in direct mode and keeps a stored override on save', async () => {
+  it('shows the selector disabled in direct mode and keeps a stored override on save', async () => {
     api.loadDay.mockResolvedValue({
       ...day,
       activity: {
@@ -150,7 +150,11 @@ describe('ActivityScreen', () => {
     });
     renderScreen();
     await screen.findByText(/already cover the whole day/);
-    expect(screen.queryByLabelText('Everyday activity today')).toBeNull();
+    const sel = screen.getByLabelText('Everyday activity today') as HTMLSelectElement;
+    expect(sel.disabled).toBe(true);
+    expect(sel.value).toBe('moderate');
+    expect(screen.getByText(/Not used on days with entered calories\. Switch to hours above/)).toBeTruthy();
+    expect(screen.queryByText(/Same setting as on the/)).toBeNull();
     fireEvent.click(screen.getByText('Save activity'));
     await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
     expect(api.saveActivity.mock.calls[0][0]).toMatchObject({ mode: 'direct', everydayActivity: 'moderate' });

@@ -210,6 +210,13 @@ function ActivityCard({ day, onSaved }: { day: DayData; onSaved: () => Promise<v
             value={kcal}
             onChange={(e) => setKcal(e.target.value)}
           />
+          <DayActivityLevel
+            value={everyday}
+            profileDefault={day.profile.everydayActivity}
+            otherScreen="Today"
+            onChange={setEveryday}
+            unusedReason="Not used on days with entered calories. Switch to hours above to use it."
+          />
           </>
         ) : (
           <>

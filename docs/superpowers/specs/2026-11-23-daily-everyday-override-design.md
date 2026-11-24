@@ -18,8 +18,9 @@ touching Settings.
   stores null.
 - `computeTargets`: the baseline MET for non-exercise waking hours is
   `BASELINE_MET[activity?.everydayActivity ?? profile.everydayActivity]`. Direct-calorie
-  days ignore it, so on those days the selector is hidden and a note says the entered
-  calories already cover the whole day. Saving direct calories keeps any stored override
+  days ignore it, so on those days the selector is shown **disabled** with a note that it
+  isn't used on days with entered calories and how to switch the day to hours (nt-kig: the
+  owner couldn't find it when it was hidden). Saving direct calories keeps any stored override
   (it only matters if the day goes back to hours).
 - The Progress analysis and backups follow automatically (backups export the row; older
   backups lack the column, which imports as null).
