@@ -429,7 +429,7 @@ export async function getUsdaFood(fdcId: number): Promise<UsdaFood> {
   return invokeUsda<UsdaFood>('usda?op=food&fdcId=' + encodeURIComponent(String(fdcId)));
 }
 
-// ---- data controls (contracts ง10.2) ----
+// ---- data controls (contracts ยง10.2) ----
 
 export async function exportMyData(): Promise<Record<BackupTable, BackupRow[]>> {
   const out = {} as Record<BackupTable, BackupRow[]>;
