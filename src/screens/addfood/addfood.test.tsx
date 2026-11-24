@@ -59,6 +59,16 @@ describe('AddFoodScreen', () => {
     expect(screen.queryByText('Dup')).toBeNull();
   });
 
+  it('Enter manually sits between the search box and Your foods', async () => {
+    renderScreen();
+    const search = screen.getByLabelText('Search foods');
+    const manual = screen.getByText('Enter manually');
+    const foods = screen.getByText('Your foods');
+    // Document order: search input, then Enter manually, then Your foods.
+    expect(search.compareDocumentPosition(manual) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(manual.compareDocumentPosition(foods) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('selecting a USDA result gets detail, saves, then shows amount step', async () => {
     renderScreen();
     fireEvent.change(screen.getByLabelText('Search foods'), { target: { value: 'app' } });
