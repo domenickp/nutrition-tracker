@@ -295,7 +295,7 @@ describe('TodayScreen weigh-in', () => {
       expect(vi.mocked(api.saveActivity).mock.calls[0][0]).toEqual({ ...act, everydayActivity: null });
     });
 
-    it('is hidden on a direct-mode day', async () => {
+    it('is shown disabled with a note on a direct-mode day', async () => {
       vi.mocked(api.loadDay).mockResolvedValue(
         fixture({
           activity: {
@@ -306,8 +306,11 @@ describe('TodayScreen weigh-in', () => {
         }),
       );
       renderIt();
-      await screen.findByText(/already cover the whole day/);
-      expect(screen.queryByLabelText('Everyday activity today')).toBeNull();
+      const sel = (await screen.findByLabelText('Everyday activity today')) as HTMLSelectElement;
+      expect(sel.disabled).toBe(true);
+      expect(screen.getByText(/Not used on days with entered calories\. Switch the day to hours/)).toBeTruthy();
+      expect(screen.queryByText(/Same setting as on the/)).toBeNull();
+      expect(screen.queryByText(/already cover the whole day/)).toBeNull();
     });
   });
 });
