@@ -552,3 +552,52 @@ updated_at trigger, the four `_own` policies, `revoke all ... from anon` — sam
   numbers, all suggestions, accepted history. Settings: "Set from a suggestion on <date>" under
   the calorie-adjust field when the latest accepted calorie record's `newAdjustPct` equals the
   saved override.
+
+## §10 Data controls (epic nt-gc4, added 2026-11-23)
+
+Design: `docs/superpowers/specs/2026-11-23-data-controls-design.md`. Plan:
+`docs/superpowers/plans/2026-11-23-data-controls.md`.
+
+### §10.1 `src/lib/backup.ts` (pure)
+```ts
+export const BACKUP_APP = 'nutrition-tracker';
+export const BACKUP_VERSION = 1;
+export const BACKUP_TABLES = ['profiles', 'weights', 'foods', 'food_logs', 'water_logs',
+  'daily_activity', 'workouts', 'exercise_categories', 'target_suggestions'] as const;
+export type BackupTable = (typeof BACKUP_TABLES)[number];
+export type BackupRow = Record<string, unknown>;
+export interface BackupFile {
+  app: typeof BACKUP_APP; version: number; exportedAt: string;
+  tables: Record<BackupTable, BackupRow[]>;
+}
+/** Rows as read from the API; strips user_id from every row. */
+export function buildBackup(tables: Record<BackupTable, BackupRow[]>, exportedAt: string): BackupFile;
+export function backupFileName(date: string): string;   // nutrition-tracker-backup-YYYY-MM-DD.json
+/** JSON text -> backup, or the problems found. Unknown tables ignored; missing tables = []. */
+export function parseBackup(text: string): { ok: true; backup: BackupFile } | { ok: false; errors: string[] };
+export function countRows(b: BackupFile): Record<BackupTable, number>;
+/** Rows ready for import_my_data: new uuids (via newId) for weights, foods, food_logs,
+ *  water_logs, target_suggestions; food_logs.food_id remapped (unknown -> null); user_id
+ *  removed; missing columns filled from COLUMN_DEFAULTS (created_at/updated_at -> now). */
+export function prepareImport(b: BackupFile, newId: () => string, now: string): Record<BackupTable, BackupRow[]>;
+export const COLUMN_DEFAULTS: Record<BackupTable, BackupRow>;   // must match the migrations
+```
+
+### §10.2 Data (`src/data/api.ts`)
+```ts
+export async function exportMyData(): Promise<Record<BackupTable, BackupRow[]>>;  // select * per table; throws
+export async function accountIsEmpty(): Promise<boolean>;                        // no row in any table
+export async function purgeMyData(): Promise<void>;                              // rpc('purge_my_data'); throws
+export async function importMyData(rows: Record<BackupTable, BackupRow[]>): Promise<number>;
+//   rpc('import_my_data', { payload: rows }); returns rows inserted; throws
+```
+
+### §10.3 Migration `supabase/migrations/20261123000000_data_controls.sql`
+As the design's "Database functions" section. Both functions `security invoker`,
+`set search_path = public`, raise when `auth.uid()` is null; `revoke all ... from public,
+anon`; `grant execute ... to authenticated`.
+
+### §10.4 UI
+`src/lib/appInfo.ts`: `export const OWNER_NAME = 'Domenick';`. Settings "Your data" section
+per the design; the delete message text exactly as the design states, owner name from
+`OWNER_NAME`.

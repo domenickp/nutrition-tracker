@@ -129,10 +129,10 @@ Supabase dashboard → **Authentication → URL Configuration**:
 
 ## Step 8 — Install on your phone
 
-1. Open the Pages URL in **Safari** (iPhone) or **Chrome** (Android).
-2. iPhone: Share → **Add to Home Screen**. Android: menu → **Install app**.
-3. Open it from the home screen, enter your email, and type the 6-digit code from the email.
-4. Fill in Settings (birth month/year, sex, height, weight, goal). Then you're on Today.
+Follow **Getting started** in the [README](../README.md#getting-started): it covers
+installing on Android and iPhone, signing in with the code, and the first Settings screen.
+Send other people the same section, after adding them under **Authentication → Users**
+(Step 4.3).
 
 ## Checks once it's live
 

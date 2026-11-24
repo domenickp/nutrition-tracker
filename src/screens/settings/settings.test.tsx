@@ -9,6 +9,10 @@ const api = vi.hoisted(() => ({
   addWeight: vi.fn(async (_d: string, _kg: number) => {}),
   getLatestWeight: vi.fn(async (_d: string) => null as number | null),
   listSuggestionRecords: vi.fn(async () => null as unknown[] | null),
+  accountIsEmpty: vi.fn(async () => true),
+  exportMyData: vi.fn(),
+  purgeMyData: vi.fn(),
+  importMyData: vi.fn(),
 }));
 vi.mock('../../data/api', () => api);
 vi.mock('../../data/auth', () => ({ signOut: vi.fn(async () => {}) }));

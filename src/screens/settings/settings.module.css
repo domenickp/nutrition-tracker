@@ -9,3 +9,5 @@
 .reset { min-height: 36px; font-size: var(--fs-sm); }
 .saved { color: var(--good); font-weight: 700; }
 .signout { margin-top: var(--sp-5); }
+.sub { font-size: var(--fs-md, 1rem); font-weight: 700; margin: 0; }
+.errorList { color: var(--bad, #b00020); margin: 0; padding-left: var(--sp-4); }

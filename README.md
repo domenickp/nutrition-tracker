@@ -1,64 +1,91 @@
 # Nutrition Tracker
 
-A phone-friendly web app for daily nutrition. Each day has targets for calories, protein,
-carbs, fat and water, based on your profile, goal (lose fat / maintain / build muscle) and
-that day's activity. You log food from your saved foods, USDA FoodData Central, or by hand,
-and the app shows what's left.
-
-Activity can be entered as calories, as hours of sedentary time / light cardio / strenuous
-cardio / weight lifting, or by importing workout JSON.
-
-The **Workout** tab is a 4-day dumbbell routine logger (merged in from
-[FatherWorkout](https://github.com/domenickp/FatherWorkout)): last time's numbers prefilled,
-rest timer, history. A finished workout counts toward that day's activity automatically, and
-old FatherWorkout session files can be imported from Workout → History → Import.
-
-**Weight trend.** Weigh in on Today. The app smooths daily weigh-ins into a trend, compares
-the weekly rate with what your goal (lose fat / maintain / build muscle) aims for, and after
-about two weeks of weigh-ins and food logs it estimates how much you really burn. When the
-results and the goal disagree it *suggests* a new calorie target (you accept or dismiss it;
-nothing changes on its own) plus protein, cardio or lifting advice. Details and the chart are
-on the Progress screen, linked from Today.
+A phone-friendly app for daily nutrition and workouts. Each day has targets for calories,
+protein, carbs, fat and water, based on your profile, your goal (lose fat, maintain or build
+muscle) and that day's activity. You log what you eat and the app shows what's left. It also
+logs your workouts and tracks your weight trend against your goal.
 
 **Targets are estimates, not medical advice.**
 
-## Stack
+## Getting started
 
-- React + TypeScript + Vite, installable as a PWA, hosted on Cloudflare Pages
-- Supabase: Postgres with row-level security, email sign-in, and one Edge Function (`usda`)
-  that proxies USDA searches so the API key stays on the server
+### 1. Get an account
 
-## Getting it running
+The app is invite-only. Ask the owner to add you, and tell them the email address you'll sign
+in with. There's no password: each time you sign in, you get a 6-digit code by email.
 
-Follow **[docs/deploy.md](docs/deploy.md)**. It walks through every account and setting,
-including CI/CD (GitHub Actions checks every PR and deploys the USDA function after merge).
+### 2. Install it on your phone
 
-## Development
+Open the link the owner sends you, then:
 
-```bash
-npm install
-cp .env.example .env.local   # then fill in your Supabase URL and anon key
-npm run dev                  # http://localhost:5173
-npm test                     # unit tests (Vitest)
-npm run typecheck
-npm run build
-```
+- **Android (Chrome):** tap the **⋮** menu → **Install app** (on some phones it says
+  **Add to Home screen**). Confirm, and the app appears with your other apps.
+- **iPhone (Safari):** tap **Share** → **Add to Home Screen** → **Add**. It has to be Safari;
+  other iPhone browsers can't install it.
 
-## Project layout
+Open it from the home screen from then on. It runs full screen, like any other app.
 
-| Path | What's there |
-|---|---|
-| `config/workouts.yaml` | The workout plan (days, exercises, order, targets), shared by all users. Edit it and open a PR to change the plan; a mistake fails the build |
-| `build/` | Build-time Vite plugin that reads and checks `config/workouts.yaml` |
-| `src/lib/` | Pure, tested logic: targets, units/portions, dates, workout import, workout sessions and routine |
-| `src/data/` | Supabase access and auth |
-| `src/screens/` | One folder per screen: today, addfood, activity, workout, workouthistory, settings, signin |
-| `src/components/` | Shared UI |
-| `supabase/migrations/` | Database schema and security policies |
-| `supabase/functions/usda/` | USDA proxy Edge Function |
-| `docs/` | Design, interface contracts, deploy guide, sample workout export |
+### 3. Sign in
 
-Issues are tracked with `bd` (beads). See `AGENTS.md`.
+Enter your email and tap **Email me a code**. Type the 6-digit code from the email into the
+app. Use the code, not the link in the email: on a phone, the link opens the browser instead
+of the installed app, and the app wouldn't be signed in.
+
+### 4. Fill in Settings
+
+The first time, the app opens **Settings**. Enter your birth month and year, sex, height,
+weight, goal, units and **Everyday activity** (how much you move outside workouts: mostly
+sitting, on your feet part of the day, or most of the day). Save, and you're on Today.
+
+## Using the app
+
+- **Today:** your targets and what's left for the day.
+  - **Weigh in** at the top: once a day, ideally in the morning, under the same conditions
+    each time.
+  - **Add food** to log a meal. Search your saved foods or the USDA food database, or enter
+    a food by hand. Pick an amount (servings, grams or a portion like "1 cup").
+  - Tap a logged item to change the amount or delete it.
+  - **Water**: tap a quick amount, or enter your own.
+  - Use the arrows at the top to look at other days.
+- **Workout:** a 4-day dumbbell routine. Last time's numbers are filled in for you; mark
+  each set done, and a rest timer starts. **Finish** saves the workout, and it counts toward
+  that day's activity automatically. **History** shows past workouts.
+- **Activity:** extra activity for a day that isn't a logged workout. Enter hours of light
+  cardio, hard cardio or lifting, or a calorie number from a watch. The rest of your waking
+  day counts at your Everyday activity level. The page shows how your calorie target was
+  worked out.
+- **Progress** (the link next to your weight on Today): a chart of your weight and its
+  trend, and how you're doing against your goal. After about two weeks of daily weigh-ins and
+  food logging, the app may suggest a new calorie target, or protein, cardio or lifting
+  advice. Nothing changes unless you tap **Accept**. **Not now** hides a suggestion for a
+  week.
+- **Settings:** your profile, goal and units, plus optional overrides for the calorie
+  adjustment, protein, fat and water targets.
+
+The app works best when you log every day. Days with no food logged, or only part of a day,
+make the weight analysis less accurate, and it will tell you so.
+
+## Your data
+
+Everything you enter is stored in the app's database. Only you can see it in the app. The
+owner, as the database administrator, can see it too.
+
+In **Settings → Your data**:
+
+- **Download backup** saves a file with all your data (profile, weigh-ins, foods, food and
+  water logs, activity, workouts and suggestions). Keep it somewhere safe.
+- **Delete all my data** removes everything you've entered. Type `DELETE` to confirm. The app
+  downloads a backup first, automatically. Your account stays active, so you can start again
+  at any time without asking anyone. Keeping the account doesn't keep any data. If you'd like
+  the account removed too, ask the owner.
+- **Import backup** puts a backup file back. It only works on an empty account: right after
+  deleting your data, or on a new account.
+
+## Running your own copy
+
+This repo is everything needed to host the app yourself on free tiers of Supabase and
+Cloudflare. Follow **[docs/deploy.md](docs/deploy.md)** for the accounts and settings, and
+**[docs/development.md](docs/development.md)** for working on the code.
 
 ## License
 

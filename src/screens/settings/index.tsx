@@ -20,6 +20,7 @@ import {
   weightFromField,
   weightToField,
 } from './convert';
+import YourData from './YourData';
 import styles from './settings.module.css';
 
 const MONTHS = [
@@ -145,6 +146,7 @@ export default function SettingsScreen() {
   const [saved, setSaved] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [suggestedOn, setSuggestedOn] = useState<{ pct: number; date: string } | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -154,8 +156,11 @@ export default function SettingsScreen() {
         if (!active) return;
         if (!profile) {
           setFirstRun(true);
+          setInitialKg(null);
+          setSuggestedOn(null);
           setForm(emptyForm());
         } else {
+          setFirstRun(false);
           const kg = await getLatestWeight(todayIn(profile.timezone));
           if (!active) return;
           setInitialKg(kg);
@@ -178,7 +183,7 @@ export default function SettingsScreen() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   const zones = useMemo(() => timeZones(form.timezone), [form.timezone]);
 
@@ -476,6 +481,8 @@ export default function SettingsScreen() {
           {saving ? 'Saving…' : firstRun ? 'Save and continue' : 'Save'}
         </Button>
       </form>
+
+      <YourData onChanged={() => setReloadKey((k) => k + 1)} />
 
       {!firstRun && (
         <div className={styles.signout}>
