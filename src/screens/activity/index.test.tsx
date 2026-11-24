@@ -101,6 +101,7 @@ describe('ActivityScreen', () => {
       activity: {
         date: day.date, mode: 'hours', directKcal: null,
         hours: { sedentaryH: 9, lightCardioH: 0, strenuousCardioH: 0, liftingH: 1 },
+        everydayActivity: null,
       },
       workouts: [{ id: 'w', startedAt: '2026-11-16T15:00:00Z', raw: null, lightCardioH: 1, strenuousCardioH: 0, liftingH: 0 }],
     });
@@ -125,5 +126,33 @@ describe('ActivityScreen', () => {
     fireEvent.click(screen.getByText('Save activity'));
     await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
     expect(api.saveActivity.mock.calls[0][0]).toMatchObject({ mode: 'direct', directKcal: 450, date: '2026-11-16' });
+  });
+
+  it('has the everyday selector in hours mode and saves its value', async () => {
+    renderScreen();
+    const sel = (await screen.findByLabelText('Everyday activity today')) as HTMLSelectElement;
+    expect(screen.getByText(/Same setting as on the Today screen/)).toBeTruthy();
+    expect(sel.options[0].textContent).toBe('Settings default (Mostly sitting)');
+    fireEvent.change(sel, { target: { value: 'active' } });
+    fireEvent.click(screen.getByText('Save activity'));
+    await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
+    expect(api.saveActivity.mock.calls[0][0].everydayActivity).toBe('active');
+  });
+
+  it('hides the selector in direct mode and keeps a stored override on save', async () => {
+    api.loadDay.mockResolvedValue({
+      ...day,
+      activity: {
+        date: day.date, mode: 'direct', directKcal: 300,
+        hours: { sedentaryH: 0, lightCardioH: 0, strenuousCardioH: 0, liftingH: 0 },
+        everydayActivity: 'moderate',
+      },
+    });
+    renderScreen();
+    await screen.findByText(/already cover the whole day/);
+    expect(screen.queryByLabelText('Everyday activity today')).toBeNull();
+    fireEvent.click(screen.getByText('Save activity'));
+    await waitFor(() => expect(api.saveActivity).toHaveBeenCalled());
+    expect(api.saveActivity.mock.calls[0][0]).toMatchObject({ mode: 'direct', everydayActivity: 'moderate' });
   });
 });

@@ -141,6 +141,7 @@ describe('prepareImport', () => {
     expect(out.foods[0].portions).toEqual([]);
     expect(out.daily_activity[0].sedentary_h).toBe(0);
     expect(out.daily_activity[0].lifting_h).toBe(0);
+    expect(out.daily_activity[0].everyday_activity ?? null).toBeNull();
   });
   it('does not share default objects between rows', () => {
     const out = prepareImport(file({ foods: [{ id: 'a' }, { id: 'b' }] }), counter(), 'NOW');

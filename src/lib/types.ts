@@ -64,6 +64,8 @@ export interface DailyActivity {
   mode: ActivityMode;
   directKcal: number | null;
   hours: ActivityHours;
+  /** Per-day override of the profile's everyday activity; null = use the Settings default. */
+  everydayActivity: EverydayActivity | null;
 }
 
 export type ExerciseCategory = 'light_cardio' | 'strenuous_cardio' | 'lifting';
