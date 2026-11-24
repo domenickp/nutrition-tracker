@@ -120,6 +120,7 @@ export default function AddFoodScreen() {
             onChange={(e) => setTerm(e.target.value)}
             placeholder="e.g. banana"
           />
+          <Button variant="secondary" block onClick={() => { setError(null); setStep('manual'); }}>Enter manually</Button>
           {error && <p className="field__error" role="alert">{error}</p>}
           <Card title="Your foods">
             {savedError && <p className="field__error" role="alert">{savedError}</p>}
@@ -138,7 +139,6 @@ export default function AddFoodScreen() {
               </ul>
             </Card>
           )}
-          <Button variant="secondary" block onClick={() => { setError(null); setStep('manual'); }}>Enter manually</Button>
         </div>
       )}
       {step === 'manual' && (

@@ -188,7 +188,7 @@ export default function TodayScreen() {
   const waterMl = day.waterLogs.reduce((s, w) => s + w.ml, 0) + eaten.waterMl;
   const toDisplay = (ml: number) => (imperial ? mlToFlOz(ml) : ml);
   const waterUnit = imperial ? 'fl oz' : 'ml';
-  const quick = imperial ? [8, 12, 16] : [250, 330, 500];
+  const quick = imperial ? [12, 16, 18, 20] : [250, 330, 500];
   const toMl = (v: number) => (imperial ? flOzToMl(v) : v);
   const isToday = date === today;
 

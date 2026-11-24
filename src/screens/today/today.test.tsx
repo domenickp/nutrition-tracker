@@ -114,6 +114,33 @@ describe('TodayScreen', () => {
     await waitFor(() => expect(api.loadDay).toHaveBeenCalledTimes(2));
   });
 
+  it('imperial water quick-add buttons are 12, 16, 18 and 20 fl oz', async () => {
+    renderIt();
+    for (const label of ['+12 fl oz', '+16 fl oz', '+18 fl oz', '+20 fl oz']) {
+      expect(await screen.findByText(label)).toBeTruthy();
+    }
+    expect(screen.queryByText('+8 fl oz')).toBeNull();
+  });
+
+  it('quick-add 20 fl oz calls addWater with about 591.47 ml', async () => {
+    renderIt();
+    fireEvent.click(await screen.findByText('+20 fl oz'));
+    await waitFor(() => expect(api.addWater).toHaveBeenCalled());
+    const [, ml] = vi.mocked(api.addWater).mock.calls[0];
+    expect(Math.abs(ml - 591.47)).toBeLessThan(0.01);
+  });
+
+  it('metric water quick-add buttons are unchanged (250, 330, 500 ml)', async () => {
+    const d = fixture();
+    d.profile = { ...d.profile, units: 'metric' };
+    vi.mocked(api.loadDay).mockResolvedValue(d);
+    renderIt();
+    for (const label of ['+250 ml', '+330 ml', '+500 ml']) {
+      expect(await screen.findByText(label)).toBeTruthy();
+    }
+    expect(screen.queryByText('+12 ml')).toBeNull();
+  });
+
   it('editing quantity scales totals', async () => {
     renderIt();
     fireEvent.click(await screen.findByText('Oats'));
