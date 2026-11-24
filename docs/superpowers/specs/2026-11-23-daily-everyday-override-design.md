@@ -7,8 +7,9 @@ touching Settings.
 **Decided (with the owner).**
 - A selector "Everyday activity today" on **Today's Activity card** and on the **Activity
   screen**. Options: "Settings default (<current default label>)", then the three levels
-  (Mostly sitting / On your feet part of the day / On your feet most of the day). Changing
-  it saves immediately and targets update.
+  (Mostly sitting / On your feet part of the day / On your feet most of the day). On Today,
+  changing it saves immediately and targets update; on the Activity screen it is part of the
+  form and saves with **Save activity**, like the rest of that screen.
 - Both screens edit the **same stored value**. Each shows a short note under the selector:
   "Same setting as on the <other screen> screen. Changing it in either place is enough."
 - Stored as `daily_activity.everyday_activity` (nullable text, check in the three values,
