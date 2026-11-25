@@ -63,20 +63,26 @@ In the Supabase dashboard:
    - Turn **off** "Allow new users to sign up". The app is invite-only for now.
    - Under **Email**, make sure the provider is enabled. Set "Email OTP Length" to 6 if
      that option is shown.
-2. **Authentication → Emails → Templates → Magic Link**. Replace the body with:
+2. **Authentication → Emails → Templates → Magic Link**. Set the subject to
+   `Nutrition Tracker: Your sign-in code` and replace the body with:
    ```html
-   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color:#000000;">
+   <table width="100%" cellpadding="0" cellspacing="0" border="0">
      <tr>
-       <td style="padding:24px; color:#ffffff; font-family:Arial, sans-serif;">
-         <h2 style="color:#ffffff; margin-top:0;">Sign in to Nutrition Tracker</h2>
-         <p style="color:#ffffff;">Your code: <strong style="color:#ffffff;">{{ .Token }}</strong></p>
-         <p style="color:#ffffff;">Or <a href="{{ .ConfirmationURL }}" style="color:#ffffff; text-decoration:underline;">tap here to sign in</a>.</p>
+       <td style="padding:24px; font-family:Arial, sans-serif;">
+         <h2 style="margin-top:0;">Sign in to Nutrition Tracker with the code below.</h2>
+         <p>Your code: <strong>{{ .Token }}</strong></p>
        </td>
      </tr>
    </table>
    ```
-   The code (`{{ .Token }}`) is what you'll use in the installed phone app, because a
-   home-screen app on iPhone doesn't share sign-ins with Safari.
+   Only the code is sent, no link: the installed phone app doesn't share sign-ins with the
+   browser, so a link would sign in the browser instead of the app. Give the **Confirm
+   signup** template the same subject and body, in case a user is added without
+   **Auto Confirm User**.
+
+   Supabase checks the template's HTML before every email. A mistake (for example
+   `<h2 margin-top:0;">` instead of `<h2 style="margin-top:0;">`) makes every sign-in fail
+   with "Error sending magic link email"; **Logs → Auth** shows the exact problem.
 3. **Authentication → Users → Add user → Create new user**. Enter your email, tick
    **Auto Confirm User**, and leave the password blank (or set any; it isn't used).
 4. Come back to **Authentication → URL Configuration** after Step 6 to fill in the site URL.
