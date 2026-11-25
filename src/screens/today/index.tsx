@@ -362,7 +362,8 @@ export default function TodayScreen() {
               <span className="today__main">
                 <span className="today__name">{l.name}</span>
                 <span className="today__sub num">
-                  {l.quantity} {l.unitLabel} · P {g0(l.totals.proteinG)} C {g0(l.totals.carbsG)} F {g0(l.totals.fatG)}
+                  {l.quantity} {l.unitLabel}
+                  {l.unitLabel !== 'g' && l.grams !== null ? ` (${Math.round(l.grams)} g)` : ''} · P {g0(l.totals.proteinG)} C {g0(l.totals.carbsG)} F {g0(l.totals.fatG)}
                 </span>
               </span>
               <span className="today__kcal num">{g0(l.totals.kcal)} kcal</span>
