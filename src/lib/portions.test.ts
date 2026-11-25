@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { amountOptions, computeEntry, scaleTotals, sumNutrients, unitDisplayLabel } from './portions';
+import { amountOptions, computeEntry, formatAmount, scaleTotals, sumNutrients, unitDisplayLabel } from './portions';
 import type { Food } from './types';
 
 const usda: Food = {
@@ -142,5 +142,22 @@ describe('unitDisplayLabel', () => {
     expect(unitDisplayLabel(banana, { kind: 'grams' })).toBe('g');
     const cup = amountOptions(banana).find((o) => o.kind === 'volume')!;
     expect(unitDisplayLabel(banana, cup)).toBe('cup');
+  });
+});
+
+describe('formatAmount', () => {
+  it('gram unit has no suffix', () => expect(formatAmount(150, 'g', 150)).toBe('150 g'));
+  it('servings singular and plural', () => {
+    expect(formatAmount(1, 'servings', 40)).toBe('1 serving (40 g)');
+    expect(formatAmount(2, 'servings', null)).toBe('2 servings');
+  });
+  it('numeric-leading labels', () => {
+    expect(formatAmount(1, '1 cup', 240.4)).toBe('1 cup (240 g)');
+    expect(formatAmount(2, '1 cup', 480)).toBe('2 × 1 cup (480 g)');
+  });
+  it('skips duplicate grams', () => expect(formatAmount(1, '100 g', 100)).toBe('100 g'));
+  it('other labels', () => {
+    expect(formatAmount(1, 'medium', 118)).toBe('1 medium (118 g)');
+    expect(formatAmount(0.5, 'medium', null)).toBe('0.5 medium');
   });
 });

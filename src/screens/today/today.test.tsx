@@ -95,6 +95,36 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+describe('TodayScreen food row grams', () => {
+  function logs(unitLabel: string, quantity: number, grams: number | null) {
+    const base = fixture();
+    vi.mocked(api.loadDay).mockResolvedValue({
+      ...base,
+      foodLogs: [{ ...base.foodLogs[0], unitLabel, quantity, grams }],
+    });
+  }
+
+  it('shows rounded grams for non-gram units', async () => {
+    logs('1 cup', 1, 240.4);
+    renderIt();
+    const text = (await screen.findByText(/\(240 g\)/)).textContent;
+    expect(text).toContain('1 cup (240 g)');
+    expect(text).not.toContain('1 1 cup');
+  });
+
+  it('does not duplicate grams for gram entries', async () => {
+    logs('g', 150, 150);
+    renderIt();
+    expect((await screen.findByText(/150 g/)).textContent).not.toContain('(150 g)');
+  });
+
+  it('shows no parenthesis when grams are unknown', async () => {
+    logs('servings', 2, null);
+    renderIt();
+    expect((await screen.findByText(/2 servings/)).textContent).not.toContain('(');
+  });
+});
+
 describe('TodayScreen', () => {
   it('shows remaining calories computed from targets', async () => {
     const d = fixture();

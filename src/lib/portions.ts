@@ -118,3 +118,20 @@ export function unitDisplayLabel(food: Food, unit: AmountUnit): string {
     case 'grams': return 'g';
   }
 }
+
+const fmtQty = (q: number): string => String(Math.round(q * 100) / 100);
+
+/** Natural-reading amount text for a logged food, e.g. "2 × 1 cup (480 g)". */
+export function formatAmount(quantity: number, unitLabel: string, grams: number | null): string {
+  const q = fmtQty(quantity);
+  if (unitLabel === 'g') return `${q} g`;
+  let text: string;
+  if (unitLabel === 'servings') text = quantity === 1 ? '1 serving' : `${q} servings`;
+  else if (/^\d/.test(unitLabel)) text = quantity === 1 ? unitLabel : `${q} × ${unitLabel}`;
+  else text = `${q} ${unitLabel}`;
+  if (grams === null) return text;
+  const rounded = Math.round(grams);
+  const m = /^(\d+(?:\.\d+)?)\s*g$/.exec(unitLabel);
+  if (m && Math.round(Number(m[1]) * quantity) === rounded) return text;
+  return `${text} (${rounded} g)`;
+}
