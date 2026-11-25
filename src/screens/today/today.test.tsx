@@ -107,7 +107,9 @@ describe('TodayScreen food row grams', () => {
   it('shows rounded grams for non-gram units', async () => {
     logs('1 cup', 1, 240.4);
     renderIt();
-    expect((await screen.findByText(/\(240 g\)/)).textContent).toContain('1 1 cup (240 g)');
+    const text = (await screen.findByText(/\(240 g\)/)).textContent;
+    expect(text).toContain('1 cup (240 g)');
+    expect(text).not.toContain('1 1 cup');
   });
 
   it('does not duplicate grams for gram entries', async () => {

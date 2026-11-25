@@ -16,7 +16,7 @@ import {
   updateFoodLog,
 } from '../../data/api';
 import { addDays, todayIn } from '../../lib/dates';
-import { scaleTotals, sumNutrients } from '../../lib/portions';
+import { formatAmount, scaleTotals, sumNutrients } from '../../lib/portions';
 import { computeTargets } from '../../lib/targets';
 import type { DayData, FoodLog } from '../../lib/types';
 import { flOzToMl, formatVolume, mlToFlOz } from '../../lib/units';
@@ -362,8 +362,7 @@ export default function TodayScreen() {
               <span className="today__main">
                 <span className="today__name">{l.name}</span>
                 <span className="today__sub num">
-                  {l.quantity} {l.unitLabel}
-                  {l.unitLabel !== 'g' && l.grams !== null ? ` (${Math.round(l.grams)} g)` : ''} · P {g0(l.totals.proteinG)} C {g0(l.totals.carbsG)} F {g0(l.totals.fatG)}
+                  {formatAmount(l.quantity, l.unitLabel, l.grams)} · P {g0(l.totals.proteinG)} C {g0(l.totals.carbsG)} F {g0(l.totals.fatG)}
                 </span>
               </span>
               <span className="today__kcal num">{g0(l.totals.kcal)} kcal</span>
